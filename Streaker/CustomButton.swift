@@ -6,6 +6,8 @@ class CustomButton: UIButton {
     
     // Добавляем замыкание, которое будет вызываться при нажатии на кнопку
     var onButtonTapped: (() -> Void)?
+    // Добавьте это свойство для хранения размера кнопки
+    var buttonSize: CGSize = .zero
     
     var isOn: Bool = false {
         didSet {
@@ -119,6 +121,10 @@ class CustomButton: UIButton {
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-28)
             make.width.height.equalTo(buttonWidth)
         }
+        
+        // Сохраните размер кнопки здесь
+        self.buttonSize = CGSize(width: buttonWidth, height: buttonWidth)
+        
     }
     
     func scaleButtonElements(forScreenWidth screenWidth: CGFloat) {

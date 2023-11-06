@@ -8,72 +8,69 @@
 */
 
 import UIKit
+import SnapKit
 
 class HabitsCollectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     var collectionView: UICollectionView!
     var cellModels: [HabitCellModel] = [] // Массив моделей данных для клеток
     var buttonColor: UIColor?
-
+    var buttonSize: CGSize = .zero
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
-        loadCellModels() // Загрузка данных для клеток
+        loadCellModels()
+        collectionView.reloadData()
     }
-
+    
     private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.itemSize = CGSize(width: 100, height: 100) // Размеры клеток
-
+        layout.itemSize = CGSize(width: 100, height: 100) // Установите размер элементов здесь
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.register(HabitCollectionViewCell.self, forCellWithReuseIdentifier: "HabitCell")
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(HabitCollectionViewCell.self, forCellWithReuseIdentifier: "HabitCell")
         collectionView.backgroundColor = .white
-
         view.addSubview(collectionView)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
+        
+        collectionView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+    
+    // Загрузка моделей данных для ячеек
+    func loadCellModels() {
+        // Создайте достаточное количество моделей
+        cellModels = (1...10).map { _ in HabitCellModel(state: .emptyCell) }
     }
 
-    private func loadCellModels() {
-        // Загрузка или создание данных для клеток
-        cellModels = [
-            HabitCellModel(state: .waiting(progress: 0.5)),
-            HabitCellModel(state: .completedWithTopLine),
-            // Добавьте другие состояния для тестирования
-        ]
-    }
-
+    
     // MARK: - UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return cellModels.count
+        return cellModels.count // Возвращаем количество элементов, основываясь на массиве моделей
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HabitCell", for: indexPath) as? HabitCollectionViewCell else {
             fatalError("Unable to dequeue HabitCollectionViewCell")
         }
         let model = cellModels[indexPath.item]
-        cell.configure(with: model)
-        cell.backgroundColor = buttonColor // Установка цвета фона ячейки
+        cell.configure(with: model) // Конфигурируем ячейку с моделью данных
         return cell
     }
-
     
-    
-
     // MARK: - UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        // Размеры клеток можно настроить здесь
-        return CGSize(width: 100, height: 100)
+        // Здесь вы можете настроить размер ячейки в зависимости от модели данных
+        let model = cellModels[indexPath.item]
+        switch model.state {
+        case .emptySpace:
+            return CGSize(width: collectionView.bounds.width, height: 16) // Размеры для emptySpace
+        case .emptyCell, .completedWithNoLine, .notCompleted, .progress:
+            return buttonSize
+        }
     }
-
-    // Добавьте другие методы для обработки нажатий на клетки, если нужно
+    
 }

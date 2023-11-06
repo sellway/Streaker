@@ -13,6 +13,11 @@
 		E45E28E92AF1C6A100104C32 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = E45E28E82AF1C6A100104C32 /* Lottie */; };
 		E45E28EC2AF1C82800104C32 /* confetti.json in Resources */ = {isa = PBXBuildFile; fileRef = E45E28EB2AF1C82800104C32 /* confetti.json */; };
 		E45E28EE2AF1D59800104C32 /* ConfettiAnimationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45E28ED2AF1D59800104C32 /* ConfettiAnimationManager.swift */; };
+		E4BDDB572AF7BCF400AF25D4 /* PocketSVG in Frameworks */ = {isa = PBXBuildFile; productRef = E4BDDB562AF7BCF400AF25D4 /* PocketSVG */; };
+		E4BDDB5C2AF7CE5A00AF25D4 /* progressView.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4BDDB582AF7CE5A00AF25D4 /* progressView.svg */; };
+		E4BDDB5D2AF7CE5A00AF25D4 /* completedWithNoLine.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4BDDB592AF7CE5A00AF25D4 /* completedWithNoLine.svg */; };
+		E4BDDB5E2AF7CE5A00AF25D4 /* notCompleted.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4BDDB5A2AF7CE5A00AF25D4 /* notCompleted.svg */; };
+		E4BDDB5F2AF7CE5A00AF25D4 /* emptyCell.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4BDDB5B2AF7CE5A00AF25D4 /* emptyCell.svg */; };
 		E4E90A2E2AF2F68F003B90D5 /* HabitCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4E90A2D2AF2F68F003B90D5 /* HabitCellModel.swift */; };
 		E4FF3D472AF01BA6009C0C15 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FF3D462AF01BA6009C0C15 /* AppDelegate.swift */; };
 		E4FF3D492AF01BA6009C0C15 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FF3D482AF01BA6009C0C15 /* SceneDelegate.swift */; };
@@ -29,6 +34,10 @@
 		E45E28E52AF1BD8D00104C32 /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 		E45E28EB2AF1C82800104C32 /* confetti.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = confetti.json; sourceTree = "<group>"; };
 		E45E28ED2AF1D59800104C32 /* ConfettiAnimationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiAnimationManager.swift; sourceTree = "<group>"; };
+		E4BDDB582AF7CE5A00AF25D4 /* progressView.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = progressView.svg; sourceTree = "<group>"; };
+		E4BDDB592AF7CE5A00AF25D4 /* completedWithNoLine.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = completedWithNoLine.svg; sourceTree = "<group>"; };
+		E4BDDB5A2AF7CE5A00AF25D4 /* notCompleted.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = notCompleted.svg; sourceTree = "<group>"; };
+		E4BDDB5B2AF7CE5A00AF25D4 /* emptyCell.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = emptyCell.svg; sourceTree = "<group>"; };
 		E4E90A2D2AF2F68F003B90D5 /* HabitCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitCellModel.swift; sourceTree = "<group>"; };
 		E4FF3D432AF01BA5009C0C15 /* Streaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Streaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4FF3D462AF01BA6009C0C15 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -47,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4BDDB572AF7BCF400AF25D4 /* PocketSVG in Frameworks */,
 				E45E28E42AF17D6300104C32 /* SnapKit in Frameworks */,
 				E45E28E92AF1C6A100104C32 /* Lottie in Frameworks */,
 			);
@@ -58,6 +68,10 @@
 		E45E28EA2AF1C80F00104C32 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				E4BDDB592AF7CE5A00AF25D4 /* completedWithNoLine.svg */,
+				E4BDDB5B2AF7CE5A00AF25D4 /* emptyCell.svg */,
+				E4BDDB5A2AF7CE5A00AF25D4 /* notCompleted.svg */,
+				E4BDDB582AF7CE5A00AF25D4 /* progressView.svg */,
 				E45E28EB2AF1C82800104C32 /* confetti.json */,
 			);
 			path = Assets;
@@ -119,6 +133,7 @@
 			packageProductDependencies = (
 				E45E28E32AF17D6300104C32 /* SnapKit */,
 				E45E28E82AF1C6A100104C32 /* Lottie */,
+				E4BDDB562AF7BCF400AF25D4 /* PocketSVG */,
 			);
 			productName = Streaker;
 			productReference = E4FF3D432AF01BA5009C0C15 /* Streaker.app */;
@@ -151,6 +166,7 @@
 			packageReferences = (
 				E45E28E22AF17D6300104C32 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				E45E28E72AF1C6A100104C32 /* XCRemoteSwiftPackageReference "lottie-spm" */,
+				E4BDDB552AF7BCF400AF25D4 /* XCRemoteSwiftPackageReference "PocketSVG" */,
 			);
 			productRefGroup = E4FF3D442AF01BA5009C0C15 /* Products */;
 			projectDirPath = "";
@@ -167,9 +183,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4FF3D532AF01BA7009C0C15 /* LaunchScreen.storyboard in Resources */,
+				E4BDDB5E2AF7CE5A00AF25D4 /* notCompleted.svg in Resources */,
+				E4BDDB5F2AF7CE5A00AF25D4 /* emptyCell.svg in Resources */,
 				E45E28EC2AF1C82800104C32 /* confetti.json in Resources */,
 				E4FF3D502AF01BA7009C0C15 /* Assets.xcassets in Resources */,
 				E4FF3D4E2AF01BA6009C0C15 /* Main.storyboard in Resources */,
+				E4BDDB5C2AF7CE5A00AF25D4 /* progressView.svg in Resources */,
+				E4BDDB5D2AF7CE5A00AF25D4 /* completedWithNoLine.svg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -343,6 +363,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -371,6 +392,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -424,6 +446,14 @@
 				minimumVersion = 4.0.0;
 			};
 		};
+		E4BDDB552AF7BCF400AF25D4 /* XCRemoteSwiftPackageReference "PocketSVG" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pocketsvg/PocketSVG.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -436,6 +466,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E45E28E72AF1C6A100104C32 /* XCRemoteSwiftPackageReference "lottie-spm" */;
 			productName = Lottie;
+		};
+		E4BDDB562AF7BCF400AF25D4 /* PocketSVG */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E4BDDB552AF7BCF400AF25D4 /* XCRemoteSwiftPackageReference "PocketSVG" */;
+			productName = PocketSVG;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
