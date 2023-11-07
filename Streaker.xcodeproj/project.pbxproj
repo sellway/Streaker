@@ -8,12 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		E40D488E2AF3F763002BE721 /* HabitsCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40D488D2AF3F763002BE721 /* HabitsCollectionViewController.swift */; };
+		E4322B3B2AFAD52800312750 /* emptySpace.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4322B3A2AFAD52800312750 /* emptySpace.svg */; };
 		E45E28E42AF17D6300104C32 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = E45E28E32AF17D6300104C32 /* SnapKit */; };
 		E45E28E62AF1BD8D00104C32 /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45E28E52AF1BD8D00104C32 /* Test.swift */; };
 		E45E28E92AF1C6A100104C32 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = E45E28E82AF1C6A100104C32 /* Lottie */; };
 		E45E28EC2AF1C82800104C32 /* confetti.json in Resources */ = {isa = PBXBuildFile; fileRef = E45E28EB2AF1C82800104C32 /* confetti.json */; };
 		E45E28EE2AF1D59800104C32 /* ConfettiAnimationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45E28ED2AF1D59800104C32 /* ConfettiAnimationManager.swift */; };
-		E46C53152AF9B35500C9B305 /* emptySpace.svg in Resources */ = {isa = PBXBuildFile; fileRef = E46C53142AF9B35500C9B305 /* emptySpace.svg */; };
 		E4BDDB572AF7BCF400AF25D4 /* PocketSVG in Frameworks */ = {isa = PBXBuildFile; productRef = E4BDDB562AF7BCF400AF25D4 /* PocketSVG */; };
 		E4BDDB5C2AF7CE5A00AF25D4 /* progressView.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4BDDB582AF7CE5A00AF25D4 /* progressView.svg */; };
 		E4BDDB5D2AF7CE5A00AF25D4 /* completedWithNoLine.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4BDDB592AF7CE5A00AF25D4 /* completedWithNoLine.svg */; };
@@ -32,10 +32,10 @@
 
 /* Begin PBXFileReference section */
 		E40D488D2AF3F763002BE721 /* HabitsCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsCollectionViewController.swift; sourceTree = "<group>"; };
+		E4322B3A2AFAD52800312750 /* emptySpace.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = emptySpace.svg; sourceTree = "<group>"; };
 		E45E28E52AF1BD8D00104C32 /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 		E45E28EB2AF1C82800104C32 /* confetti.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = confetti.json; sourceTree = "<group>"; };
 		E45E28ED2AF1D59800104C32 /* ConfettiAnimationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiAnimationManager.swift; sourceTree = "<group>"; };
-		E46C53142AF9B35500C9B305 /* emptySpace.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = emptySpace.svg; path = ../../../Streaker/Streaker/Assets/emptySpace.svg; sourceTree = "<group>"; };
 		E4BDDB582AF7CE5A00AF25D4 /* progressView.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = progressView.svg; sourceTree = "<group>"; };
 		E4BDDB592AF7CE5A00AF25D4 /* completedWithNoLine.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = completedWithNoLine.svg; sourceTree = "<group>"; };
 		E4BDDB5A2AF7CE5A00AF25D4 /* notCompleted.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = notCompleted.svg; sourceTree = "<group>"; };
@@ -70,7 +70,7 @@
 		E45E28EA2AF1C80F00104C32 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
-				E46C53142AF9B35500C9B305 /* emptySpace.svg */,
+				E4322B3A2AFAD52800312750 /* emptySpace.svg */,
 				E4BDDB592AF7CE5A00AF25D4 /* completedWithNoLine.svg */,
 				E4BDDB5B2AF7CE5A00AF25D4 /* emptyCell.svg */,
 				E4BDDB5A2AF7CE5A00AF25D4 /* notCompleted.svg */,
@@ -188,8 +188,8 @@
 				E4FF3D532AF01BA7009C0C15 /* LaunchScreen.storyboard in Resources */,
 				E4BDDB5E2AF7CE5A00AF25D4 /* notCompleted.svg in Resources */,
 				E4BDDB5F2AF7CE5A00AF25D4 /* emptyCell.svg in Resources */,
-				E46C53152AF9B35500C9B305 /* emptySpace.svg in Resources */,
 				E45E28EC2AF1C82800104C32 /* confetti.json in Resources */,
+				E4322B3B2AFAD52800312750 /* emptySpace.svg in Resources */,
 				E4FF3D502AF01BA7009C0C15 /* Assets.xcassets in Resources */,
 				E4FF3D4E2AF01BA6009C0C15 /* Main.storyboard in Resources */,
 				E4BDDB5C2AF7CE5A00AF25D4 /* progressView.svg in Resources */,

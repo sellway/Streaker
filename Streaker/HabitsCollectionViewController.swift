@@ -16,20 +16,11 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
     var cellModels: [HabitCellModel] = [] // Массив моделей данных для клеток
     var buttonColor: UIColor?
     var buttonSize: CGSize = .zero
-    var heightConstraint: Constraint? // Добавьте переменную для ограничения по высоте
-    var bottomButtonConstraint: Constraint? // Ссылка на констрейнт кнопки снизу
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
-        collectionView.reloadData()
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        // Теперь, когда Auto Layout применил ограничения, мы можем вычислить динамическое количество элементов
-        let dynamicCount = calculateDynamicCount()
-        loadCellModels(dynamicCount: dynamicCount)
+        loadCellModels()
         collectionView.reloadData()
     }
     
@@ -51,48 +42,24 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         collectionView.transform = CGAffineTransform(scaleX: 1, y: -1)
         
         collectionView.snp.makeConstraints { make in
-                    make.left.right.equalToSuperview()
-                    if let bottomButtonConstraint = self.bottomButtonConstraint {
-                        make.bottom.equalTo(bottomButtonConstraint as! ConstraintRelatableTarget) // Используем переданный констрейнт
-                    } else {
-                        make.bottom.equalToSuperview() // Или делаем что-то по умолчанию, если констрейнт не передан
-                    }
-                    self.heightConstraint = make.top.equalToSuperview().constraint // Сохраните ограничение
-                }
-    }
-    
-    func updateCollectionViewHeight(newHeight: CGFloat) {
-            self.heightConstraint?.update(offset: newHeight) // Используйте этот метод для обновления высоты
-            UIView.animate(withDuration: 0.3) {
-                self.view.layoutIfNeeded()
-            }
+            make.edges.equalToSuperview()
         }
+    }
     
     // Загрузка моделей данных для ячеек
-    func loadCellModels(dynamicCount: Int) {
+    func loadCellModels() {
         cellModels = []
 
-        for index in 0..<dynamicCount {
-            if index % 2 == 0 {
-                cellModels.append(HabitCellModel(state: .emptySpace))
-            } else {
-                cellModels.append(HabitCellModel(state: .emptyCell))
-            }
+        // Предположим, что у нас должно быть 9 элементов в коллекции
+        for _ in 0..<9 {
+            // Добавляем emptySpace перед emptyCell
+            cellModels.insert(HabitCellModel(state: .emptySpace), at: 0)
+            // Добавляем emptyCell
+            cellModels.insert(HabitCellModel(state: .emptyCell), at: 0)
         }
         
-        if cellModels.last?.state == .emptySpace {
-            cellModels.removeLast()
-        }
-    }
-    
-    // Обновленная функция calculateDynamicCount
-    func calculateDynamicCount() -> Int {
-//        let availableHeight = collectionView.frame.size.height - collectionView.contentInset.top - collectionView.contentInset.bottom
-//        let cellHeight = buttonSize.height + 16 // Предполагаем, что 16 - это высота emptySpace
-//        let numberOfCells = Int(availableHeight / cellHeight)
-//        let totalItems = numberOfCells * 2 - 1 // Убираем один emptySpace, если он последний
-//        return max(totalItems, 0) // Убедимся, что не возвращаем отрицательное число
-        return 14
+        // Удаляем первый emptySpace, если он не нужен в начале
+        cellModels.removeFirst()
     }
 
     

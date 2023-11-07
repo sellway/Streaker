@@ -204,17 +204,19 @@ class CustomButton: UIButton {
 
     
     private func playConfettiAnimation() {
-            print("Playing confetti animation") // Для отладки
-            guard let superview = self.superview else {
-                print("Superview is nil")
-                return
-            }
-            confettiAnimationView!.isHidden = false
-            superview.bringSubviewToFront(confettiAnimationView!)
-            confettiAnimationView!.play { [weak self] finished in
-                if finished {
-                    self?.confettiAnimationView!.isHidden = true
-                }
+        print("Playing confetti animation") // Для отладки
+        guard let superview = self.superview else {
+            print("Superview is nil")
+            return
+        }
+        confettiAnimationView!.isHidden = false
+        superview.bringSubviewToFront(confettiAnimationView!)
+        // Здесь вы устанавливаете начальный и конечный кадры анимации
+        confettiAnimationView!.play(fromFrame: 0, toFrame: 55, loopMode: .playOnce) { [weak self] finished in
+            if finished {
+                self?.confettiAnimationView!.isHidden = true
             }
         }
+    }
+
 }
