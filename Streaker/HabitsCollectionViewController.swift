@@ -35,7 +35,7 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         collectionView.register(HabitCollectionViewCell.self, forCellWithReuseIdentifier: "HabitCell")
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.backgroundColor = .clear
+        collectionView.backgroundColor = .white
         collectionView.isScrollEnabled = false
         view.addSubview(collectionView)
         
@@ -61,9 +61,6 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         // Удаляем первый emptySpace, если он не нужен в начале
         cellModels.removeFirst()
     }
-
-
-
 
     
     // MARK: - UICollectionViewDataSource
