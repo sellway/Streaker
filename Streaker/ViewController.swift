@@ -12,8 +12,10 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.118, alpha: 1)
         createBlurBackground()
-        setupHabitsCollectionViewController()
         setupButtons()
+        if let firstButton = buttons.first {
+                setupHabitsCollectionViewController(above: firstButton) // Теперь настраиваем HabitsCollectionViewController
+            }
     }
     
     private func setupButtons() {
@@ -27,11 +29,13 @@ class ViewController: UIViewController {
             view.addSubview(button)
         }
         
-        // После того, как все кнопки созданы и добавлены в массив, передайте размеры в HabitsCollectionViewController
-        if let habitsVC = habitsCollectionViewController, let firstButton = buttons.first {
-            habitsVC.buttonSize = firstButton.buttonSize
-            habitsVC.collectionView.reloadData() // Обновите collectionView с новыми размерами
-        }
+        // Принудительное обновление layout, чтобы убедиться, что все кнопки находятся на своих местах
+        view.layoutIfNeeded()
+        
+        // Теперь можно настроить HabitsCollectionViewController
+            if let firstButton = buttons.first {
+                setupHabitsCollectionViewController(above: firstButton)
+            }
     }
     
     @objc private func buttonTapped(_ sender: CustomButton) {
@@ -39,7 +43,7 @@ class ViewController: UIViewController {
         // Например, измените cellModels или переключите на другой контроллер
     }
     
-    private func setupHabitsCollectionViewController() {
+    private func setupHabitsCollectionViewController(above button: UIButton) {
         let habitsVC = HabitsCollectionViewController()
         self.addChild(habitsVC)
         self.view.addSubview(habitsVC.view)
@@ -47,20 +51,16 @@ class ViewController: UIViewController {
         habitsCollectionViewController = habitsVC
         
         if let firstButton = buttons.first {
-            habitsVC.buttonSize = firstButton.bounds.size // Передаем размеры кнопки
-        }
+                    habitsVC.buttonSize = firstButton.bounds.size // Передаем размеры кнопки
+                }
         
         // Устанавливаем ограничения для collectionView, чтобы он был над кнопками
         habitsVC.view.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
-            // Здесь мы устанавливаем нижнее ограничение относительно верхней части кнопок
-            // Предполагая, что у вас есть ссылка на самую нижнюю кнопку или их контейнер
-            if let firstButton = buttons.first {
-                make.bottom.leading.trailing.equalTo(firstButton.snp.top)
-            } else {
-                make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
+                make.width.equalTo(button.snp.width) // Ширина collectionView равна ширине кнопки
+                make.centerX.equalTo(button.snp.centerX) // Центрируем collectionView относительно кнопки
+                make.top.equalTo(view.snp.top) // Верхняя граница от safe area
+                make.bottom.equalTo(button.snp.top) // Нижняя граница до верха кнопки
             }
-        }
     }
     
 }

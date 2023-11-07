@@ -32,7 +32,7 @@ class HabitCollectionViewCell: UICollectionViewCell {
     private var completedWithNoLineSVGView: SVGImageView?
     private var notCompletedSVGView: SVGImageView?
     private var progressSVGView: SVGImageView?
-    private var emptySpaceView: UIView?
+    private var emptySpaceView: SVGImageView?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -76,7 +76,7 @@ class HabitCollectionViewCell: UICollectionViewCell {
         completedWithNoLineSVGView = setupSVGView(withSVGNamed: "completedWithNoLine")
         notCompletedSVGView = setupSVGView(withSVGNamed: "notCompleted")
         progressSVGView = setupSVGView(withSVGNamed: "progressView")
-        emptySpaceView = setupEmptySpaceView()
+        emptySpaceView = setupSVGView(withSVGNamed: "emptySpace")
     }
 
     private func setupSVGView(withSVGNamed name: String) -> SVGImageView {
@@ -102,22 +102,6 @@ class HabitCollectionViewCell: UICollectionViewCell {
         svgView.isHidden = true
         
         return svgView
-    }
-    
-    private func setupEmptySpaceView() -> UIView {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(view)
-        
-        // Устанавливаем констрейнты для пространства
-        NSLayoutConstraint.activate([
-                    view.topAnchor.constraint(equalTo: topAnchor),
-                    view.leadingAnchor.constraint(equalTo: leadingAnchor),
-                    view.trailingAnchor.constraint(equalTo: trailingAnchor),
-                    view.heightAnchor.constraint(equalToConstant: 16) // Высота 16px
-                ])
-        view.isHidden = true
-        return view
     }
 
 }

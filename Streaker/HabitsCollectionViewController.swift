@@ -26,14 +26,20 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
     
     private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.itemSize = CGSize(width: 100, height: 100) // Установите размер элементов здесь
+        //layout.scrollDirection = .vertical
+        //layout.itemSize = CGSize(width: 100, height: 100) // Установите размер элементов здесь
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(HabitCollectionViewCell.self, forCellWithReuseIdentifier: "HabitCell")
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .clear
+        collectionView.isScrollEnabled = false
         view.addSubview(collectionView)
+        
+        collectionView.transform = CGAffineTransform(scaleX: 1, y: -1)
         
         collectionView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -42,9 +48,22 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
     
     // Загрузка моделей данных для ячеек
     func loadCellModels() {
-        // Создайте достаточное количество моделей
-        cellModels = (1...10).map { _ in HabitCellModel(state: .emptyCell) }
+        cellModels = []
+
+        // Предположим, что у нас должно быть 9 элементов в коллекции
+        for _ in 0..<9 {
+            // Добавляем emptySpace перед emptyCell
+            cellModels.insert(HabitCellModel(state: .emptySpace), at: 0)
+            // Добавляем emptyCell
+            cellModels.insert(HabitCellModel(state: .emptyCell), at: 0)
+        }
+        
+        // Удаляем первый emptySpace, если он не нужен в начале
+        cellModels.removeFirst()
     }
+
+
+
 
     
     // MARK: - UICollectionViewDataSource
@@ -58,6 +77,10 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         }
         let model = cellModels[indexPath.item]
         cell.configure(with: model) // Конфигурируем ячейку с моделью данных
+        
+        // Переворачиваем ячейку, чтобы контент отображался правильно
+        cell.transform = CGAffineTransform(scaleX: 1, y: -1)
+        
         return cell
     }
     
@@ -66,10 +89,10 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         // Здесь вы можете настроить размер ячейки в зависимости от модели данных
         let model = cellModels[indexPath.item]
         switch model.state {
-        case .emptySpace:
-            return CGSize(width: collectionView.bounds.width, height: 16) // Размеры для emptySpace
         case .emptyCell, .completedWithNoLine, .notCompleted, .progress:
             return buttonSize
+        case .emptySpace:
+            return CGSize(width: buttonSize.width, height: 16) // Размеры для emptySpace
         }
     }
     
