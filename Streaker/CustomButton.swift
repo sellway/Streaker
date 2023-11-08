@@ -7,7 +7,7 @@ class CustomButton: UIButton {
     // Добавляем замыкание, которое будет вызываться при нажатии на кнопку
     var onButtonTapped: (() -> Void)?
     // Добавьте это свойство для хранения размера кнопки
-    var buttonSize: CGSize = .zero
+    static var buttonSize: CGSize = .zero
     
     var isOn: Bool = false {
         didSet {
@@ -64,7 +64,7 @@ class CustomButton: UIButton {
     
     private func setupOverlayView() {
         overlayView.backgroundColor = .white.withAlphaComponent(0.08)
-        overlayView.layer.cornerRadius = 18
+        overlayView.layer.cornerRadius = 15
         overlayView.isUserInteractionEnabled = false
         addSubview(overlayView)
         overlayView.snp.makeConstraints { make in
@@ -78,12 +78,12 @@ class CustomButton: UIButton {
         addSubview(iconView)
         iconView.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.width.height.equalTo(32) // Default size, will be scaled later
+            make.width.height.equalTo(74) // Default size, will be scaled later
         }
     }
     
     private func setupButtonProperties() {
-        layer.cornerRadius = 18
+        layer.cornerRadius = 16
         addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
     }
 
@@ -123,7 +123,7 @@ class CustomButton: UIButton {
         }
         
         // Сохраните размер кнопки здесь
-        self.buttonSize = CGSize(width: buttonWidth, height: buttonWidth)
+        CustomButton.buttonSize = CGSize(width: buttonWidth, height: buttonWidth)
         
     }
     

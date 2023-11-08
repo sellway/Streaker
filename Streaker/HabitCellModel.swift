@@ -1,11 +1,11 @@
 /*
  
-Этот класс HabitCollectionViewCell:
-1 - Определение UICollectionViewCell: Создайте пользовательский класс UICollectionViewCell, который будет отображать различные состояния клетки. Этот класс будет содержать все необходимые элементы пользовательского интерфейса для разных состояний.
+ Этот класс HabitCollectionViewCell:
+ 1 - Определение UICollectionViewCell: Создайте пользовательский класс UICollectionViewCell, который будет отображать различные состояния клетки. Этот класс будет содержать все необходимые элементы пользовательского интерфейса для разных состояний.
  2 - Настройка Внешнего Вида: В вашем классе UICollectionViewCell, добавьте элементы пользовательского интерфейса, такие как UIView для линий, UIImageView для иконок и т.д. Эти элементы будут скрыты или отображаться в зависимости от состояния клетки.
  3 - Конфигурация Состояний: Реализуйте метод configure(with:) в вашем классе UICollectionViewCell. Этот метод будет принимать модель данных (например, HabitCellModel), которая содержит информацию о состоянии клетки, и на основе этой информации настраивать внешний вид клетки.
-
-*/
+ 
+ */
 
 import UIKit
 import PocketSVG
@@ -20,7 +20,7 @@ struct HabitCellModel {
         case progress
         case emptySpace
     }
-
+    
     var state: State
     // Другие свойства, если нужны
 }
@@ -28,57 +28,131 @@ struct HabitCellModel {
 // Класс ячейки UICollectionView
 class HabitCollectionViewCell: UICollectionViewCell {
     // Элементы UI
-    private var emptySVGView: SVGImageView?
+    private var emptyCellView: UIView?
     private var completedWithNoLineSVGView: SVGImageView?
-    private var notCompletedSVGView: SVGImageView?
+    private var notCompletedView: UIView?
     private var progressSVGView: SVGImageView?
     private var emptySpaceView: SVGImageView?
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     // Настройка внешнего вида ячейки
     func configure(with model: HabitCellModel) {
         // Скрываем все элементы перед настройкой
         hideAllElements()
         switch model.state {
         case .emptyCell:
-            emptySVGView?.isHidden = false
+            emptyCellView?.isHidden = false
         case .completedWithNoLine:
             completedWithNoLineSVGView?.isHidden = false
         case .notCompleted:
-            notCompletedSVGView?.isHidden = false
+            notCompletedView?.isHidden = false
         case .progress:
             progressSVGView?.isHidden = false
         case .emptySpace:
             emptySpaceView?.isHidden = false
         }
     }
-
+    
     // Сброс видимости всех элементов
     private func hideAllElements() {
-        emptySVGView?.isHidden = true
+        emptyCellView?.isHidden = true
         completedWithNoLineSVGView?.isHidden = true
-        notCompletedSVGView?.isHidden = true
+        notCompletedView?.isHidden = true
         progressSVGView?.isHidden = true
         emptySpaceView?.isHidden = true
     }
-
+    
     // Настройка элементов UI
     private func setupViews() {
-        emptySVGView = setupSVGView(withSVGNamed: "emptyCell")
+        setupEmptyCellView()
+        setupNotCompletedView()
         completedWithNoLineSVGView = setupSVGView(withSVGNamed: "completedWithNoLine")
-        notCompletedSVGView = setupSVGView(withSVGNamed: "notCompleted")
         progressSVGView = setupSVGView(withSVGNamed: "progressView")
         emptySpaceView = setupSVGView(withSVGNamed: "emptySpace")
     }
+    
+    private func setupEmptyCellView() {
+        let view = createContainerView()
+        let borderContainerView = createBorderView(borderColorHex: "252528", cornerRadius: 16)
+        view.addSubview(borderContainerView)
+        centerView(borderContainerView, in: view, withHeight: CustomButton.buttonSize.height)
+        view.isHidden = true
+        emptyCellView = view
+    }
 
+    private func setupNotCompletedView() {
+        let view = createContainerView()
+        let borderContainerView = createBorderView(borderColorHex: "37373A", cornerRadius: 16)
+        view.addSubview(borderContainerView)
+        centerView(borderContainerView, in: view, withHeight: CustomButton.buttonSize.height)
+        
+        let crossImageView = createSVGImageView(named: "cross")
+        crossImageView.isHidden = false // Убедитесь, что SVGImageView не скрыт
+        borderContainerView.addSubview(crossImageView)
+        
+        // Установка констрейнтов для crossImageView, чтобы размеры менялись пропорционально
+        NSLayoutConstraint.activate([
+            crossImageView.centerXAnchor.constraint(equalTo: borderContainerView.centerXAnchor),
+            crossImageView.centerYAnchor.constraint(equalTo: borderContainerView.centerYAnchor),
+            crossImageView.widthAnchor.constraint(equalTo: borderContainerView.widthAnchor, multiplier: 12/74),
+            crossImageView.heightAnchor.constraint(equalTo: crossImageView.widthAnchor)
+        ])
+        
+        notCompletedView = view
+    }
+    
+    
+    
+    // MARK: - Helper Methods
+    private func createContainerView() -> UIView {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .clear
+        addSubview(view)
+        view.constrainToEdges(of: self)
+        return view
+    }
+
+    private func createBorderView(borderColorHex: String, cornerRadius: CGFloat) -> UIView {
+        let borderView = UIView()
+        borderView.translatesAutoresizingMaskIntoConstraints = false
+        borderView.backgroundColor = .clear
+        borderView.layer.borderWidth = 1
+        borderView.layer.borderColor = UIColor(hex: borderColorHex)?.cgColor
+        borderView.layer.cornerRadius = cornerRadius
+        borderView.clipsToBounds = true
+        return borderView
+    }
+
+    private func createSVGImageView(named name: String) -> SVGImageView {
+        guard let url = Bundle.main.url(forResource: name, withExtension: "svg") else {
+            fatalError("SVG file named \(name) not found.")
+        }
+        let svgView = SVGImageView(contentsOf: url)
+        svgView.translatesAutoresizingMaskIntoConstraints = false
+        svgView.isHidden = true
+        return svgView
+    }
+
+    private func centerView(_ viewToCenter: UIView, in containerView: UIView, withHeight height: CGFloat? = nil) {
+        NSLayoutConstraint.activate([
+            viewToCenter.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            viewToCenter.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+            viewToCenter.widthAnchor.constraint(equalTo: containerView.widthAnchor)
+        ])
+        if let height = height {
+            viewToCenter.heightAnchor.constraint(equalToConstant: height).isActive = true
+        }
+    }
+    
     private func setupSVGView(withSVGNamed name: String) -> SVGImageView {
         // Создаем SVGImageView с содержимым SVG файла
         guard let url = Bundle.main.url(forResource: name, withExtension: "svg") else {
@@ -103,7 +177,59 @@ class HabitCollectionViewCell: UICollectionViewCell {
         
         return svgView
     }
-
+    
 }
 
+// MARK: - UIView Extensions
+extension UIView {
+    func constrainToEdges(of superView: UIView) {
+        translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            topAnchor.constraint(equalTo: superView.topAnchor),
+            leadingAnchor.constraint(equalTo: superView.leadingAnchor),
+            trailingAnchor.constraint(equalTo: superView.trailingAnchor),
+            bottomAnchor.constraint(equalTo: superView.bottomAnchor)
+        ])
+    }
+}
+
+// MARK: - UIColor
+extension UIColor {
+    convenience init?(hex: String) {
+        let r, g, b, a: CGFloat
+        let hexColorString: String
+
+        if hex.hasPrefix("#") {
+            let start = hex.index(hex.startIndex, offsetBy: 1)
+            hexColorString = String(hex[start...])
+        } else {
+            hexColorString = hex
+        }
+
+        let scanner = Scanner(string: hexColorString)
+        var hexNumber: UInt64 = 0
+
+        if scanner.scanHexInt64(&hexNumber) {
+            switch hexColorString.count {
+            case 6: // RGB (24-bit)
+                r = CGFloat((hexNumber & 0xFF0000) >> 16) / 255
+                g = CGFloat((hexNumber & 0x00FF00) >> 8) / 255
+                b = CGFloat(hexNumber & 0x0000FF) / 255
+                a = 1.0
+            case 8: // ARGB (32-bit)
+                r = CGFloat((hexNumber & 0xFF000000) >> 24) / 255
+                g = CGFloat((hexNumber & 0x00FF0000) >> 16) / 255
+                b = CGFloat((hexNumber & 0x0000FF00) >> 8) / 255
+                a = CGFloat(hexNumber & 0x000000FF) / 255
+            default:
+                return nil
+            }
+
+            self.init(red: r, green: g, blue: b, alpha: a)
+            return
+        }
+
+        return nil
+    }
+}
 
