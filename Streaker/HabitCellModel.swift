@@ -1,9 +1,9 @@
 /*
  
  Этот класс HabitCollectionViewCell:
- 1 - Определение UICollectionViewCell: Создайте пользовательский класс UICollectionViewCell, который будет отображать различные состояния клетки. Этот класс будет содержать все необходимые элементы пользовательского интерфейса для разных состояний.
- 2 - Настройка Внешнего Вида: В вашем классе UICollectionViewCell, добавьте элементы пользовательского интерфейса, такие как UIView для линий, UIImageView для иконок и т.д. Эти элементы будут скрыты или отображаться в зависимости от состояния клетки.
- 3 - Конфигурация Состояний: Реализуйте метод configure(with:) в вашем классе UICollectionViewCell. Этот метод будет принимать модель данных (например, HabitCellModel), которая содержит информацию о состоянии клетки, и на основе этой информации настраивать внешний вид клетки.
+ 1 - Создает UICollectionViewCell, который отображает различные состояния клетки и содержит все необходимые элементы для разных состояний
+ 2 - Настраивает внешний вид с помощью UIView для линий, UIImageView для иконок и т.д.
+ 3 - Метод configure(with:) будет принимать модель данных (например, HabitCellModel), которая содержит информацию о состоянии клетки, и на основе этой информации настраивать внешний вид клетки
  
  */
 
@@ -94,7 +94,7 @@ class HabitCollectionViewCell: UICollectionViewCell {
         view.addSubview(borderContainerView)
         centerView(borderContainerView, in: view, withHeight: CustomButton.buttonSize.height)
         
-        let crossImageView = createSVGImageView(named: "cross")
+        let crossImageView = setupSVGView(withSVGNamed: "cross")
         crossImageView.isHidden = false // Убедитесь, что SVGImageView не скрыт
         borderContainerView.addSubview(crossImageView)
         
@@ -132,16 +132,6 @@ class HabitCollectionViewCell: UICollectionViewCell {
         return borderView
     }
 
-    private func createSVGImageView(named name: String) -> SVGImageView {
-        guard let url = Bundle.main.url(forResource: name, withExtension: "svg") else {
-            fatalError("SVG file named \(name) not found.")
-        }
-        let svgView = SVGImageView(contentsOf: url)
-        svgView.translatesAutoresizingMaskIntoConstraints = false
-        svgView.isHidden = true
-        return svgView
-    }
-
     private func centerView(_ viewToCenter: UIView, in containerView: UIView, withHeight height: CGFloat? = nil) {
         NSLayoutConstraint.activate([
             viewToCenter.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
@@ -166,10 +156,10 @@ class HabitCollectionViewCell: UICollectionViewCell {
         
         // Устанавливаем констрейнты для SVGImageView
         NSLayoutConstraint.activate([
-            svgView.topAnchor.constraint(equalTo: topAnchor),
-            svgView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            svgView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            svgView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            svgView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            svgView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            svgView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 1), // Пример множителя
+            svgView.heightAnchor.constraint(equalTo: svgView.widthAnchor) // Сохраняем пропорции
         ])
         
         // Скрываем SVG View по умолчанию
@@ -177,6 +167,7 @@ class HabitCollectionViewCell: UICollectionViewCell {
         
         return svgView
     }
+
     
 }
 

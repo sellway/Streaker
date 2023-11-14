@@ -1,8 +1,8 @@
 /*
  
  Этот класс HabitsCollectionViewController:
- 1 - Создаёт и настраивает UICollectionView.
- 2 - Реализует протоколы UICollectionViewDataSource и UICollectionViewDelegateFlowLayout для управления данными и внешним видом клеток.
+ 1 - Создаёт и настраивает UICollectionView
+ 2 - Реализует протоколы UICollectionViewDataSource и UICollectionViewDelegateFlowLayout для управления данными и внешним видом клеток
  3 - Загружает модели данных для клеток и конфигурирует их в соответствии с состояниями.
  
  */
@@ -24,10 +24,10 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         collectionView.reloadData()
     }
     
-    private func setupCollectionView() {
+    func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         //layout.scrollDirection = .vertical
-        layout.itemSize = CGSize(width: 100, height: 100) // Установите размер элементов здесь
+        layout.itemSize = CGSize(width: 100, height: 100) // Размер элементов
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
@@ -38,10 +38,9 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         collectionView.backgroundColor = .clear
         collectionView.isScrollEnabled = false
         collectionView.showsVerticalScrollIndicator = false
+        collectionView.transform = CGAffineTransform(scaleX: 1, y: -1)
         
         view.addSubview(collectionView)
-        
-        collectionView.transform = CGAffineTransform(scaleX: 1, y: -1)
         
         collectionView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -56,7 +55,7 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
     
     // MARK: - UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return cellModels.count // Возвращаем количество элементов, основываясь на массиве моделей
+        return cellModels.count // Возвращаем количество элементов
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -65,9 +64,7 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         }
         let model = cellModels[indexPath.item]
         cell.configure(with: model)
-        
         cell.transform = CGAffineTransform(scaleX: 1, y: -1)
-        
         return cell
     }
     

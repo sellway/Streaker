@@ -20,7 +20,7 @@ class Test: UIViewController {
         }
         
         let extraLabel = UILabel()
-        extraLabel.text = "Extra text Extra text Extra text Extra text Extra text Extra text Extra text Extra text Extra text Extra text Extra text Extra text Extra text Extra text Extra text Extra text Extra text Extra text"
+        extraLabel.text = "Extra text Extra text Extra text Extra text Extra text Extra text Extra text Extra"
         extraLabel.numberOfLines = 0
         view.addSubview(extraLabel)
         extraLabel.snp.makeConstraints { maker in

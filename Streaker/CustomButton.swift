@@ -50,7 +50,7 @@ class CustomButton: UIButton {
         setupOverlayView()
         setupIconView()
         setupButtonProperties()
-        setupConfettiAnimation()
+        //setupConfettiAnimation()
     }
     
     private func setupGradientLayer() {
@@ -98,7 +98,7 @@ class CustomButton: UIButton {
          isOn.toggle()
          if isOn {
              superview?.bringSubviewToFront(self)
-             playConfettiAnimation()
+             //playConfettiAnimation()
          }
         // Вызываем замыкание после изменения состояния кнопки
         onButtonTapped?()
@@ -203,20 +203,20 @@ class CustomButton: UIButton {
     }
 
     
-    private func playConfettiAnimation() {
-        print("Playing confetti animation") // Для отладки
-        guard let superview = self.superview else {
-            print("Superview is nil")
-            return
-        }
-        confettiAnimationView!.isHidden = false
-        superview.bringSubviewToFront(confettiAnimationView!)
-        // Здесь вы устанавливаете начальный и конечный кадры анимации
-        confettiAnimationView!.play(fromFrame: 0, toFrame: 55, loopMode: .playOnce) { [weak self] finished in
-            if finished {
-                self?.confettiAnimationView!.isHidden = true
-            }
-        }
-    }
+//    private func playConfettiAnimation() {
+//        print("Playing confetti animation") // Для отладки
+//        guard let superview = self.superview else {
+//            print("Superview is nil")
+//            return
+//        }
+//        confettiAnimationView!.isHidden = false
+//        superview.bringSubviewToFront(confettiAnimationView!)
+//        // Здесь вы устанавливаете начальный и конечный кадры анимации
+//        confettiAnimationView!.play(fromFrame: 0, toFrame: 55, loopMode: .playOnce) { [weak self] finished in
+//            if finished {
+//                self?.confettiAnimationView!.isHidden = true
+//            }
+//        }
+//    }
 
 }
