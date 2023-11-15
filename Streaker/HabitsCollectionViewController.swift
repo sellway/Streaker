@@ -42,7 +42,6 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = .clear
-        collectionView.isScrollEnabled = false
         collectionView.showsVerticalScrollIndicator = false
         collectionView.isScrollEnabled = true
         
@@ -86,7 +85,7 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         case .emptyCell, .completedWithNoLine, .notCompleted, .progress:
             return CGSize(width: buttonSize.width, height: buttonSize.height + (buttonSize.height * 0.216))
         case .emptySpace:
-            return CGSize(width: buttonSize.width, height: 0) // Размеры для emptySpace
+            return CGSize(width: buttonSize.width, height: 0) // Размеры для полоски внизу над кнопками
         }
     }
     

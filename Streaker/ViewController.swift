@@ -26,7 +26,7 @@ class ViewController: UIViewController {
     }
     
     private func loadInitialDataForButton(at index: Int) -> [HabitCellModel] {
-        return Array(repeating: HabitCellModel(state: .emptyCell), count: 9)
+        return Array(repeating: HabitCellModel(state: .emptyCell), count: availableHeightForCells)
     }
     
     
@@ -92,7 +92,21 @@ class ViewController: UIViewController {
             }
         }
     }
+    
+    lazy var availableHeightForCells: Int = {
+        let baseScreenWidth: CGFloat = 375 // Width of iPhone SE screen
+        let scaleFactor = view.bounds.width / baseScreenWidth
+        let buttonHeight: CGFloat = 74 * scaleFactor
+        let cellHeight = buttonHeight + (buttonHeight * 0.216)
+        let labelHeight: CGFloat = 16 // Фиксированная высота лейбла
+        let bottomPadding: CGFloat = 28 // Значение bottom padding из `setPositionAtBottomCenter`
+
+        let totalHeightOfButtonsAndLabels = buttonHeight + labelHeight + bottomPadding
+        let availableHeight = view.frame.height - totalHeightOfButtonsAndLabels
+        return Int(floor(availableHeight / cellHeight))
+    }()
 }
+    
 
 // MARK: - Blur Background Handling
 extension ViewController {
