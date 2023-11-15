@@ -17,17 +17,23 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
     var buttonColor: UIColor?
     var buttonSize: CGSize = .zero
     
+    // Массив для хранения всех HabitsCollectionViewController, которые должны синхронизировать скролл
+    static var synchronizedCollectionViews: [HabitsCollectionViewController] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
         loadCellModels()
         collectionView.reloadData()
+        
+        // Добавляем текущий экземпляр в массив синхронизированных экземпляров
+        HabitsCollectionViewController.synchronizedCollectionViews.append(self)
     }
     
-    func setupCollectionView() {
+    private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
-        //layout.scrollDirection = .vertical
-        layout.itemSize = CGSize(width: 100, height: 100) // Размер элементов
+        layout.scrollDirection = .vertical
+        layout.itemSize = CGSize(width: 100, height: 100) // Установите размер элементов здесь
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
@@ -38,9 +44,11 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         collectionView.backgroundColor = .clear
         collectionView.isScrollEnabled = false
         collectionView.showsVerticalScrollIndicator = false
-        collectionView.transform = CGAffineTransform(scaleX: 1, y: -1)
+        collectionView.isScrollEnabled = true
         
         view.addSubview(collectionView)
+        
+        collectionView.transform = CGAffineTransform(scaleX: 1, y: -1)
         
         collectionView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -55,7 +63,7 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
     
     // MARK: - UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return cellModels.count // Возвращаем количество элементов
+        return cellModels.count // Возвращаем количество элементов, основываясь на массиве моделей
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -64,7 +72,9 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         }
         let model = cellModels[indexPath.item]
         cell.configure(with: model)
+        
         cell.transform = CGAffineTransform(scaleX: 1, y: -1)
+        
         return cell
     }
     
@@ -80,4 +90,13 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         }
     }
     
+    // Синхронизация скролла
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        for synchronizedVC in HabitsCollectionViewController.synchronizedCollectionViews {
+            if synchronizedVC != self {
+                synchronizedVC.collectionView.contentOffset = scrollView.contentOffset
+            }
+        }
+    }
 }
+
