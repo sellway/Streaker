@@ -2,20 +2,20 @@ import UIKit
 import SnapKit
 
 class ViewController: UIViewController {
-    private var buttons: [CustomButton] = []
-    private var blurEffectView: UIVisualEffectView?
     private var habitsCollectionViewControllers: [HabitsCollectionViewController] = []
+    private var blurEffectView: UIVisualEffectView?
+    private var buttons: [CustomButton] = []
     private var habitsData: [[HabitCellModel]] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(hex: "#1C1C1E")
-        createBlurBackground()
         let numberOfButtons = 4 // Это число будет определяться динамически в будущем
         createHabitsData(forNumberOfButtons: numberOfButtons)
         setupButtons(totalButtons: numberOfButtons) // Используйте параметр для определения количества кнопок
         setupHabitsCollectionViewController()
-        
+        createBlurBackground()
+        updateBlurBackgroundPositionAndSize()
     }
     
     private func createHabitsData(forNumberOfButtons count: Int) {
@@ -38,6 +38,7 @@ class ViewController: UIViewController {
             button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
             buttons.append(button)
             view.addSubview(button)
+            button.layer.zPosition = 2
         }
         
         view.layoutIfNeeded()
@@ -80,6 +81,11 @@ class ViewController: UIViewController {
             habitsVC.didMove(toParent: self)
             habitsCollectionViewControllers.append(habitsVC)
             habitsVC.cellModels = habitsData[index]
+            let insets = UIEdgeInsets(top: 100, left: 0, bottom: 100, right: 0)
+            habitsVC.collectionView.contentInset = insets
+            habitsVC.collectionView.scrollIndicatorInsets = insets
+            self.view.sendSubviewToBack(habitsVC.view)
+            habitsVC.view.layer.zPosition = 0
             
             if let firstButton = buttons.first {
                 habitsVC.buttonSize = firstButton.bounds.size // Передаем размеры кнопки
@@ -89,7 +95,8 @@ class ViewController: UIViewController {
                 make.width.equalTo(button.snp.width).offset(15) // 15 adding scroll area between columns
                 make.centerX.equalTo(button.snp.centerX)
                 make.top.equalTo(view.snp.top)
-                make.bottom.equalTo(button.snp.top) // .offset(32) уменьшает отступ от кнопок
+                //make.bottom.equalTo(button.snp.top) // .offset(32) уменьшает отступ от кнопок
+                make.bottom.equalTo(view.snp.bottom)
             }
         }
     }
@@ -144,7 +151,7 @@ extension ViewController {
         blurEffectView = UIVisualEffectView(effect: blurEffect)
         blurEffectView?.translatesAutoresizingMaskIntoConstraints = false
         if let blurEffectView = blurEffectView {
-            view.insertSubview(blurEffectView, at: 0)
+            view.insertSubview(blurEffectView, at: 5) //Move blur layer above cells
         }
     }
     
