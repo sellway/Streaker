@@ -26,7 +26,7 @@ class ViewController: UIViewController {
     }
     
     private func loadInitialDataForButton(at index: Int) -> [HabitCellModel] {
-        return Array(repeating: HabitCellModel(state: .emptyCell), count: availableHeightForCells)
+        return Array(repeating: HabitCellModel(state: .emptyCell), count: cellsInAvailableHeight)
     }
     
     
@@ -50,6 +50,7 @@ class ViewController: UIViewController {
         let habitsVC = habitsCollectionViewControllers[buttonIndex]
         habitsVC.cellModels = newModels
         habitsVC.collectionView.reloadData()
+        updateColumns()
     }
     
     private func loadNewDataForButton(at index: Int) -> [HabitCellModel] {
@@ -85,15 +86,15 @@ class ViewController: UIViewController {
             }
             
             habitsVC.view.snp.makeConstraints { make in
-                make.width.equalTo(button.snp.width)
+                make.width.equalTo(button.snp.width).offset(15) // 15 adding scroll area between columns
                 make.centerX.equalTo(button.snp.centerX)
                 make.top.equalTo(view.snp.top)
-                make.bottom.equalTo(button.snp.top)
+                make.bottom.equalTo(button.snp.top) // .offset(32) уменьшает отступ от кнопок
             }
         }
     }
     
-    lazy var availableHeightForCells: Int = {
+    lazy var cellsInAvailableHeight: Int = {
         let baseScreenWidth: CGFloat = 375 // Width of iPhone SE screen
         let scaleFactor = view.bounds.width / baseScreenWidth
         let buttonHeight: CGFloat = 74 * scaleFactor
@@ -106,7 +107,34 @@ class ViewController: UIViewController {
         return Int(floor(availableHeight / cellHeight))
     }()
 }
+
+// MARK: - Align Columns Height
+extension ViewController {
     
+    private func maxFilledCellsCount() -> Int {
+        return habitsData.map { $0.filter { $0.state != .emptyCell }.count }.max() ?? 0
+    }
+    
+    private func updateColumns() {
+        let maxFilledCellsCount = habitsData.map { $0.filter { $0.state != .emptyCell }.count }.max() ?? 0
+        
+        if maxFilledCellsCount > cellsInAvailableHeight {
+            for index in 0..<habitsData.count {
+                let filledCellsCount = habitsData[index].filter { $0.state != .emptyCell }.count
+                let additionalCellsCount = maxFilledCellsCount - filledCellsCount
+                if additionalCellsCount > 0 {
+                    // Очищаем пустые ячейки перед добавлением новых, чтобы избежать накопления
+                    habitsData[index].removeAll(where: { $0.state == .emptyCell })
+                    habitsData[index].append(contentsOf: Array(repeating: HabitCellModel(state: .emptyCell), count: additionalCellsCount))
+                }
+
+                let habitsVC = habitsCollectionViewControllers[index]
+                habitsVC.cellModels = habitsData[index]
+                habitsVC.collectionView.reloadData()
+            }
+        }
+    }
+}
 
 // MARK: - Blur Background Handling
 extension ViewController {
