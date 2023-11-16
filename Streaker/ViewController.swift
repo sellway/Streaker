@@ -29,7 +29,6 @@ class ViewController: UIViewController {
         return Array(repeating: HabitCellModel(state: .emptyCell), count: cellsInAvailableHeight)
     }
     
-    
     private func setupButtons(totalButtons: Int) {
         for index in 0..<totalButtons {
             let button = CustomButton()
@@ -37,7 +36,7 @@ class ViewController: UIViewController {
             button.setPositionAtBottomCenter(in: view, index: index, totalButtons: totalButtons)
             button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
             buttons.append(button)
-            view.addSubview(button)
+            //view.addSubview(button)
             button.layer.zPosition = 2
         }
         
@@ -71,8 +70,6 @@ class ViewController: UIViewController {
         return currentCellModels
     }
     
-    
-    
     private func setupHabitsCollectionViewController() {
         for (index, button) in buttons.enumerated() {
             let habitsVC = HabitsCollectionViewController()
@@ -81,7 +78,8 @@ class ViewController: UIViewController {
             habitsVC.didMove(toParent: self)
             habitsCollectionViewControllers.append(habitsVC)
             habitsVC.cellModels = habitsData[index]
-            let insets = UIEdgeInsets(top: 100, left: 0, bottom: 100, right: 0)
+            //totalHeightOfButtonsAndLabels - but keep 88 for now
+            let insets = UIEdgeInsets(top: 88, left: 0, bottom: 0, right: 0)
             habitsVC.collectionView.contentInset = insets
             habitsVC.collectionView.scrollIndicatorInsets = insets
             self.view.sendSubviewToBack(habitsVC.view)
@@ -92,7 +90,7 @@ class ViewController: UIViewController {
             }
             
             habitsVC.view.snp.makeConstraints { make in
-                make.width.equalTo(button.snp.width).offset(15) // 15 adding scroll area between columns
+                make.width.equalTo(button.snp.width).offset(18) // 18 adding scroll area between columns
                 make.centerX.equalTo(button.snp.centerX)
                 make.top.equalTo(view.snp.top)
                 //make.bottom.equalTo(button.snp.top) // .offset(32) уменьшает отступ от кнопок
@@ -101,15 +99,20 @@ class ViewController: UIViewController {
         }
     }
     
-    lazy var cellsInAvailableHeight: Int = {
+    lazy var totalHeightOfButtonsAndLabels: CGFloat = {
         let baseScreenWidth: CGFloat = 375 // Width of iPhone SE screen
-        let scaleFactor = view.bounds.width / baseScreenWidth
+        let scaleFactor = UIScreen.main.bounds.width / baseScreenWidth
+        let buttonHeight: CGFloat = 74 * scaleFactor
+        let labelHeight: CGFloat = 16 // Фиксированная высота лейбла
+        let bottomPadding: CGFloat = 48 // Значение bottom padding из `setPositionAtBottomCenter`
+        return buttonHeight + labelHeight + bottomPadding
+    }()
+    
+    lazy var cellsInAvailableHeight: Int = {
+        let baseScreenWidth: CGFloat = 375
+        let scaleFactor = UIScreen.main.bounds.width / baseScreenWidth
         let buttonHeight: CGFloat = 74 * scaleFactor
         let cellHeight = buttonHeight + (buttonHeight * 0.216)
-        let labelHeight: CGFloat = 16 // Фиксированная высота лейбла
-        let bottomPadding: CGFloat = 28 // Значение bottom padding из `setPositionAtBottomCenter`
-
-        let totalHeightOfButtonsAndLabels = buttonHeight + labelHeight + bottomPadding
         let availableHeight = view.frame.height - totalHeightOfButtonsAndLabels
         return Int(floor(availableHeight / cellHeight))
     }()
@@ -151,7 +154,7 @@ extension ViewController {
         blurEffectView = UIVisualEffectView(effect: blurEffect)
         blurEffectView?.translatesAutoresizingMaskIntoConstraints = false
         if let blurEffectView = blurEffectView {
-            view.insertSubview(blurEffectView, at: 5) //Move blur layer above cells
+            view.insertSubview(blurEffectView, at: 4) //Move blur layer above cells
         }
     }
     

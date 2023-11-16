@@ -33,7 +33,7 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
     private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.itemSize = CGSize(width: 100, height: 100) // Установите размер элементов здесь
+        layout.itemSize = CGSize(width: 0, height: 0) // Установите размер элементов здесь
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
@@ -41,7 +41,7 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         collectionView.register(HabitCollectionViewCell.self, forCellWithReuseIdentifier: "HabitCell")
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.backgroundColor = .clear
+        collectionView.backgroundColor = .white
         collectionView.showsVerticalScrollIndicator = false
         collectionView.isScrollEnabled = true
         
