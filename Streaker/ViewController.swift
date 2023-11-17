@@ -6,6 +6,7 @@ class ViewController: UIViewController {
     private var blurEffectView: UIVisualEffectView?
     private var buttons: [CustomButton] = []
     private var habitsData: [[HabitCellModel]] = []
+    private var safeAreaInsets: UIEdgeInsets = .zero
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,6 +18,13 @@ class ViewController: UIViewController {
         createBlurBackground()
         updateBlurBackgroundPositionAndSize()
     }
+    
+    override func viewDidLayoutSubviews() {
+            super.viewDidLayoutSubviews()
+            
+            // Обновляем переменную safeAreaInsets
+            safeAreaInsets = view.safeAreaInsets
+        }
     
     private func createHabitsData(forNumberOfButtons count: Int) {
         habitsData = Array(repeating: [], count: count)
@@ -78,8 +86,10 @@ class ViewController: UIViewController {
             habitsVC.didMove(toParent: self)
             habitsCollectionViewControllers.append(habitsVC)
             habitsVC.cellModels = habitsData[index]
-            //totalHeightOfButtonsAndLabels - but keep 88 for now
-            let insets = UIEdgeInsets(top: 88, left: 0, bottom: 0, right: 0)
+            let insets = UIEdgeInsets(top: actualButtonHeight, left: 0, bottom: 0, right: 0)
+            habitsVC.collectionView.contentOffset = CGPoint(x: 0, y: 0)
+            habitsVC.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            habitsVC.collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             habitsVC.collectionView.contentInset = insets
             habitsVC.collectionView.scrollIndicatorInsets = insets
             self.view.sendSubviewToBack(habitsVC.view)
@@ -95,17 +105,16 @@ class ViewController: UIViewController {
                 make.top.equalTo(view.snp.top)
                 //make.bottom.equalTo(button.snp.top) // .offset(32) уменьшает отступ от кнопок
                 make.bottom.equalTo(view.snp.bottom)
+                //make.bottom.equalToSuperview().inset(view.safeAreaInsets.bottom)
             }
         }
     }
     
-    lazy var totalHeightOfButtonsAndLabels: CGFloat = {
+    lazy var actualButtonHeight: CGFloat = {
         let baseScreenWidth: CGFloat = 375 // Width of iPhone SE screen
         let scaleFactor = UIScreen.main.bounds.width / baseScreenWidth
         let buttonHeight: CGFloat = 74 * scaleFactor
-        let labelHeight: CGFloat = 16 // Фиксированная высота лейбла
-        let bottomPadding: CGFloat = 48 // Значение bottom padding из `setPositionAtBottomCenter`
-        return buttonHeight + labelHeight + bottomPadding
+        return buttonHeight
     }()
     
     lazy var cellsInAvailableHeight: Int = {
@@ -113,6 +122,9 @@ class ViewController: UIViewController {
         let scaleFactor = UIScreen.main.bounds.width / baseScreenWidth
         let buttonHeight: CGFloat = 74 * scaleFactor
         let cellHeight = buttonHeight + (buttonHeight * 0.216)
+        let labelHeight: CGFloat = 16 // Фиксированная высота лейбла
+        let bottomPadding: CGFloat = 32 // 48 - 16 label
+        let totalHeightOfButtonsAndLabels = buttonHeight + labelHeight + bottomPadding
         let availableHeight = view.frame.height - totalHeightOfButtonsAndLabels
         return Int(floor(availableHeight / cellHeight))
     }()
@@ -137,7 +149,7 @@ extension ViewController {
                     habitsData[index].removeAll(where: { $0.state == .emptyCell })
                     habitsData[index].append(contentsOf: Array(repeating: HabitCellModel(state: .emptyCell), count: additionalCellsCount))
                 }
-
+                
                 let habitsVC = habitsCollectionViewControllers[index]
                 habitsVC.cellModels = habitsData[index]
                 habitsVC.collectionView.reloadData()
