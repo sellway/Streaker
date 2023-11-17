@@ -119,7 +119,7 @@ class CustomButton: UIButton {
         self.snp.makeConstraints { make in
             make.centerX.equalTo(view.snp.leading).offset(xOffset + buttonWidth / 2)
             //make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-28)
-            make.bottom.equalToSuperview().offset(-48) // Двигает кнопку на 48 px от низа экрана
+            make.bottom.equalToSuperview().offset(-48) // Двигает кнопку на 48 px от Superview
             make.width.height.equalTo(buttonWidth)
         }
         

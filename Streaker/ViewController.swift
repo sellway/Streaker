@@ -13,7 +13,7 @@ class ViewController: UIViewController {
         view.backgroundColor = UIColor(hex: "#1C1C1E")
         let numberOfButtons = 4 // Это число будет определяться динамически в будущем
         createHabitsData(forNumberOfButtons: numberOfButtons)
-        setupButtons(totalButtons: numberOfButtons) // Используйте параметр для определения количества кнопок
+        setupButtons(totalButtons: numberOfButtons) // Определения количества кнопок
         setupHabitsCollectionViewController()
         createBlurBackground()
         updateBlurBackgroundPositionAndSize()

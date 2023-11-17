@@ -17,7 +17,7 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
     var buttonColor: UIColor?
     var buttonSize: CGSize = .zero
     
-    // Массив для хранения всех HabitsCollectionViewController, которые должны синхронизировать скролл
+    // Хранение всех HabitsCollectionViewController, которые должны синхронизировать скролл
     static var synchronizedCollectionViews: [HabitsCollectionViewController] = []
     
     override func viewDidLoad() {
