@@ -1,0 +1,23 @@
+/* 
+  English.strings
+  Streaker
+
+  Created by Volodymyr Kolomyltsev on 11/25/23.
+  
+*/
+
+// MainView
+"day_title" = "Day";
+"create_btn" = "Create";
+"cancel_btn" = "Cancel";
+"create_new_habit" = "Create New Habit";
+"profile_header" = "Profile";
+
+
+// Profile
+"add_new_st" = "Add new streak";
+"my_streaks" = "My streaks";
+"how_it_works" = "How it works";
+"pause_all" = "Pause all";
+"send_Feadback" = "Send feadback";
+"settings" = "Settings";
