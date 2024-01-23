@@ -238,7 +238,6 @@ extension MainViewController {
             make.left.right.equalToSuperview()
             make.height.equalTo(80) // Висота стандартного навігаційного бару
         }
-        
         // Додавання кастомних кнопок на вашу кастомну навігаційну панель
         mainView.addButtonsToSuperview(customNavBar)
     }
