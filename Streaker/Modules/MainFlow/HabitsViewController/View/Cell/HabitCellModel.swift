@@ -13,9 +13,9 @@ import SnapKit
 
 // Модель данных для ячейки
 struct HabitCellModel {
-    enum State {
+    enum State: Equatable {
         case emptyCell
-        case completedWithNoLine
+        case completedWithNoLine(counter: Int)
         case notCompleted
         case progress
         case emptySpace
@@ -29,7 +29,8 @@ struct HabitCellModel {
 class HabitCollectionViewCell: UICollectionViewCell {
     // Элементы UI
     private var emptyCellView: UIView?
-    private var completedWithNoLineSVGView: SVGImageView?
+    private var completedWithNoLine: UIView?
+    private var completedWithNoLineLabel: UILabel?
     private var notCompletedView: UIView?
     private var progressSVGView: SVGImageView?
     private var emptySpaceView: SVGImageView?
@@ -50,8 +51,9 @@ class HabitCollectionViewCell: UICollectionViewCell {
         switch model.state {
         case .emptyCell:
             emptyCellView?.isHidden = false
-        case .completedWithNoLine:
-            completedWithNoLineSVGView?.isHidden = false
+        case let .completedWithNoLine(counter):
+            completedWithNoLine?.isHidden = false
+            updateCounterLabel(counter)
         case .notCompleted:
             notCompletedView?.isHidden = false
         case .progress:
@@ -61,10 +63,15 @@ class HabitCollectionViewCell: UICollectionViewCell {
         }
     }
     
+    private func updateCounterLabel(_ counter: Int) {
+        // Обновляем текст в зависимости от переданного значения счетчика
+        completedWithNoLineLabel?.text = "\(counter)"
+    }
+    
     // Сброс видимости всех элементов
     private func hideAllElements() {
         emptyCellView?.isHidden = true
-        completedWithNoLineSVGView?.isHidden = true
+        completedWithNoLine?.isHidden = true
         notCompletedView?.isHidden = true
         progressSVGView?.isHidden = true
         emptySpaceView?.isHidden = true
@@ -74,7 +81,7 @@ class HabitCollectionViewCell: UICollectionViewCell {
     private func setupViews() {
         setupEmptyCellView()
         setupNotCompletedView()
-        completedWithNoLineSVGView = setupSVGView(withSVGNamed: "completedWithNoLine")
+        setupCompletedWithNoLineView(counter: 0)
         progressSVGView = setupSVGView(withSVGNamed: "progressView")
         emptySpaceView = setupSVGView(withSVGNamed: "emptySpace")
     }
@@ -87,6 +94,50 @@ class HabitCollectionViewCell: UICollectionViewCell {
         view.isHidden = true
         emptyCellView = view
     }
+    
+    private func setupCompletedWithNoLineView(counter: Int) {
+            let view = createContainerView()
+            let borderContainerView = createBorderView(borderColorHex: "252528", cornerRadius: 16)
+            view.addSubview(borderContainerView)
+            centerView(borderContainerView, in: view, withHeight: CustomButton.buttonSize.height)
+
+            // Добавляем круг
+            let circleView = UIView()
+            circleView.translatesAutoresizingMaskIntoConstraints = false
+            circleView.backgroundColor = UIColor(hex: "1FC361") // Задаем цвет круга
+            circleView.layer.cornerRadius = 16
+            circleView.clipsToBounds = true
+            borderContainerView.addSubview(circleView)
+
+            // Добавляем текст
+            let label = UILabel()
+            label.translatesAutoresizingMaskIntoConstraints = false
+            label.font = UIFont.systemFont(ofSize: 11, weight: .heavy)
+            label.textColor = .white
+            label.textAlignment = .center
+            borderContainerView.addSubview(label)
+
+            // Сохраняем ссылку на UILabel
+            completedWithNoLineLabel = label
+
+            // Устанавливаем констрейнты для круга
+            NSLayoutConstraint.activate([
+                circleView.centerXAnchor.constraint(equalTo: borderContainerView.centerXAnchor),
+                circleView.centerYAnchor.constraint(equalTo: borderContainerView.centerYAnchor),
+                circleView.widthAnchor.constraint(equalToConstant: 32),
+                circleView.heightAnchor.constraint(equalTo: circleView.widthAnchor)
+            ])
+
+            // Устанавливаем констрейнты для текста
+            NSLayoutConstraint.activate([
+                label.centerXAnchor.constraint(equalTo: borderContainerView.centerXAnchor),
+                label.centerYAnchor.constraint(equalTo: borderContainerView.centerYAnchor),
+                label.widthAnchor.constraint(equalToConstant: 32),
+                label.heightAnchor.constraint(equalToConstant: 32)
+            ])
+
+        completedWithNoLine = view
+        }
 
     private func setupNotCompletedView() {
         let view = createContainerView()

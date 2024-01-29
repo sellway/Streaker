@@ -5,7 +5,7 @@ class MainViewController: UIViewController {
     private var habitsCollectionViewControllers: [HabitsCollectionViewController] = []
     private var topBlurEffectView: UIVisualEffectView?
     private var bottomBlurEffectView: UIVisualEffectView?
-    private var buttons: [CustomButton] = []
+    var buttons: [CustomButton] = []
     private var habitsData: [[HabitCellModel]] = []
     private var safeAreaInsets: UIEdgeInsets = .zero
     private var alertController: UIAlertController?
@@ -13,6 +13,7 @@ class MainViewController: UIViewController {
     private var mainView = MainView()
     private let storage = ConfigurationStorage()
     private let customNavBar = UIView()
+    private var cellCounters: [Int] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +26,7 @@ class MainViewController: UIViewController {
         createBlurBackground(at: .bottom)
         updateBlurBackgroundPositionAndSize()
         setupCustomNavigationBar()
+        cellCounters = Array(repeating: 0, count: numberOfButtons)
     }
     
     override func viewDidLayoutSubviews() {
@@ -43,15 +45,15 @@ class MainViewController: UIViewController {
     }
     
     private func createHabitsData(forNumberOfButtons count: Int) {
-        habitsData = Array(repeating: [], count: count)
-        for index in 0..<count {
-            habitsData[index] = loadInitialDataForButton(at: index)
+            habitsData = Array(repeating: [], count: count)
+            for index in 0..<count {
+                habitsData[index] = loadInitialDataForButton(at: index)
+            }
         }
-    }
     
     private func loadInitialDataForButton(at index: Int) -> [HabitCellModel] {
-        return Array(repeating: HabitCellModel(state: .emptyCell), count: cellsInAvailableHeight)
-    }
+            return Array(repeating: HabitCellModel(state: .emptyCell), count: cellsInAvailableHeight)
+        }
     
     private func setupButtons(totalButtons: Int) {
         for index in 0..<totalButtons {
@@ -68,27 +70,40 @@ class MainViewController: UIViewController {
     
     @objc private func buttonTapped(_ sender: CustomButton) {
         guard let buttonIndex = buttons.firstIndex(of: sender) else { return }
-        let newModels = loadNewDataForButton(at: buttonIndex)
+        var newModels = habitsData[buttonIndex]
+        cellCounters[buttonIndex] += 1
+
+        // Находим первую пустую клетку или создаем новую модель и добавляем в конец
+        if let emptyCellIndex = newModels.firstIndex(where: { $0.state == .emptyCell }) {
+            newModels[emptyCellIndex].state = .completedWithNoLine(counter: cellCounters[buttonIndex])
+        } else {
+            newModels.append(HabitCellModel(state: .completedWithNoLine(counter: cellCounters[buttonIndex])))
+        }
+
         habitsData[buttonIndex] = newModels
+
         let habitsVC = habitsCollectionViewControllers[buttonIndex]
         habitsVC.cellModels = newModels
         habitsVC.collectionView.reloadData()
+
         updateColumns()
     }
     
     private func loadNewDataForButton(at index: Int) -> [HabitCellModel] {
         // Получаем текущие модели данных для кнопки
         var currentCellModels = habitsData[index]
-        
+        // Увеличиваем счетчик клеток
+        cellCounters[index] += 1
+        // Создаем новую модель клетки с увеличенным счетчиком
+        let newCellModel = HabitCellModel(state: .completedWithNoLine(counter: cellCounters[index]))
         // Проверяем, есть ли пустые клетки
         if let emptyCellIndex = currentCellModels.firstIndex(where: { $0.state == .emptyCell }) {
             // Заменяем первую пустую клетку на новую модель
-            currentCellModels[emptyCellIndex] = HabitCellModel(state: .completedWithNoLine) // или другое состояние, которое вы хотите использовать
+            currentCellModels[emptyCellIndex] = newCellModel
         } else {
             // Если пустых клеток нет, добавляем новую модель в конец
-            currentCellModels.append(HabitCellModel(state: .completedWithNoLine)) // или другое состояние
+            currentCellModels.append(newCellModel) // или другое состояние
         }
-        
         // Возвращаем обновленный массив моделей
         return currentCellModels
     }
@@ -101,19 +116,21 @@ class MainViewController: UIViewController {
             habitsVC.didMove(toParent: self)
             habitsCollectionViewControllers.append(habitsVC)
             habitsVC.cellModels = habitsData[index]
+
             let insets = UIEdgeInsets(top: actualButtonHeight, left: 0, bottom: 0, right: 0)
             habitsVC.collectionView.contentOffset = CGPoint(x: 0, y: 0)
             habitsVC.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             habitsVC.collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             habitsVC.collectionView.contentInset = insets
             habitsVC.collectionView.scrollIndicatorInsets = insets
+
             self.view.sendSubviewToBack(habitsVC.view)
             habitsVC.view.layer.zPosition = 0
-            
+
             if let firstButton = buttons.first {
                 habitsVC.buttonSize = firstButton.bounds.size // Передаем размеры кнопки
             }
-            
+
             habitsVC.view.snp.makeConstraints { make in
                 make.width.equalTo(button.snp.width).offset(18) // 18 adding scroll area between columns
                 make.centerX.equalTo(button.snp.centerX)
@@ -122,6 +139,7 @@ class MainViewController: UIViewController {
             }
         }
     }
+
     
     lazy var actualButtonHeight: CGFloat = {
         let baseScreenWidth: CGFloat = 375 // Width of iPhone SE screen

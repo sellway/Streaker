@@ -42,6 +42,7 @@
 		E4BDDB5C2AF7CE5A00AF25D4 /* progressView.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4BDDB582AF7CE5A00AF25D4 /* progressView.svg */; };
 		E4BDDB5D2AF7CE5A00AF25D4 /* completedWithNoLine.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4BDDB592AF7CE5A00AF25D4 /* completedWithNoLine.svg */; };
 		E4BDDB5E2AF7CE5A00AF25D4 /* notCompleted.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4BDDB5A2AF7CE5A00AF25D4 /* notCompleted.svg */; };
+		E4C003EE2B63F5210042192A /* HabitsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C003ED2B63F5210042192A /* HabitsModel.swift */; };
 		E4E90A2E2AF2F68F003B90D5 /* HabitCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4E90A2D2AF2F68F003B90D5 /* HabitCellModel.swift */; };
 		E4FF3D472AF01BA6009C0C15 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FF3D462AF01BA6009C0C15 /* AppDelegate.swift */; };
 		E4FF3D4B2AF01BA6009C0C15 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FF3D4A2AF01BA6009C0C15 /* MainViewController.swift */; };
@@ -88,6 +89,7 @@
 		E4BDDB582AF7CE5A00AF25D4 /* progressView.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = progressView.svg; sourceTree = "<group>"; };
 		E4BDDB592AF7CE5A00AF25D4 /* completedWithNoLine.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = completedWithNoLine.svg; sourceTree = "<group>"; };
 		E4BDDB5A2AF7CE5A00AF25D4 /* notCompleted.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = notCompleted.svg; sourceTree = "<group>"; };
+		E4C003ED2B63F5210042192A /* HabitsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsModel.swift; sourceTree = "<group>"; };
 		E4E90A2D2AF2F68F003B90D5 /* HabitCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitCellModel.swift; sourceTree = "<group>"; };
 		E4FF3D432AF01BA5009C0C15 /* Streaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Streaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4FF3D462AF01BA6009C0C15 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -405,6 +407,7 @@
 		84C305B72B1209570007A1AE /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				E4C003ED2B63F5210042192A /* HabitsModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -581,6 +584,7 @@
 			files = (
 				84C633F02B15388800366164 /* UIimage.swift in Sources */,
 				84C633EE2B1535C300366164 /* Reusable + cell.swift in Sources */,
+				E4C003EE2B63F5210042192A /* HabitsModel.swift in Sources */,
 				E4FF3D5B2AF01EDE009C0C15 /* CustomButton.swift in Sources */,
 				84C305BB2B120A4D0007A1AE /* DataBaseManager.swift in Sources */,
 				84B1D8DC2B13B9760068BC12 /* Double.swift in Sources */,

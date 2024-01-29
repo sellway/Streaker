@@ -10,10 +10,43 @@
 import UIKit
 import SnapKit
 
-class HabitsCollectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class HabitsCollectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, HabitsModelProtocol {
+    var cellCounter: Int = 0
+    var habitsData: [[HabitCellModel]] = []
+    var habitsCollectionViewControllers: [HabitsCollectionViewController] = []
+    var buttons: [CustomButton] = []
+    
+    // Add this stub to conform to 'HabitsModelProtocol'
+    func updateCellView() {
+        // Implementation: Update the view based on the cell data or perform any necessary actions
+        // Example: Reload the collection view data after updating the cell view
+        collectionView.reloadData()
+    }
+
+    func moveCellUp(from sourceIndex: Int, to destinationIndex: Int) {
+        // Implementation: Move the cell from the source index to the destination index
+        guard sourceIndex < cellModels.count && destinationIndex < cellModels.count else {
+            // Ensure that both indices are valid
+            return
+        }
+
+        // Perform the move operation on the cellModels array
+        let movedCell = cellModels.remove(at: sourceIndex)
+        cellModels.insert(movedCell, at: destinationIndex)
+
+        // Update the collection view to reflect the changes
+        collectionView.reloadData()
+    }
+
     
     var collectionView: UICollectionView!
-    var cellModels: [HabitCellModel] = [] // Массив моделей данных для клеток
+        var cellModels: [HabitCellModel] = [] {
+            didSet {
+                updateHabitsCollectionViews()
+            }
+        }
+    
+    var habitsModel: HabitsModelProtocol = HabitsModel()
     var buttonColor: UIColor?
     var buttonSize: CGSize = .zero
     
@@ -25,9 +58,9 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         setupCollectionView()
         loadCellModels()
         collectionView.reloadData()
-        
         // Добавляем текущий экземпляр в массив синхронизированных экземпляров
         HabitsCollectionViewController.synchronizedCollectionViews.append(self)
+        setupHabitsCollectionViewController(buttons: buttons)
     }
     
     private func setupCollectionView() {
@@ -56,9 +89,31 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         }
     }
     
+    private func setupHabitsCollectionViewController(buttons: [CustomButton]) {
+            for (index, button) in buttons.enumerated() {
+                let habitsVC = HabitsCollectionViewController()
+                habitsVC.habitsModel = HabitsModel() // Initialize the model if needed
+                habitsVC.habitsModel.cellModels = self.habitsData[index]
+
+                habitsVC.buttonColor = button.backgroundColor
+                habitsVC.buttonSize = button.frame.size
+                habitsVC.collectionView.backgroundColor = .clear
+
+                self.habitsCollectionViewControllers.append(habitsVC)
+            }
+        }
+    
+    // Метод для обновления модели во всех HabitsCollectionViewController
+    private func updateHabitsCollectionViews() {
+        for habitsVC in habitsCollectionViewControllers {
+            habitsVC.cellModels = cellModels
+            habitsVC.collectionView.reloadData()
+        }
+    }
+    
     // Загрузка моделей данных для ячеек
     func loadCellModels() {
-        cellModels = []
+        cellModels = habitsModel.cellModels
     }
     
     
