@@ -69,7 +69,7 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         layout.itemSize = CGSize(width: 100, height: 100) // Установите размер элементов здесь
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 120, right: 0)
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(HabitCollectionViewCell.self, forCellWithReuseIdentifier: "HabitCell")
         collectionView.dataSource = self

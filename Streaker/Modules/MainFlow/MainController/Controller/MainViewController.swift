@@ -45,15 +45,15 @@ class MainViewController: UIViewController {
     }
     
     private func createHabitsData(forNumberOfButtons count: Int) {
-            habitsData = Array(repeating: [], count: count)
-            for index in 0..<count {
-                habitsData[index] = loadInitialDataForButton(at: index)
-            }
+        habitsData = Array(repeating: [], count: count)
+        for index in 0..<count {
+            habitsData[index] = loadInitialDataForButton(at: index)
         }
+    }
     
     private func loadInitialDataForButton(at index: Int) -> [HabitCellModel] {
-            return Array(repeating: HabitCellModel(state: .emptyCell), count: cellsInAvailableHeight)
-        }
+        return Array(repeating: HabitCellModel(state: .emptyCell), count: cellsInAvailableHeight)
+    }
     
     private func setupButtons(totalButtons: Int) {
         for index in 0..<totalButtons {
@@ -72,20 +72,20 @@ class MainViewController: UIViewController {
         guard let buttonIndex = buttons.firstIndex(of: sender) else { return }
         var newModels = habitsData[buttonIndex]
         cellCounters[buttonIndex] += 1
-
+        
         // Находим первую пустую клетку или создаем новую модель и добавляем в конец
         if let emptyCellIndex = newModels.firstIndex(where: { $0.state == .emptyCell }) {
             newModels[emptyCellIndex].state = .completedWithNoLine(counter: cellCounters[buttonIndex])
         } else {
             newModels.append(HabitCellModel(state: .completedWithNoLine(counter: cellCounters[buttonIndex])))
         }
-
+        
         habitsData[buttonIndex] = newModels
-
+        
         let habitsVC = habitsCollectionViewControllers[buttonIndex]
         habitsVC.cellModels = newModels
         habitsVC.collectionView.reloadData()
-
+        
         updateColumns()
     }
     
@@ -107,7 +107,7 @@ class MainViewController: UIViewController {
         // Возвращаем обновленный массив моделей
         return currentCellModels
     }
-
+    
     private func setupHabitsCollectionViewController() {
         for (index, button) in buttons.enumerated() {
             let habitsVC = HabitsCollectionViewController()
@@ -116,21 +116,21 @@ class MainViewController: UIViewController {
             habitsVC.didMove(toParent: self)
             habitsCollectionViewControllers.append(habitsVC)
             habitsVC.cellModels = habitsData[index]
-
+            
             let insets = UIEdgeInsets(top: actualButtonHeight, left: 0, bottom: 0, right: 0)
             habitsVC.collectionView.contentOffset = CGPoint(x: 0, y: 0)
             habitsVC.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             habitsVC.collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             habitsVC.collectionView.contentInset = insets
             habitsVC.collectionView.scrollIndicatorInsets = insets
-
+            
             self.view.sendSubviewToBack(habitsVC.view)
             habitsVC.view.layer.zPosition = 0
-
+            
             if let firstButton = buttons.first {
                 habitsVC.buttonSize = firstButton.bounds.size // Передаем размеры кнопки
             }
-
+            
             habitsVC.view.snp.makeConstraints { make in
                 make.width.equalTo(button.snp.width).offset(18) // 18 adding scroll area between columns
                 make.centerX.equalTo(button.snp.centerX)
@@ -139,7 +139,7 @@ class MainViewController: UIViewController {
             }
         }
     }
-
+    
     
     lazy var actualButtonHeight: CGFloat = {
         let baseScreenWidth: CGFloat = 375 // Width of iPhone SE screen
@@ -169,7 +169,7 @@ extension MainViewController {
     }
     
     private func updateColumns() {
-        let maxFilledCellsCount = habitsData.map { $0.filter { $0.state != .emptyCell }.count }.max() ?? 0
+        let maxFilledCellsCount = habitsData.map { $0.filter { $0.state != .emptyCell }.count }.max() ?? 0 // макс количество заполненных ячеек среди всех кнопок
         
         if maxFilledCellsCount > cellsInAvailableHeight {
             for index in 0..<habitsData.count {
