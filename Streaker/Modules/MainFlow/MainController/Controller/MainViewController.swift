@@ -29,9 +29,8 @@ class MainViewController: UIViewController {
         cellCounters = Array(repeating: 0, count: numberOfButtons)
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        safeAreaInsets = view.safeAreaInsets
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        print("CollectionView did scroll: \(scrollView.contentOffset)")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -62,7 +61,7 @@ class MainViewController: UIViewController {
             button.setPositionAtBottomCenter(in: view, index: index, totalButtons: totalButtons)
             button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
             buttons.append(button)
-            //view.addSubview(button)
+            view.addSubview(button)
             button.layer.zPosition = 2
         }
         view.layoutIfNeeded()
@@ -93,7 +92,7 @@ class MainViewController: UIViewController {
         // Получаем текущие модели данных для кнопки
         var currentCellModels = habitsData[index]
         // Увеличиваем счетчик клеток
-        cellCounters[index] += 1
+        //collectionViewcellCounters[index] += 1
         // Создаем новую модель клетки с увеличенным счетчиком
         let newCellModel = HabitCellModel(state: .completedWithNoLine(counter: cellCounters[index]))
         // Проверяем, есть ли пустые клетки
@@ -111,18 +110,16 @@ class MainViewController: UIViewController {
     private func setupHabitsCollectionViewController() {
         for (index, button) in buttons.enumerated() {
             let habitsVC = HabitsCollectionViewController()
+            habitsVC.habitsModel = HabitsModel() // Инициализируйте модель, если необходимо
             self.addChild(habitsVC)
             self.view.addSubview(habitsVC.view)
             habitsVC.didMove(toParent: self)
             habitsCollectionViewControllers.append(habitsVC)
             habitsVC.cellModels = habitsData[index]
-            
-            let insets = UIEdgeInsets(top: actualButtonHeight, left: 0, bottom: 0, right: 0)
+            habitsVC.collectionView.contentInsetAdjustmentBehavior = .never
             habitsVC.collectionView.contentOffset = CGPoint(x: 0, y: 0)
-            habitsVC.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            habitsVC.collectionView.contentInset = UIEdgeInsets(top: actualButtonHeight, left: 0, bottom: 0, right: 0)
             habitsVC.collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-            habitsVC.collectionView.contentInset = insets
-            habitsVC.collectionView.scrollIndicatorInsets = insets
             
             self.view.sendSubviewToBack(habitsVC.view)
             habitsVC.view.layer.zPosition = 0
@@ -132,32 +129,35 @@ class MainViewController: UIViewController {
             }
             
             habitsVC.view.snp.makeConstraints { make in
-                make.width.equalTo(button.snp.width).offset(18) // 18 adding scroll area between columns
-                make.centerX.equalTo(button.snp.centerX)
-                make.top.equalTo(view.snp.top)
-                make.bottom.equalTo(view.snp.bottom)
-            }
+                    make.width.equalTo(button.snp.width).offset(18) // Adding space for scrolling between columns
+                    make.centerX.equalTo(button.snp.centerX)
+                    make.top.bottom.equalToSuperview()
+                }
         }
     }
-    
-    
-    lazy var actualButtonHeight: CGFloat = {
-        let baseScreenWidth: CGFloat = 375 // Width of iPhone SE screen
-        let scaleFactor = UIScreen.main.bounds.width / baseScreenWidth
-        let buttonHeight: CGFloat = 74 * scaleFactor
-        return buttonHeight
-    }()
     
     lazy var cellsInAvailableHeight: Int = {
         let baseScreenWidth: CGFloat = 375
         let scaleFactor = UIScreen.main.bounds.width / baseScreenWidth
         let buttonHeight: CGFloat = 74 * scaleFactor
-        let cellHeight = buttonHeight + (buttonHeight * 0.216)
-        let labelHeight: CGFloat = 16 // Фиксированная высота лейбла
-        let bottomPadding: CGFloat = 32 // 48 - 16 label
+        let cellHeight = buttonHeight + (buttonHeight * 0.200)
+        let labelHeight: CGFloat = 16
+        let bottomPadding: CGFloat = 32
         let totalHeightOfButtonsAndLabels = buttonHeight + labelHeight + bottomPadding
-        let availableHeight = view.frame.height - totalHeightOfButtonsAndLabels
-        return Int(floor(availableHeight / cellHeight))
+        let availableHeight = view.safeAreaLayoutGuide.layoutFrame.height - totalHeightOfButtonsAndLabels
+        let calculatedCells = Int(floor(availableHeight / cellHeight))
+        return calculatedCells
+    }()
+    
+    lazy var actualButtonHeight: CGFloat = {
+        let baseScreenWidth: CGFloat = 375
+        let scaleFactor = UIScreen.main.bounds.width / baseScreenWidth
+        let buttonHeight: CGFloat = 74 * scaleFactor
+        print("buttonHeight:\(buttonHeight)")
+        let labelHeight: CGFloat = 16
+        let bottomPadding: CGFloat = 32
+        let totalHeightOfButtonsAndLabels = buttonHeight + labelHeight + bottomPadding
+        return totalHeightOfButtonsAndLabels
     }()
 }
 
@@ -290,7 +290,7 @@ extension MainViewController {
     func initHeader() {
         // Налаштування заголовка, якщо ви не використовуєте стандартний navigationBar
         let titleLabel = UILabel()
-        titleLabel.text = "День \(storage.dayCounter ?? 0)"
+        titleLabel.text = "Day \(storage.dayCounter ?? 0)"
         titleLabel.textColor = .white
         titleLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         titleLabel.sizeToFit()

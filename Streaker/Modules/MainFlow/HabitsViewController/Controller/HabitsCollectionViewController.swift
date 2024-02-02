@@ -66,10 +66,14 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
     private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.itemSize = CGSize(width: 100, height: 100) // Установите размер элементов здесь
+        layout.itemSize = CGSize(width: 0, height: 0) // Установите размер элементов здесь
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 120, right: 0)
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                let safeAreaTop = windowScene.windows.first?.safeAreaInsets.top ?? 0.0
+                // 88 height of customNavBar
+                layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 88 + safeAreaTop, right: 0)
+            }
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(HabitCollectionViewCell.self, forCellWithReuseIdentifier: "HabitCell")
         collectionView.dataSource = self
@@ -83,9 +87,8 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         collectionView.transform = CGAffineTransform(scaleX: 1, y: -1)
         
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(view.snp.top)
+            make.top.bottom.equalToSuperview()
             make.left.right.equalToSuperview()
-            make.bottom.equalTo(view.snp.bottom)
         }
     }
     
@@ -138,7 +141,7 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         let model = cellModels[indexPath.item]
         switch model.state {
         case .emptyCell, .completedWithNoLine, .notCompleted, .progress:
-            return CGSize(width: buttonSize.width, height: buttonSize.height + (buttonSize.height * 0.216))
+            return CGSize(width: buttonSize.width, height: buttonSize.height + (buttonSize.height * 0.200))
         case .emptySpace:
             return CGSize(width: buttonSize.width, height: 0) // Размеры для полоски внизу над кнопками
         }

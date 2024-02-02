@@ -80,10 +80,10 @@ class HabitCollectionViewCell: UICollectionViewCell {
     // Настройка элементов UI
     private func setupViews() {
         setupEmptyCellView()
-        setupNotCompletedView()
+        //setupNotCompletedView()
         setupCompletedWithNoLineView(counter: 0)
-        progressSVGView = setupSVGView(withSVGNamed: "progressView")
-        emptySpaceView = setupSVGView(withSVGNamed: "emptySpace")
+        //progressSVGView = setupSVGView(withSVGNamed: "progressView")
+        //emptySpaceView = setupSVGView(withSVGNamed: "emptySpace")
     }
     
     private func setupEmptyCellView() {
@@ -139,26 +139,26 @@ class HabitCollectionViewCell: UICollectionViewCell {
         completedWithNoLine = view
         }
 
-    private func setupNotCompletedView() {
-        let view = createContainerView()
-        let borderContainerView = createBorderView(borderColorHex: "37373A", cornerRadius: 16)
-        view.addSubview(borderContainerView)
-        centerView(borderContainerView, in: view, withHeight: CustomButton.buttonSize.height)
-        
-        let crossImageView = setupSVGView(withSVGNamed: "cross")
-        crossImageView.isHidden = false // Убедитесь, что SVGImageView не скрыт
-        borderContainerView.addSubview(crossImageView)
-        
-        // Установка констрейнтов для crossImageView, чтобы размеры менялись пропорционально
-        NSLayoutConstraint.activate([
-            crossImageView.centerXAnchor.constraint(equalTo: borderContainerView.centerXAnchor),
-            crossImageView.centerYAnchor.constraint(equalTo: borderContainerView.centerYAnchor),
-            crossImageView.widthAnchor.constraint(equalTo: borderContainerView.widthAnchor, multiplier: 12/74),
-            crossImageView.heightAnchor.constraint(equalTo: crossImageView.widthAnchor)
-        ])
-        
-        notCompletedView = view
-    }
+//    private func setupNotCompletedView() {
+//        let view = createContainerView()
+//        let borderContainerView = createBorderView(borderColorHex: "37373A", cornerRadius: 16)
+//        view.addSubview(borderContainerView)
+//        centerView(borderContainerView, in: view, withHeight: CustomButton.buttonSize.height)
+//
+//        let crossImageView = setupSVGView(withSVGNamed: "cross")
+//        crossImageView.isHidden = false // Убедитесь, что SVGImageView не скрыт
+//        borderContainerView.addSubview(crossImageView)
+//
+//        // Установка констрейнтов для crossImageView, чтобы размеры менялись пропорционально
+//        NSLayoutConstraint.activate([
+//            crossImageView.centerXAnchor.constraint(equalTo: borderContainerView.centerXAnchor),
+//            crossImageView.centerYAnchor.constraint(equalTo: borderContainerView.centerYAnchor),
+//            crossImageView.widthAnchor.constraint(equalTo: borderContainerView.widthAnchor, multiplier: 12/74),
+//            crossImageView.heightAnchor.constraint(equalTo: crossImageView.widthAnchor)
+//        ])
+//
+//        notCompletedView = view
+//    }
     
     // MARK: - Helper Methods
     private func createContainerView() -> UIView {
