@@ -38,6 +38,7 @@
 		E45E28E92AF1C6A100104C32 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = E45E28E82AF1C6A100104C32 /* Lottie */; };
 		E45E28EC2AF1C82800104C32 /* confetti.json in Resources */ = {isa = PBXBuildFile; fileRef = E45E28EB2AF1C82800104C32 /* confetti.json */; };
 		E45E28EE2AF1D59800104C32 /* ConfettiAnimationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45E28ED2AF1D59800104C32 /* ConfettiAnimationManager.swift */; };
+		E48BFFC52B7221D600B922F2 /* MainModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48BFFC42B7221D600B922F2 /* MainModel.swift */; };
 		E4BDDB572AF7BCF400AF25D4 /* PocketSVG in Frameworks */ = {isa = PBXBuildFile; productRef = E4BDDB562AF7BCF400AF25D4 /* PocketSVG */; };
 		E4BDDB5C2AF7CE5A00AF25D4 /* progressView.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4BDDB582AF7CE5A00AF25D4 /* progressView.svg */; };
 		E4BDDB5D2AF7CE5A00AF25D4 /* completedWithNoLine.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4BDDB592AF7CE5A00AF25D4 /* completedWithNoLine.svg */; };
@@ -86,6 +87,7 @@
 		E4322B4C2AFB102600312750 /* cross.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cross.svg; sourceTree = "<group>"; };
 		E45E28EB2AF1C82800104C32 /* confetti.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = confetti.json; sourceTree = "<group>"; };
 		E45E28ED2AF1D59800104C32 /* ConfettiAnimationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiAnimationManager.swift; sourceTree = "<group>"; };
+		E48BFFC42B7221D600B922F2 /* MainModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainModel.swift; sourceTree = "<group>"; };
 		E4BDDB582AF7CE5A00AF25D4 /* progressView.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = progressView.svg; sourceTree = "<group>"; };
 		E4BDDB592AF7CE5A00AF25D4 /* completedWithNoLine.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = completedWithNoLine.svg; sourceTree = "<group>"; };
 		E4BDDB5A2AF7CE5A00AF25D4 /* notCompleted.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = notCompleted.svg; sourceTree = "<group>"; };
@@ -350,6 +352,7 @@
 		84C305B02B1207E70007A1AE /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				E48BFFC42B7221D600B922F2 /* MainModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -590,6 +593,7 @@
 				84B1D8DC2B13B9760068BC12 /* Double.swift in Sources */,
 				84B1D8F82B13D8C50068BC12 /* SettingsData.swift in Sources */,
 				842433362B16761C002E1B29 /* NewStreakCell.swift in Sources */,
+				E48BFFC52B7221D600B922F2 /* MainModel.swift in Sources */,
 				E40D488E2AF3F763002BE721 /* HabitsCollectionViewController.swift in Sources */,
 				84C305BD2B124FB00007A1AE /* MainView.swift in Sources */,
 				E4FF3D5D2AF05CA0009C0C15 /* ButtonLabel.swift in Sources */,

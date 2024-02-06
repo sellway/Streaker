@@ -14,6 +14,7 @@ class MainViewController: UIViewController {
     private let storage = ConfigurationStorage()
     private let customNavBar = UIView()
     private var cellCounters: [Int] = []
+    var mainModel: MainModel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +28,7 @@ class MainViewController: UIViewController {
         updateBlurBackgroundPositionAndSize()
         setupCustomNavigationBar()
         cellCounters = Array(repeating: 0, count: numberOfButtons)
+        mainModel = MainModel(numberOfButtons: numberOfButtons, cellsPerButton: cellsInAvailableHeight)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -68,44 +70,40 @@ class MainViewController: UIViewController {
     }
     
     @objc private func buttonTapped(_ sender: CustomButton) {
-        guard let buttonIndex = buttons.firstIndex(of: sender) else { return }
-        var newModels = habitsData[buttonIndex]
-        cellCounters[buttonIndex] += 1
+            guard let buttonIndex = buttons.firstIndex(of: sender) else { return }
+            mainModel.updateHabitData(forButtonIndex: buttonIndex)
+
+            // Теперь обновляем данные во всех контроллерах коллекции
+            mainModel.alignCellRows()
+            updateCollectionViews()
         
-        // Находим первую пустую клетку или создаем новую модель и добавляем в конец
-        if let emptyCellIndex = newModels.firstIndex(where: { $0.state == .emptyCell }) {
-            newModels[emptyCellIndex].state = .completedWithNoLine(counter: cellCounters[buttonIndex])
-        } else {
-            newModels.append(HabitCellModel(state: .completedWithNoLine(counter: cellCounters[buttonIndex])))
         }
-        
-        habitsData[buttonIndex] = newModels
-        
-        let habitsVC = habitsCollectionViewControllers[buttonIndex]
-        habitsVC.cellModels = newModels
-        habitsVC.collectionView.reloadData()
-        
-        updateColumns()
-    }
+
+        private func updateCollectionViews() {
+            for (index, habitsVC) in habitsCollectionViewControllers.enumerated() {
+                habitsVC.cellModels = mainModel.habitsData[index]
+                habitsVC.collectionView.reloadData()
+            }
+        }
     
-    private func loadNewDataForButton(at index: Int) -> [HabitCellModel] {
-        // Получаем текущие модели данных для кнопки
-        var currentCellModels = habitsData[index]
-        // Увеличиваем счетчик клеток
-        //collectionViewcellCounters[index] += 1
-        // Создаем новую модель клетки с увеличенным счетчиком
-        let newCellModel = HabitCellModel(state: .completedWithNoLine(counter: cellCounters[index]))
-        // Проверяем, есть ли пустые клетки
-        if let emptyCellIndex = currentCellModels.firstIndex(where: { $0.state == .emptyCell }) {
-            // Заменяем первую пустую клетку на новую модель
-            currentCellModels[emptyCellIndex] = newCellModel
-        } else {
-            // Если пустых клеток нет, добавляем новую модель в конец
-            currentCellModels.append(newCellModel) // или другое состояние
-        }
-        // Возвращаем обновленный массив моделей
-        return currentCellModels
-    }
+//    private func loadNewDataForButton(at index: Int) -> [HabitCellModel] {
+//        // Получаем текущие модели данных для кнопки
+//        var currentCellModels = habitsData[index]
+//        // Увеличиваем счетчик клеток
+//        //collectionViewcellCounters[index] += 1
+//        // Создаем новую модель клетки с увеличенным счетчиком
+//        let newCellModel = HabitCellModel(state: .completedWithNoLine(counter: cellCounters[index]))
+//        // Проверяем, есть ли пустые клетки
+//        if let emptyCellIndex = currentCellModels.firstIndex(where: { $0.state == .emptyCell }) {
+//            // Заменяем первую пустую клетку на новую модель
+//            currentCellModels[emptyCellIndex] = newCellModel
+//        } else {
+//            // Если пустых клеток нет, добавляем новую модель в конец
+//            currentCellModels.append(newCellModel) // или другое состояние
+//        }
+//        // Возвращаем обновленный массив моделей
+//        return currentCellModels
+//    }
     
     private func setupHabitsCollectionViewController() {
         for (index, button) in buttons.enumerated() {
@@ -129,10 +127,10 @@ class MainViewController: UIViewController {
             }
             
             habitsVC.view.snp.makeConstraints { make in
-                    make.width.equalTo(button.snp.width).offset(18) // Adding space for scrolling between columns
-                    make.centerX.equalTo(button.snp.centerX)
-                    make.top.bottom.equalToSuperview()
-                }
+                make.width.equalTo(button.snp.width).offset(18) // Adding space for scrolling between columns
+                make.centerX.equalTo(button.snp.centerX)
+                make.top.bottom.equalToSuperview()
+            }
         }
     }
     
@@ -323,11 +321,11 @@ extension HabitsCollectionViewController {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         checkForEmptyCellsAndResetScroll(scrollView)
     }
-
+    
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         checkForEmptyCellsAndResetScroll(scrollView)
     }
-
+    
     private func checkForEmptyCellsAndResetScroll(_ scrollView: UIScrollView) {
         // Проверяем, есть ли хотя бы одна пустая клетка
         if cellModels.contains(where: { $0.state == .emptyCell }) {
