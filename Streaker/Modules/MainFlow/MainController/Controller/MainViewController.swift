@@ -317,5 +317,28 @@ extension MainViewController {
         settingsVC.navigationItem.hidesBackButton = true
         navigationController?.pushViewController(settingsVC, animated: true)
     }
-    
 }
+
+extension HabitsCollectionViewController {
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        checkForEmptyCellsAndResetScroll(scrollView)
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        checkForEmptyCellsAndResetScroll(scrollView)
+    }
+
+    private func checkForEmptyCellsAndResetScroll(_ scrollView: UIScrollView) {
+        // Проверяем, есть ли хотя бы одна пустая клетка
+        if cellModels.contains(where: { $0.state == .emptyCell }) {
+            // Определяем отступы, которые были заданы для секции
+            if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+                // Используем отступ сверху для возвращения скролла, так как предполагается инвертированный скролл
+                let offset = CGPoint(x: 0, y: -layout.sectionInset.bottom)
+                scrollView.setContentOffset(offset, animated: true)
+            }
+        }
+    }
+}
+
+
