@@ -17,7 +17,7 @@ struct HabitCellModel {
         case emptyCell
         case completedWithNoLine(counter: Int)
         case notCompleted
-        case progress
+        case progress(percentage: Double) // Добавлено новое состояние с процентом
         case emptySpace
     }
     
@@ -32,7 +32,8 @@ class HabitCollectionViewCell: UICollectionViewCell {
     private var completedWithNoLine: UIView?
     private var completedWithNoLineLabel: UILabel?
     private var notCompletedView: UIView?
-    private var progressSVGView: SVGImageView?
+    //private var progressSVGView: SVGImageView?
+    private var progressBarView: UIView?
     private var emptySpaceView: SVGImageView?
     
     override init(frame: CGRect) {
@@ -56,8 +57,9 @@ class HabitCollectionViewCell: UICollectionViewCell {
             updateCounterLabel(counter)
         case .notCompleted:
             notCompletedView?.isHidden = false
-        case .progress:
-            progressSVGView?.isHidden = false
+        case let .progress(percentage):
+            setupProgressBar(percentage: percentage)
+            progressBarView?.isHidden = false
         case .emptySpace:
             emptySpaceView?.isHidden = false
         }
@@ -73,14 +75,14 @@ class HabitCollectionViewCell: UICollectionViewCell {
         emptyCellView?.isHidden = true
         completedWithNoLine?.isHidden = true
         notCompletedView?.isHidden = true
-        progressSVGView?.isHidden = true
+        progressBarView?.isHidden = true
         emptySpaceView?.isHidden = true
     }
     
     // Настройка элементов UI
     private func setupViews() {
         setupEmptyCellView()
-        //setupNotCompletedView()
+        setupNotCompletedView()
         setupCompletedWithNoLineView(counter: 0)
         //progressSVGView = setupSVGView(withSVGNamed: "progressView")
         //emptySpaceView = setupSVGView(withSVGNamed: "emptySpace")
@@ -138,27 +140,50 @@ class HabitCollectionViewCell: UICollectionViewCell {
 
         completedWithNoLine = view
         }
+    
+    private func setupProgressBar(percentage: Double) {
+            if progressBarView == nil {
+                progressBarView = UIView()
+                progressBarView?.translatesAutoresizingMaskIntoConstraints = false
+                progressBarView?.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner] // Округление только правых углов
+                progressBarView?.clipsToBounds = true
+                addSubview(progressBarView!)
+                
+                NSLayoutConstraint.activate([
+                    progressBarView!.leftAnchor.constraint(equalTo: self.leftAnchor),
+                    progressBarView!.topAnchor.constraint(equalTo: self.topAnchor),
+                    progressBarView!.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+                ])
+            }
+            
+            // Устанавливаем ширину в соответствии с процентом
+            let progressBarWidthConstraint = progressBarView!.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: CGFloat(percentage))
+            progressBarWidthConstraint.isActive = true
+            
+            // Устанавливаем цвет фона в зависимости от типа привычки
+            // progressBarView?.backgroundColor = ...
+        }
 
-//    private func setupNotCompletedView() {
-//        let view = createContainerView()
-//        let borderContainerView = createBorderView(borderColorHex: "37373A", cornerRadius: 16)
-//        view.addSubview(borderContainerView)
-//        centerView(borderContainerView, in: view, withHeight: CustomButton.buttonSize.height)
-//
-//        let crossImageView = setupSVGView(withSVGNamed: "cross")
-//        crossImageView.isHidden = false // Убедитесь, что SVGImageView не скрыт
-//        borderContainerView.addSubview(crossImageView)
-//
-//        // Установка констрейнтов для crossImageView, чтобы размеры менялись пропорционально
-//        NSLayoutConstraint.activate([
-//            crossImageView.centerXAnchor.constraint(equalTo: borderContainerView.centerXAnchor),
-//            crossImageView.centerYAnchor.constraint(equalTo: borderContainerView.centerYAnchor),
-//            crossImageView.widthAnchor.constraint(equalTo: borderContainerView.widthAnchor, multiplier: 12/74),
-//            crossImageView.heightAnchor.constraint(equalTo: crossImageView.widthAnchor)
-//        ])
-//
-//        notCompletedView = view
-//    }
+    private func setupNotCompletedView() {
+        let view = createContainerView()
+        let borderContainerView = createBorderView(borderColorHex: "37373A", cornerRadius: 16)
+        view.addSubview(borderContainerView)
+        centerView(borderContainerView, in: view, withHeight: CustomButton.buttonSize.height)
+
+        let crossImageView = setupSVGView(withSVGNamed: "cross")
+        crossImageView.isHidden = false // Убедитесь, что SVGImageView не скрыт
+        borderContainerView.addSubview(crossImageView)
+
+        // Установка констрейнтов для crossImageView, чтобы размеры менялись пропорционально
+        NSLayoutConstraint.activate([
+            crossImageView.centerXAnchor.constraint(equalTo: borderContainerView.centerXAnchor),
+            crossImageView.centerYAnchor.constraint(equalTo: borderContainerView.centerYAnchor),
+            crossImageView.widthAnchor.constraint(equalTo: borderContainerView.widthAnchor, multiplier: 12/74),
+            crossImageView.heightAnchor.constraint(equalTo: crossImageView.widthAnchor)
+        ])
+
+        notCompletedView = view
+    }
     
     // MARK: - Helper Methods
     private func createContainerView() -> UIView {

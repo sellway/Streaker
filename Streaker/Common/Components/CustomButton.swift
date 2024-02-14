@@ -4,6 +4,11 @@ import Lottie
 
 class CustomButton: UIButton {
     
+    struct ButtonColors {
+        let buttonDefault: (gradientStart: UIColor, gradientEnd: UIColor)
+        let buttonDone: UIColor
+    }
+    
     // Добавляем замыкание, которое будет вызываться при нажатии на кнопку
     var onButtonTapped: (() -> Void)?
     // Добавьте это свойство для хранения размера кнопки
@@ -16,7 +21,7 @@ class CustomButton: UIButton {
         }
     }
     
-    private let gradientLayer = CAGradientLayer()
+    private let buttonLayer = CAGradientLayer()
     private let overlayView = UIView()
     private let iconView = UIImageView()
     private let labelBelowButton = ButtonLabel() // Using the ButtonLabel class
@@ -46,20 +51,23 @@ class CustomButton: UIButton {
     }
     
     private func setupButton() {
-        setupGradientLayer()
+        // Задаем цвет кнопки по умолчанию
+        if let theme = CustomButton.colorThemes["green"] {
+            setupButtonLayer(theme: theme)
+        }
         setupOverlayView()
         setupIconView()
         setupButtonProperties()
         //setupConfettiAnimation()
     }
     
-    private func setupGradientLayer() {
-        gradientLayer.colors = [
-            UIColor(red: 0.051, green: 0.78, blue: 0.345, alpha: 1).cgColor,
-            UIColor(red: 0.051, green: 0.692, blue: 0.309, alpha: 1).cgColor
+    private func setupButtonLayer(theme: ButtonColors) {
+        buttonLayer.colors = [
+            theme.buttonDefault.gradientStart.cgColor,
+            theme.buttonDefault.gradientEnd.cgColor
         ]
-        gradientLayer.cornerRadius = 18
-        layer.insertSublayer(gradientLayer, at: 0)
+        buttonLayer.cornerRadius = 18
+        layer.insertSublayer(buttonLayer, at: 0)
     }
     
     private func setupOverlayView() {
@@ -86,20 +94,20 @@ class CustomButton: UIButton {
         layer.cornerRadius = 16
         addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
     }
-
+    
     override func layoutSubviews() {
         super.layoutSubviews()
-        gradientLayer.frame = bounds
+        buttonLayer.frame = bounds
         scaleButtonElements(forScreenWidth: UIScreen.main.bounds.width)
     }
-
+    
     @objc private func buttonTapped() {
         print("Button tapped")
-         isOn.toggle()
-         if isOn {
-             superview?.bringSubviewToFront(self)
-             //playConfettiAnimation()
-         }
+        isOn.toggle()
+        if isOn {
+            superview?.bringSubviewToFront(self)
+            //playConfettiAnimation()
+        }
         // Вызываем замыкание после изменения состояния кнопки
         onButtonTapped?()
     }
@@ -107,15 +115,15 @@ class CustomButton: UIButton {
     func setPositionAtBottomCenter(in view: UIView, index: Int, totalButtons: Int) {
         view.addSubview(self)
         translatesAutoresizingMaskIntoConstraints = false
-
+        
         let baseScreenWidth: CGFloat = 375 // Width of iPhone SE screen
         let scaleFactor = view.bounds.width / baseScreenWidth
-
+        
         let buttonWidth: CGFloat = 74 * scaleFactor
         let buttonSpacing: CGFloat = 16 * scaleFactor
         let totalWidth = CGFloat(totalButtons) * buttonWidth + CGFloat(totalButtons - 1) * buttonSpacing
         let xOffset = (view.bounds.width - totalWidth) / 2 + CGFloat(index) * (buttonWidth + buttonSpacing)
-
+        
         self.snp.makeConstraints { make in
             make.centerX.equalTo(view.snp.leading).offset(xOffset + buttonWidth / 2)
             //make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-28)
@@ -131,17 +139,17 @@ class CustomButton: UIButton {
     func scaleButtonElements(forScreenWidth screenWidth: CGFloat) {
         let baseScreenWidth: CGFloat = 375 // Base screen width, e.g., iPhone SE
         let scaleFactor = screenWidth / baseScreenWidth
-
+        
         let iconSize: CGFloat = 32 * scaleFactor // Scaled icon size
         let fontSize: CGFloat = 10 * scaleFactor // Scaled font size
-
+        
         iconView.snp.updateConstraints { make in
             make.width.height.equalTo(iconSize)
         }
-
+        
         labelBelowButton.font = UIFont.systemFont(ofSize: fontSize, weight: .medium)
     }
-
+    
     private func toggleButton() {
         
         UIView.transition(with: self, duration: 0.1, options: .transitionCrossDissolve, animations: {
@@ -154,14 +162,14 @@ class CustomButton: UIButton {
             }
         })
     }
-
+    
     private func updateButtonAppearance() {
         if isOn {
-            gradientLayer.colors = [
+            buttonLayer.colors = [
                 UIColor(red: 0.29, green: 0.79, blue: 0.49, alpha: 1).cgColor,
                 UIColor(red: 0.29, green: 0.79, blue: 0.49, alpha: 1).cgColor
             ]
-            gradientLayer.cornerRadius = 16
+            buttonLayer.cornerRadius = 16
             
             overlayView.layer.cornerRadius = 15
             overlayView.layer.borderWidth = 1
@@ -170,12 +178,12 @@ class CustomButton: UIButton {
             
             iconView.image = UIImage(named: "meditation_done")
         } else {
-            gradientLayer.colors = [
+            buttonLayer.colors = [
                 UIColor(red: 0.051, green: 0.78, blue: 0.345, alpha: 1).cgColor,
                 UIColor(red: 0.051, green: 0.692, blue: 0.309, alpha: 1).cgColor
             ]
-            gradientLayer.cornerRadius = 16
-
+            buttonLayer.cornerRadius = 16
+            
             overlayView.layer.cornerRadius = 15
             overlayView.layer.borderWidth = 0
             overlayView.layer.borderColor = UIColor.clear.cgColor
@@ -185,7 +193,7 @@ class CustomButton: UIButton {
         }
         labelBelowButton.updateText(isOn: isOn)
     }
-
+    
     private func setupConfettiAnimation() {
         confettiAnimationView = .init(name: "confetti")
         confettiAnimationView!.isHidden = true // Анимация изначально скрыта
@@ -193,7 +201,7 @@ class CustomButton: UIButton {
         confettiAnimationView!.loopMode = .playOnce
         addSubview(confettiAnimationView!)
         confettiAnimationView!.translatesAutoresizingMaskIntoConstraints = false
-
+        
         // Расположение анимации так, чтобы она казалась вылетающей из-под кнопки
         NSLayoutConstraint.activate([
             confettiAnimationView!.centerXAnchor.constraint(equalTo: self.centerXAnchor),
@@ -202,22 +210,88 @@ class CustomButton: UIButton {
             confettiAnimationView!.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 4) // Высота в 8 раза больше кнопки
         ])
     }
-
     
-//    private func playConfettiAnimation() {
-//        print("Playing confetti animation") // Для отладки
-//        guard let superview = self.superview else {
-//            print("Superview is nil")
-//            return
-//        }
-//        confettiAnimationView!.isHidden = false
-//        superview.bringSubviewToFront(confettiAnimationView!)
-//        // Здесь вы устанавливаете начальный и конечный кадры анимации
-//        confettiAnimationView!.play(fromFrame: 0, toFrame: 55, loopMode: .playOnce) { [weak self] finished in
-//            if finished {
-//                self?.confettiAnimationView!.isHidden = true
-//            }
-//        }
-//    }
-
+    
+    //    private func playConfettiAnimation() {
+    //        print("Playing confetti animation") // Для отладки
+    //        guard let superview = self.superview else {
+    //            print("Superview is nil")
+    //            return
+    //        }
+    //        confettiAnimationView!.isHidden = false
+    //        superview.bringSubviewToFront(confettiAnimationView!)
+    //        // Здесь вы устанавливаете начальный и конечный кадры анимации
+    //        confettiAnimationView!.play(fromFrame: 0, toFrame: 55, loopMode: .playOnce) { [weak self] finished in
+    //            if finished {
+    //                self?.confettiAnimationView!.isHidden = true
+    //            }
+    //        }
+    //    }
+    
+    // Словарь с темами цветов для разных типов кнопок
+    static var colorThemes: [String: ButtonColors] = [
+        "red": ButtonColors(
+            buttonDefault: (
+                gradientStart: UIColor(red: 255/255, green: 98/255, blue: 153/255, alpha: 1),
+                gradientEnd: UIColor(red: 240/255, green: 54/255, blue: 99/255, alpha: 1)
+            ),
+            buttonDone: UIColor(named: "redDone")!
+        ),
+        "orange": ButtonColors(
+            buttonDefault: (
+                gradientStart: UIColor(red: 255/255, green: 185/255, blue: 87/255, alpha: 1),
+                gradientEnd: UIColor(red: 255/255, green: 149/255, blue: 0/255, alpha: 1)
+            ),
+            buttonDone: UIColor(named: "orangeDone")!
+        ),
+        "yellow": ButtonColors(
+            buttonDefault: (
+                gradientStart: UIColor(red: 255/255, green: 221/255, blue: 84/255, alpha: 1),
+                gradientEnd: UIColor(red: 255/255, green: 204/255, blue: 0/255, alpha: 1)
+            ),
+            buttonDone: UIColor(named: "yellowDone")!
+        ),
+        "purple": ButtonColors(
+            buttonDefault: (
+                gradientStart: UIColor(red: 138/255, green: 139/255, blue: 240/255, alpha: 1),
+                gradientEnd: UIColor(red: 93/255, green: 95/255, blue: 238/255, alpha: 1)
+            ),
+            buttonDone: UIColor(named: "purpleDone")!
+        ),
+        "blue": ButtonColors(
+            buttonDefault: (
+                gradientStart: UIColor(red: 12/255, green: 181/255, blue: 255/255, alpha: 1),
+                gradientEnd: UIColor(red: 22/255, green: 133/255, blue: 255/255, alpha: 1)
+            ),
+            buttonDone: UIColor(named: "blueDone")!
+        ),
+        "green": ButtonColors(
+            buttonDefault: (
+                gradientStart: UIColor(red: 31/255, green: 195/255, blue: 97/255, alpha: 1),
+                gradientEnd: UIColor(red: 13/255, green: 177/255, blue: 79/255, alpha: 1)
+            ),
+            buttonDone: UIColor(named: "greenDone")!
+        ),
+        "violet": ButtonColors(
+            buttonDefault: (
+                gradientStart: UIColor(red: 162/255, green: 111/255, blue: 211/255, alpha: 1),
+                gradientEnd: UIColor(red: 138/255, green: 87/255, blue: 186/255, alpha: 1)
+            ),
+            buttonDone: UIColor(named: "violetDone")!
+        ),
+        "lilac": ButtonColors(
+            buttonDefault: (
+                gradientStart: UIColor(red: 205/255, green: 131/255, blue: 237/255, alpha: 1),
+                gradientEnd: UIColor(red: 189/255, green: 119/255, blue: 219/255, alpha: 1)
+            ),
+            buttonDone: UIColor(named: "lilacRegular")!
+        ),
+        "pink": ButtonColors(
+            buttonDefault: (
+                gradientStart: UIColor(red: 255/255, green: 152/255, blue: 234/255, alpha: 1),
+                gradientEnd: UIColor(red: 241/255, green: 102/255, blue: 213/255, alpha: 1)
+            ),
+            buttonDone: UIColor(named: "pinkDone")!
+        ),
+    ]
 }
