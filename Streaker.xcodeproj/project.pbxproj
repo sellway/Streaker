@@ -31,6 +31,9 @@
 		84C633EE2B1535C300366164 /* Reusable + cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C633ED2B1535C300366164 /* Reusable + cell.swift */; };
 		84C633F02B15388800366164 /* UIimage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C633EF2B15388800366164 /* UIimage.swift */; };
 		E40D488E2AF3F763002BE721 /* HabitsCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40D488D2AF3F763002BE721 /* HabitsCollectionViewController.swift */; };
+		E40FE60D2B84DC88004551F3 /* CreateNewStreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40FE60C2B84DC88004551F3 /* CreateNewStreakView.swift */; };
+		E40FE6112B84DEB9004551F3 /* CreateNewStreakViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40FE6102B84DEB9004551F3 /* CreateNewStreakViewController.swift */; };
+		E40FE6142B84E123004551F3 /* NewStreakModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40FE6132B84E123004551F3 /* NewStreakModel.swift */; };
 		E4322B3B2AFAD52800312750 /* emptySpace.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4322B3A2AFAD52800312750 /* emptySpace.svg */; };
 		E4322B492AFAFFA000312750 /* emptyCell.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4322B482AFAFFA000312750 /* emptyCell.svg */; };
 		E4322B4D2AFB102600312750 /* cross.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4322B4C2AFB102600312750 /* cross.svg */; };
@@ -44,6 +47,7 @@
 		E4BDDB5D2AF7CE5A00AF25D4 /* completedWithNoLine.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4BDDB592AF7CE5A00AF25D4 /* completedWithNoLine.svg */; };
 		E4BDDB5E2AF7CE5A00AF25D4 /* notCompleted.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4BDDB5A2AF7CE5A00AF25D4 /* notCompleted.svg */; };
 		E4C003EE2B63F5210042192A /* HabitsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C003ED2B63F5210042192A /* HabitsModel.swift */; };
+		E4E720352B83D505009D26EF /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E4E720342B83D505009D26EF /* RealmSwift */; };
 		E4E90A2E2AF2F68F003B90D5 /* HabitCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4E90A2D2AF2F68F003B90D5 /* HabitCellModel.swift */; };
 		E4FF3D472AF01BA6009C0C15 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FF3D462AF01BA6009C0C15 /* AppDelegate.swift */; };
 		E4FF3D4B2AF01BA6009C0C15 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FF3D4A2AF01BA6009C0C15 /* MainViewController.swift */; };
@@ -82,6 +86,9 @@
 		84C633ED2B1535C300366164 /* Reusable + cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reusable + cell.swift"; sourceTree = "<group>"; };
 		84C633EF2B15388800366164 /* UIimage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIimage.swift; sourceTree = "<group>"; };
 		E40D488D2AF3F763002BE721 /* HabitsCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsCollectionViewController.swift; sourceTree = "<group>"; };
+		E40FE60C2B84DC88004551F3 /* CreateNewStreakView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNewStreakView.swift; sourceTree = "<group>"; };
+		E40FE6102B84DEB9004551F3 /* CreateNewStreakViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNewStreakViewController.swift; sourceTree = "<group>"; };
+		E40FE6132B84E123004551F3 /* NewStreakModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewStreakModel.swift; sourceTree = "<group>"; };
 		E4322B3A2AFAD52800312750 /* emptySpace.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = emptySpace.svg; sourceTree = "<group>"; };
 		E4322B482AFAFFA000312750 /* emptyCell.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = emptyCell.svg; sourceTree = "<group>"; };
 		E4322B4C2AFB102600312750 /* cross.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cross.svg; sourceTree = "<group>"; };
@@ -108,6 +115,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4E720352B83D505009D26EF /* RealmSwift in Frameworks */,
 				E4BDDB572AF7BCF400AF25D4 /* PocketSVG in Frameworks */,
 				E45E28E42AF17D6300104C32 /* SnapKit in Frameworks */,
 				E45E28E92AF1C6A100104C32 /* Lottie in Frameworks */,
@@ -205,8 +213,8 @@
 		84B1D8EB2B13C4A70068BC12 /* NewStreak */ = {
 			isa = PBXGroup;
 			children = (
+				E40FE6122B84E110004551F3 /* Model */,
 				84B1D8EE2B13C4BB0068BC12 /* Controller */,
-				84B1D8ED2B13C4B60068BC12 /* Model */,
 				84B1D8EC2B13C4B10068BC12 /* View */,
 			);
 			path = NewStreak;
@@ -219,13 +227,6 @@
 				842433302B1670DA002E1B29 /* NewStreakView.swift */,
 			);
 			path = View;
-			sourceTree = "<group>";
-		};
-		84B1D8ED2B13C4B60068BC12 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		84B1D8EE2B13C4BB0068BC12 /* Controller */ = {
@@ -274,6 +275,7 @@
 			children = (
 				84B1D8F12B13D16A0068BC12 /* StatsModule */,
 				84B1D8EB2B13C4A70068BC12 /* NewStreak */,
+				E40FE60A2B84DC32004551F3 /* CreateNewStreak */,
 				84B1D8DE2B13BA640068BC12 /* Profile */,
 				84394AD42B126FD800ADB9B6 /* Settings */,
 				84C305AC2B1207B70007A1AE /* MainFlow */,
@@ -451,6 +453,47 @@
 			path = Protocols;
 			sourceTree = "<group>";
 		};
+		E40FE60A2B84DC32004551F3 /* CreateNewStreak */ = {
+			isa = PBXGroup;
+			children = (
+				E40FE60F2B84DE7C004551F3 /* Controller */,
+				E40FE60E2B84DE59004551F3 /* Model */,
+				E40FE60B2B84DC48004551F3 /* View */,
+			);
+			path = CreateNewStreak;
+			sourceTree = "<group>";
+		};
+		E40FE60B2B84DC48004551F3 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				E40FE60C2B84DC88004551F3 /* CreateNewStreakView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		E40FE60E2B84DE59004551F3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		E40FE60F2B84DE7C004551F3 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				E40FE6102B84DEB9004551F3 /* CreateNewStreakViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		E40FE6122B84E110004551F3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				E40FE6132B84E123004551F3 /* NewStreakModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		E45E28EA2AF1C80F00104C32 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
@@ -514,6 +557,7 @@
 				E45E28E32AF17D6300104C32 /* SnapKit */,
 				E45E28E82AF1C6A100104C32 /* Lottie */,
 				E4BDDB562AF7BCF400AF25D4 /* PocketSVG */,
+				E4E720342B83D505009D26EF /* RealmSwift */,
 			);
 			productName = Streaker;
 			productReference = E4FF3D432AF01BA5009C0C15 /* Streaker.app */;
@@ -549,6 +593,7 @@
 				E45E28E22AF17D6300104C32 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				E45E28E72AF1C6A100104C32 /* XCRemoteSwiftPackageReference "lottie-spm" */,
 				E4BDDB552AF7BCF400AF25D4 /* XCRemoteSwiftPackageReference "PocketSVG" */,
+				E4E720332B83D505009D26EF /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = E4FF3D442AF01BA5009C0C15 /* Products */;
 			projectDirPath = "";
@@ -598,6 +643,7 @@
 				84C305BD2B124FB00007A1AE /* MainView.swift in Sources */,
 				E4FF3D5D2AF05CA0009C0C15 /* ButtonLabel.swift in Sources */,
 				84B1D8E62B13BAD30068BC12 /* ProfileViewController.swift in Sources */,
+				E40FE6112B84DEB9004551F3 /* CreateNewStreakViewController.swift in Sources */,
 				84C305AB2B1203200007A1AE /* RootNavigaionViewController.swift in Sources */,
 				E4FF3D4B2AF01BA6009C0C15 /* MainViewController.swift in Sources */,
 				84B1D8DA2B13B9410068BC12 /* SizeHelper.swift in Sources */,
@@ -605,7 +651,9 @@
 				84B1D8E42B13BA8D0068BC12 /* ProfileView.swift in Sources */,
 				E45E28EE2AF1D59800104C32 /* ConfettiAnimationManager.swift in Sources */,
 				84C305DC2B1256A70007A1AE /* String + ext.swift in Sources */,
+				E40FE60D2B84DC88004551F3 /* CreateNewStreakView.swift in Sources */,
 				E4FF3D472AF01BA6009C0C15 /* AppDelegate.swift in Sources */,
+				E40FE6142B84E123004551F3 /* NewStreakModel.swift in Sources */,
 				84394AD92B12700300ADB9B6 /* SettingsViewController.swift in Sources */,
 				8424332F2B166D53002E1B29 /* StatsViewController.swift in Sources */,
 				842433312B1670DA002E1B29 /* NewStreakView.swift in Sources */,
@@ -864,6 +912,14 @@
 				minimumVersion = 2.0.0;
 			};
 		};
+		E4E720332B83D505009D26EF /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.47.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -881,6 +937,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E4BDDB552AF7BCF400AF25D4 /* XCRemoteSwiftPackageReference "PocketSVG" */;
 			productName = PocketSVG;
+		};
+		E4E720342B83D505009D26EF /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E4E720332B83D505009D26EF /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

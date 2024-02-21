@@ -6,6 +6,47 @@
 //
 
 import Foundation
+import RealmSwift
+
+class HabitsDataManager {
+    
+    static let shared = HabitsDataManager()
+    
+    private init() {} // Приватный инициализатор для синглтона
+    
+    func saveHabitsToRealm(habitsModel: HabitsModel) {
+        do {
+            let realm = try Realm()
+            try realm.write {
+                let habitObject = HabitsModel()
+                habitObject.name = habitsModel.name
+                habitObject.color = habitsModel.color
+                // Копируйте другие свойства, если есть
+                realm.add(habitObject)
+            }
+        } catch {
+            print("Error saving habits to Realm: \(error)")
+        }
+    }
+    
+    func loadHabitsFromRealm() -> HabitsModel? {
+        do {
+            let realm = try Realm()
+            guard let habitObject = realm.objects(HabitsModel.self).first else {
+                return nil
+            }
+            let habitsModel = HabitsModel()
+            habitsModel.name = habitObject.name
+            habitsModel.color = habitObject.color
+            // Копируйте другие свойства, если есть
+            return habitsModel
+        } catch {
+            print("Error loading habits from Realm: \(error)")
+            return nil
+        }
+    }
+}
+
 
 final class ConfigurationStorage {
 

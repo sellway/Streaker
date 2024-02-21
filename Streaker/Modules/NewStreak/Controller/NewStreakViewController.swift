@@ -9,7 +9,7 @@ import UIKit
 
 class NewStreakViewController: UIViewController {
     let mainView = NewStreakView()
-    var strakeModel = NewStreakModel.allCases
+    var streakModel = NewStreakModel.allCases
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +19,11 @@ class NewStreakViewController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: mainView.cancelButton)
         navigationItem.titleView = mainView.headerTitleLabel
         mainView.cancelButton.addTarget(self, action: #selector(dissmis), for: .touchUpInside)
+        // Go to createStreakVC when click on create your own streak button
+        mainView.onCreateStreakButtonTapped = { [weak self] in
+            let createStreakVC = CreateNewStreakViewController()
+            self?.navigationController?.pushViewController(createStreakVC, animated: true)
+        }
     }
     
     override func loadView() {
@@ -34,19 +39,18 @@ class NewStreakViewController: UIViewController {
 
 extension NewStreakViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        strakeModel.count
+        streakModel.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: NewStreakCell = tableView.dequeueReusableCell(for: indexPath)
-        cell.model = strakeModel[indexPath.row]
+        cell.model = streakModel[indexPath.row]
         cell.backgroundColor = .clear
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 64.sizeH
+        
     }
-    
-    
 }

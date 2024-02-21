@@ -15,6 +15,7 @@ class MainViewController: UIViewController {
     private let customNavBar = UIView()
     private var cellCounters: [Int] = []
     var mainModel: MainModel!
+
     
     override func viewDidLoad() {
         super.viewDidLoad()

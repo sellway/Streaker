@@ -162,13 +162,12 @@ class CustomButton: UIButton {
             }
         })
     }
-    
+
     private func updateButtonAppearance() {
         if isOn {
-            buttonLayer.colors = [
-                UIColor(red: 0.29, green: 0.79, blue: 0.49, alpha: 1).cgColor,
-                UIColor(red: 0.29, green: 0.79, blue: 0.49, alpha: 1).cgColor
-            ]
+            // If you want a solid color appearance, use the same color for both gradient start and end.
+            let solidColor = CustomButton.colorThemes["green"]!.buttonDone.cgColor
+            buttonLayer.colors = [solidColor, solidColor]
             buttonLayer.cornerRadius = 16
             
             overlayView.layer.cornerRadius = 15
@@ -178,10 +177,8 @@ class CustomButton: UIButton {
             
             iconView.image = UIImage(named: "meditation_done")
         } else {
-            buttonLayer.colors = [
-                UIColor(red: 0.051, green: 0.78, blue: 0.345, alpha: 1).cgColor,
-                UIColor(red: 0.051, green: 0.692, blue: 0.309, alpha: 1).cgColor
-            ]
+            let defaultColors = CustomButton.colorThemes["green"]!.buttonDefault
+            buttonLayer.colors = [defaultColors.gradientStart.cgColor, defaultColors.gradientEnd.cgColor]
             buttonLayer.cornerRadius = 16
             
             overlayView.layer.cornerRadius = 15
@@ -193,6 +190,7 @@ class CustomButton: UIButton {
         }
         labelBelowButton.updateText(isOn: isOn)
     }
+
     
     private func setupConfettiAnimation() {
         confettiAnimationView = .init(name: "confetti")

@@ -5,6 +5,7 @@
 //  Created by Viacheslav Andriienko on 26/1/24.
 //
 
+import RealmSwift
 import Foundation
 
 protocol HabitsModelProtocol {
@@ -15,7 +16,11 @@ protocol HabitsModelProtocol {
     func moveCellUp(from sourceIndex: Int, to destinationIndex: Int)
 }
 
-class HabitsModel: HabitsModelProtocol {
+class HabitsModel: Object, HabitsModelProtocol {
+    
+    @Persisted var name: String = ""
+    @Persisted var color: String = ""
+    
     var cellCounter: Int = 0
     var cellModels: [HabitCellModel] = []
 

@@ -10,9 +10,11 @@ import SnapKit
 
 class NewStreakView: UIView {
     
+    var onCreateStreakButtonTapped: (() -> Void)?
+    
     let headerTitleLabel: UILabel = {
         let obj = UILabel()
-        obj.text = "New Strake"
+        obj.text = "New Streak"
         obj.textColor = .white
         obj.textAlignment = .left
         obj.font = UIFont.systemFont(ofSize: 20.sizeW, weight: .bold)
@@ -76,6 +78,10 @@ class NewStreakView: UIView {
         obj.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         return obj
     }()
+    
+    @objc private func topButtonTapped() {
+        onCreateStreakButtonTapped?()
+    }
 
     init() {
         super.init(frame: .zero)
@@ -89,16 +95,22 @@ class NewStreakView: UIView {
 
 //MARK: setup
 extension NewStreakView {
+    
     private func setup() {
-        addSubview(listsTableView)
-        addSubview(topButton)
-        addSubview(selectTitle)
-        topButton.addSubview(clearButton)
-        clearButton.addSubview(btnIcon)
-        clearButton.addSubview(titleLabel)
-        self.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 30/255, alpha: 1)
-        makeConstraints()
-    }
+            addSubview(listsTableView)
+            addSubview(topButton)
+            addSubview(selectTitle)
+            topButton.addSubview(clearButton)
+            clearButton.addSubview(btnIcon)
+            clearButton.addSubview(titleLabel)
+            self.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 30/255, alpha: 1)
+            // Do add custom streak button on top clickable
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(topButtonTapped))
+            clearButton.addGestureRecognizer(tapGesture)
+            clearButton.isUserInteractionEnabled = true
+            
+            makeConstraints()
+        }
     
     private func makeConstraints() {
         
