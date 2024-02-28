@@ -29,20 +29,13 @@ class HabitsDataManager {
         }
     }
     
-    func loadHabitsFromRealm() -> HabitsModel? {
+    func loadAllHabitsFromRealm() -> [HabitsModel] {
         do {
             let realm = try Realm()
-            guard let habitObject = realm.objects(HabitsModel.self).first else {
-                return nil
-            }
-            let habitsModel = HabitsModel()
-            habitsModel.name = habitObject.name
-            habitsModel.color = habitObject.color
-            // Копируйте другие свойства, если есть
-            return habitsModel
+            return Array(realm.objects(HabitsModel.self)) // Возвращает массив всех HabitsModel
         } catch {
             print("Error loading habits from Realm: \(error)")
-            return nil
+            return []
         }
     }
 }

@@ -31,8 +31,7 @@ class NewStreakViewController: UIViewController {
         view = mainView
     }
     
-    @objc
-    private func dissmis() {
+    @objc private func dissmis() {
         navigationController?.popViewController(animated: true)
     }
 }

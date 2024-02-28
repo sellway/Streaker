@@ -14,6 +14,8 @@ class CreateNewStreakViewController: UIViewController {
         super.viewDidLoad()
         setupView()
         setupNavigationBar()
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: createNewStreakView.cancelButton)
+        createNewStreakView.cancelButton.addTarget(self, action: #selector(dissmis), for: .touchUpInside)
     }
     
     private func setupView() {
@@ -25,14 +27,7 @@ class CreateNewStreakViewController: UIViewController {
     }
     
     private func setupNavigationBar() {
-        // Customize navigation bar if needed
         navigationItem.title = "New Streak"
-        navigationItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(named: "leftArrow"),
-            style: .plain,
-            target: self,
-            action: #selector(dismissViewController)
-        )
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             title: "Save",
             style: .done,
@@ -41,15 +36,33 @@ class CreateNewStreakViewController: UIViewController {
         )
     }
     
-    @objc private func dismissViewController() {
-        // Dismiss or pop the view controller
+    @objc private func dissmis() {
         navigationController?.popViewController(animated: true)
     }
     
     @objc private func saveStreak() {
-        // Save the new streak with the name from the text field
-        let streakName = createNewStreakView.streakNameTextField.text ?? ""
+        guard let streakName = createNewStreakView.streakNameTextField.text, !streakName.isEmpty else {
+            print("Streak name is empty.")
+            return
+        }
+
+        // Create an instance of HabitsModel
+        let newHabit = HabitsModel()
+        newHabit.name = streakName
+        newHabit.color = "Green" // Example, replace with actual logic to choose a color
+
+        // Save the new habit to Realm using HabitsDataManager
+        HabitsDataManager.shared.saveHabitsToRealm(habitsModel: newHabit)
+
         print("Saving streak with name: \(streakName)")
-        // Here you would save the streak to your data model or database
+
+        // Optionally, pop or dismiss the view controller
+        navigationController?.popViewController(animated: true)
+        
+        // Вывод всех сохранённых привычек
+        let allSavedHabits = HabitsDataManager.shared.loadAllHabitsFromRealm()
+        for habit in allSavedHabits {
+            print("Saved Habit: \(habit.name), Color: \(habit.color)")
+        }
     }
 }

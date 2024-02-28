@@ -1,7 +1,10 @@
 import UIKit
 import SnapKit
+import RealmSwift
 
 class MainViewController: UIViewController {
+    private var habits: Results<HabitsModel>?
+    lazy var savedRecordsCount: Int = try! Realm().objects(HabitsModel.self).count
     private var habitsCollectionViewControllers: [HabitsCollectionViewController] = []
     private var topBlurEffectView: UIVisualEffectView?
     private var bottomBlurEffectView: UIVisualEffectView?
@@ -9,23 +12,23 @@ class MainViewController: UIViewController {
     private var habitsData: [[HabitCellModel]] = []
     private var safeAreaInsets: UIEdgeInsets = .zero
     private var alertController: UIAlertController?
-    private var numberOfButtons = 4
+    private lazy var numberOfButtons: Int = savedRecordsCount
     private var mainView = MainView()
     private let storage = ConfigurationStorage()
     private let customNavBar = UIView()
     private var cellCounters: [Int] = []
     var mainModel: MainModel!
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
         initViewController()
         view.backgroundColor = UIColor(hex: "#1C1C1E")
+        habits = loadHabits()
         createHabitsData(forNumberOfButtons: numberOfButtons)
-        setupButtons(totalButtons: numberOfButtons)
-        setupHabitsCollectionViewController()
         createBlurBackground(at: .top)
         createBlurBackground(at: .bottom)
+        setupButtons(totalButtons: numberOfButtons)
+        setupHabitsCollectionViewController()
         updateBlurBackgroundPositionAndSize()
         setupCustomNavigationBar()
         cellCounters = Array(repeating: 0, count: numberOfButtons)
@@ -46,6 +49,16 @@ class MainViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
+    private func loadHabits() -> Results<HabitsModel>? {
+            do {
+                let realm = try Realm()
+                return realm.objects(HabitsModel.self)
+            } catch {
+                print("Error loading habits from Realm: \(error)")
+                return nil
+            }
+        }
+    
     private func createHabitsData(forNumberOfButtons count: Int) {
         habitsData = Array(repeating: [], count: count)
         for index in 0..<count {
@@ -60,6 +73,9 @@ class MainViewController: UIViewController {
     private func setupButtons(totalButtons: Int) {
         for index in 0..<totalButtons {
             let button = CustomButton()
+            if let habit = habits?[index] {
+                        button.labelBelowButton.updateText(with: habit.name, isOn: false)
+                    }
             button.scaleButtonElements(forScreenWidth: view.bounds.width)
             button.setPositionAtBottomCenter(in: view, index: index, totalButtons: totalButtons)
             button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
@@ -328,9 +344,12 @@ extension HabitsCollectionViewController {
     }
     
     private func checkForEmptyCellsAndResetScroll(_ scrollView: UIScrollView) {
-        // Проверяем, есть ли хотя бы одна пустая клетка
-        if cellModels.contains(where: { $0.state == .emptyCell }) {
-            // Определяем отступы, которые были заданы для секции
+        // Проверяем, есть ли пустые клетки во всех колонках
+        let allCollectionsHaveEmptyCells = HabitsCollectionViewController.synchronizedCollectionViews.allSatisfy { viewController in
+            viewController.cellModels.contains { $0.state == .emptyCell }
+        }
+        // Если во всех колонках есть хотя бы одна пустая клетка, возвращаем скролл на начало
+        if allCollectionsHaveEmptyCells {
             if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
                 // Используем отступ сверху для возвращения скролла, так как предполагается инвертированный скролл
                 let offset = CGPoint(x: 0, y: -layout.sectionInset.bottom)
@@ -339,5 +358,3 @@ extension HabitsCollectionViewController {
         }
     }
 }
-
-

@@ -24,7 +24,7 @@ class CustomButton: UIButton {
     private let buttonLayer = CAGradientLayer()
     private let overlayView = UIView()
     private let iconView = UIImageView()
-    private let labelBelowButton = ButtonLabel() // Using the ButtonLabel class
+    let labelBelowButton = ButtonLabel() // Using the ButtonLabel class
     private var confettiAnimationView: LottieAnimationView?
     
     override init(frame: CGRect) {
@@ -188,9 +188,8 @@ class CustomButton: UIButton {
             
             iconView.image = UIImage(named: "meditation")
         }
-        labelBelowButton.updateText(isOn: isOn)
+        labelBelowButton.updateText(with: "Dflt CstmBtn", isOn: isOn)
     }
-
     
     private func setupConfettiAnimation() {
         confettiAnimationView = .init(name: "confetti")

@@ -1,3 +1,6 @@
+
+
+
 class MainModel {
     internal private(set) var habitsData: [[HabitCellModel]] = []
     var cellCounters: [Int] = []

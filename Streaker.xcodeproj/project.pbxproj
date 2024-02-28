@@ -456,9 +456,9 @@
 		E40FE60A2B84DC32004551F3 /* CreateNewStreak */ = {
 			isa = PBXGroup;
 			children = (
-				E40FE60F2B84DE7C004551F3 /* Controller */,
 				E40FE60E2B84DE59004551F3 /* Model */,
 				E40FE60B2B84DC48004551F3 /* View */,
+				E40FE60F2B84DE7C004551F3 /* Controller */,
 			);
 			path = CreateNewStreak;
 			sourceTree = "<group>";

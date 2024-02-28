@@ -20,7 +20,7 @@ class ButtonLabel: UILabel {
     private func setupLabel() {
         textColor = .white
         font = UIFont.systemFont(ofSize: 10, weight: .medium)
-        updateText(isOn: false)
+        updateText(with: "Text", isOn: false)
     }
     
     // Updates the label's position to be below a specified button using SnapKit.
@@ -38,36 +38,21 @@ class ButtonLabel: UILabel {
         }
     }
     
-    // Resets the label to its default state.
-    func resetToDefault() {
-        updateText(isOn: false)
-    }
-    
     // Updates the label's text and alpha (transparency).
-    func updateText(isOn: Bool) {
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineHeightMultiple = 1.6
-        paragraphStyle.alignment = .center
+    func updateText(with text: String, isOn: Bool) {
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineHeightMultiple = 1.6
+            paragraphStyle.alignment = .center
 
-        UIView.transition(with: self, duration: 0.1, options: .transitionCrossDissolve, animations: {
-            if isOn {
-                // Text and style for "ON" state
-                self.attributedText = NSMutableAttributedString(string: "DONE!", attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
-                self.alpha = 1.0
-            } else {
-                // Text and style for "OFF" state
-                self.attributedText = NSMutableAttributedString(string: "Meditation", attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
-                self.alpha = 1.0
-            }
-        }, completion: { _ in
-            if isOn {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    UIView.transition(with: self, duration: 0.1, options: .transitionCrossDissolve, animations: {
-                        self.attributedText = NSMutableAttributedString(string: "Meditation", attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
-                        self.alpha = 0.8
-                    }, completion: nil)
+            UIView.transition(with: self, duration: 0.1, options: .transitionCrossDissolve, animations: {
+                if isOn {
+                    // Если кнопка включена, показываем "DONE!"
+                    self.attributedText = NSMutableAttributedString(string: "DONE!", attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
+                } else {
+                    // Если выключена, показываем переданный текст
+                    self.attributedText = NSMutableAttributedString(string: text, attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
                 }
-            }
-        })
-    }
+                self.alpha = isOn ? 1.0 : 0.8
+            }, completion: nil)
+        }
 }
