@@ -38,6 +38,11 @@ class ButtonLabel: UILabel {
         }
     }
     
+    // Resets the label to its default state.
+        func resetToDefault() {
+            updateText(with: "Default", isOn: false)
+        }
+    
     // Updates the label's text and alpha (transparency).
     func updateText(with text: String, isOn: Bool) {
             let paragraphStyle = NSMutableParagraphStyle()
