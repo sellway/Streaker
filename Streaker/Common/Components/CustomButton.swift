@@ -47,7 +47,7 @@ class CustomButton: UIButton {
                 make.centerX.equalTo(self)
                 make.top.equalTo(self.snp.bottom)
                 make.width.equalTo(84)
-                make.height.equalTo(16)
+                make.height.equalTo(20)
             }
         }
     }
@@ -132,10 +132,8 @@ class CustomButton: UIButton {
             make.bottom.equalToSuperview().offset(-48) // Двигает кнопку на 48 px от Superview
             make.width.height.equalTo(buttonWidth)
         }
-        
         // Сохраните размер кнопки здесь
         CustomButton.buttonSize = CGSize(width: buttonWidth, height: buttonWidth)
-        
     }
     
     func scaleButtonElements(forScreenWidth screenWidth: CGFloat) {
@@ -153,20 +151,16 @@ class CustomButton: UIButton {
     }
     
     private func toggleButton() {
-        updateButtonAppearance() // Убедитесь, что этот метод вызывается сразу, чтобы обновить вид кнопки
-        if isOn {
-            // Показываем "DONE!" без изменения прозрачности
-            labelBelowButton.updateText(with: "DONE!", isOn: true)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-                guard let self = self else { return }
-                // Возвращаем исходное название с прозрачностью
-                self.labelBelowButton.updateText(with: self.habitName, isOn: false)
-            }
-        } else {
-            // Возвращаем исходное состояние без прозрачности, если пользователь нажал еще раз
-            labelBelowButton.updateText(with: habitName, isOn: false)
+            UIView.transition(with: self, duration: 0.1, options: .transitionCrossDissolve, animations: {
+                self.updateButtonAppearance()
+            }, completion: { _ in
+                if self.isOn {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        self.labelBelowButton.resetToDefault()
+                    }
+                }
+            })
         }
-    }
 
 
     private func updateButtonAppearance() {

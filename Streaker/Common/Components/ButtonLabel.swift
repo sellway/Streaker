@@ -29,32 +29,28 @@ class ButtonLabel: UILabel {
         // Функция добавляет метку в ту же "родительскую" вью, что и у кнопки.
         guard let superview = button.superview else { return }
         superview.addSubview(self)
-        
-        self.snp.makeConstraints { make in
-            make.centerX.equalTo(button)
-            make.top.equalTo(button.snp.bottom)
-            make.width.equalTo(84)
-            make.height.equalTo(16)
-        }
     }
     
     // Updates the label's text and alpha (transparency).
     func updateText(with text: String, isOn: Bool) {
-            let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.lineHeightMultiple = 1.6
-            paragraphStyle.alignment = .center
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.6
+        paragraphStyle.alignment = .center
 
-            UIView.transition(with: self, duration: 0.1, options: .transitionCrossDissolve, animations: {
-                if isOn {
-                    // Если кнопка включена, показываем "DONE!"
-                    self.attributedText = NSMutableAttributedString(string: "DONE!", attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
-                } else {
-                    // Если выключена, показываем переданный текст
-                    self.attributedText = NSMutableAttributedString(string: text, attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
+        UIView.transition(with: self, duration: 0.1, options: .transitionCrossDissolve, animations: {
+            self.attributedText = NSMutableAttributedString(string: isOn ? "DONE!" : text, attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
+            self.alpha = 1.0
+        }, completion: { _ in
+            if isOn {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    UIView.transition(with: self, duration: 0.1, options: .transitionCrossDissolve, animations: {
+                        self.attributedText = NSMutableAttributedString(string: text, attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
+                        self.alpha = 0.8
+                    }, completion: nil)
                 }
-                self.alpha = isOn ? 1.0 : 0.8
-            }, completion: nil)
-        }
+            }
+        })
+    }
     
     // Resets the label to its default state.
         func resetToDefault() {
