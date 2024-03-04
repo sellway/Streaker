@@ -22,7 +22,7 @@
 		84B1D8F62B13D2910068BC12 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B1D8F52B13D2910068BC12 /* ProfileModel.swift */; };
 		84B1D8F82B13D8C50068BC12 /* SettingsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B1D8F72B13D8C50068BC12 /* SettingsData.swift */; };
 		84C305AB2B1203200007A1AE /* RootNavigaionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C305AA2B1203200007A1AE /* RootNavigaionViewController.swift */; };
-		84C305BB2B120A4D0007A1AE /* DataBaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C305BA2B120A4D0007A1AE /* DataBaseManager.swift */; };
+		84C305BB2B120A4D0007A1AE /* HabitsDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C305BA2B120A4D0007A1AE /* HabitsDataManager.swift */; };
 		84C305BD2B124FB00007A1AE /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C305BC2B124FB00007A1AE /* MainView.swift */; };
 		84C305BF2B1250890007A1AE /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84C305BE2B1250880007A1AE /* Colors.xcassets */; };
 		84C305C22B1251160007A1AE /* UIcolor + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C305C12B1251160007A1AE /* UIcolor + ext.swift */; };
@@ -73,7 +73,7 @@
 		84B1D8F52B13D2910068BC12 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		84B1D8F72B13D8C50068BC12 /* SettingsData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsData.swift; sourceTree = "<group>"; };
 		84C305AA2B1203200007A1AE /* RootNavigaionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootNavigaionViewController.swift; sourceTree = "<group>"; };
-		84C305BA2B120A4D0007A1AE /* DataBaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBaseManager.swift; sourceTree = "<group>"; };
+		84C305BA2B120A4D0007A1AE /* HabitsDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsDataManager.swift; sourceTree = "<group>"; };
 		84C305BC2B124FB00007A1AE /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		84C305BE2B1250880007A1AE /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		84C305C12B1251160007A1AE /* UIcolor + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIcolor + ext.swift"; sourceTree = "<group>"; };
@@ -428,7 +428,7 @@
 		84C305B92B120A340007A1AE /* DataBase */ = {
 			isa = PBXGroup;
 			children = (
-				84C305BA2B120A4D0007A1AE /* DataBaseManager.swift */,
+				84C305BA2B120A4D0007A1AE /* HabitsDataManager.swift */,
 			);
 			path = DataBase;
 			sourceTree = "<group>";
@@ -634,7 +634,7 @@
 				84C633EE2B1535C300366164 /* Reusable + cell.swift in Sources */,
 				E4C003EE2B63F5210042192A /* HabitsModel.swift in Sources */,
 				E4FF3D5B2AF01EDE009C0C15 /* CustomButton.swift in Sources */,
-				84C305BB2B120A4D0007A1AE /* DataBaseManager.swift in Sources */,
+				84C305BB2B120A4D0007A1AE /* HabitsDataManager.swift in Sources */,
 				84B1D8DC2B13B9760068BC12 /* Double.swift in Sources */,
 				84B1D8F82B13D8C50068BC12 /* SettingsData.swift in Sources */,
 				842433362B16761C002E1B29 /* NewStreakCell.swift in Sources */,

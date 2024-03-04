@@ -12,7 +12,7 @@ class HabitsDataManager {
     
     static let shared = HabitsDataManager()
     
-    private init() {} // Приватный инициализатор для синглтона
+    init() {} // Приватный инициализатор для синглтона
     
     func saveHabitsToRealm(habitsModel: HabitsModel) {
         do {

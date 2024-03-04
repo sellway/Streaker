@@ -4,6 +4,8 @@ import Lottie
 
 class CustomButton: UIButton {
     
+    var habitName: String = ""
+    
     struct ButtonColors {
         let buttonDefault: (gradientStart: UIColor, gradientEnd: UIColor)
         let buttonDone: UIColor
@@ -151,17 +153,21 @@ class CustomButton: UIButton {
     }
     
     private func toggleButton() {
-        
-        UIView.transition(with: self, duration: 0.1, options: .transitionCrossDissolve, animations: {
-            self.updateButtonAppearance()
-        }, completion: { _ in
-            if self.isOn {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    self.labelBelowButton.resetToDefault()
-                }
+        updateButtonAppearance() // Убедитесь, что этот метод вызывается сразу, чтобы обновить вид кнопки
+        if isOn {
+            // Показываем "DONE!" без изменения прозрачности
+            labelBelowButton.updateText(with: "DONE!", isOn: true)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+                guard let self = self else { return }
+                // Возвращаем исходное название с прозрачностью
+                self.labelBelowButton.updateText(with: self.habitName, isOn: false)
             }
-        })
+        } else {
+            // Возвращаем исходное состояние без прозрачности, если пользователь нажал еще раз
+            labelBelowButton.updateText(with: habitName, isOn: false)
+        }
     }
+
 
     private func updateButtonAppearance() {
         if isOn {
@@ -188,7 +194,7 @@ class CustomButton: UIButton {
             
             iconView.image = UIImage(named: "meditation")
         }
-        labelBelowButton.updateText(with: "Dflt CstmBtn", isOn: isOn)
+        labelBelowButton.updateText(with: habitName, isOn: isOn)
     }
     
     private func setupConfettiAnimation() {

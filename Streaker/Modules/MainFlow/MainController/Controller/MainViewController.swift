@@ -3,8 +3,8 @@ import SnapKit
 import RealmSwift
 
 class MainViewController: UIViewController {
-    private var habits: Results<HabitsModel>?
     lazy var savedRecordsCount: Int = try! Realm().objects(HabitsModel.self).count
+    var habits: Results<HabitsModel>?
     private var habitsCollectionViewControllers: [HabitsCollectionViewController] = []
     private var topBlurEffectView: UIVisualEffectView?
     private var bottomBlurEffectView: UIVisualEffectView?
@@ -18,6 +18,7 @@ class MainViewController: UIViewController {
     private let customNavBar = UIView()
     private var cellCounters: [Int] = []
     var mainModel: MainModel!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,11 +71,12 @@ class MainViewController: UIViewController {
         return Array(repeating: HabitCellModel(state: .emptyCell), count: cellsInAvailableHeight)
     }
     
-    private func setupButtons(totalButtons: Int) {
+    func setupButtons(totalButtons: Int) {
         for index in 0..<totalButtons {
             let button = CustomButton()
             if let habit = habits?[index] {
                         button.labelBelowButton.updateText(with: habit.name, isOn: false)
+                        button.habitName = habit.name
                     }
             button.scaleButtonElements(forScreenWidth: view.bounds.width)
             button.setPositionAtBottomCenter(in: view, index: index, totalButtons: totalButtons)
@@ -89,7 +91,6 @@ class MainViewController: UIViewController {
     @objc private func buttonTapped(_ sender: CustomButton) {
             guard let buttonIndex = buttons.firstIndex(of: sender) else { return }
             mainModel.updateHabitData(forButtonIndex: buttonIndex)
-
             // Теперь обновляем данные во всех контроллерах коллекции
             mainModel.alignCellRows()
             updateCollectionViews()
@@ -334,6 +335,7 @@ extension MainViewController {
     }
 }
 
+//MARK: scrollViewDidEndDragging
 extension HabitsCollectionViewController {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         checkForEmptyCellsAndResetScroll(scrollView)
