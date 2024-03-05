@@ -30,6 +30,8 @@
 		84C305DC2B1256A70007A1AE /* String + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C305DB2B1256A70007A1AE /* String + ext.swift */; };
 		84C633EE2B1535C300366164 /* Reusable + cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C633ED2B1535C300366164 /* Reusable + cell.swift */; };
 		84C633F02B15388800366164 /* UIimage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C633EF2B15388800366164 /* UIimage.swift */; };
+		E40BBCC22B97CD7A006C8FBD /* MyStreaksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40BBCC12B97CD7A006C8FBD /* MyStreaksView.swift */; };
+		E40BBCC42B97CD9F006C8FBD /* MyStreaksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40BBCC32B97CD9F006C8FBD /* MyStreaksViewController.swift */; };
 		E40D488E2AF3F763002BE721 /* HabitsCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40D488D2AF3F763002BE721 /* HabitsCollectionViewController.swift */; };
 		E40FE60D2B84DC88004551F3 /* CreateNewStreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40FE60C2B84DC88004551F3 /* CreateNewStreakView.swift */; };
 		E40FE6112B84DEB9004551F3 /* CreateNewStreakViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40FE6102B84DEB9004551F3 /* CreateNewStreakViewController.swift */; };
@@ -85,6 +87,8 @@
 		84C305E22B1258B20007A1AE /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		84C633ED2B1535C300366164 /* Reusable + cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reusable + cell.swift"; sourceTree = "<group>"; };
 		84C633EF2B15388800366164 /* UIimage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIimage.swift; sourceTree = "<group>"; };
+		E40BBCC12B97CD7A006C8FBD /* MyStreaksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MyStreaksView.swift; path = Streaker/Modules/NewStreak/Model/MyStreaksView.swift; sourceTree = SOURCE_ROOT; };
+		E40BBCC32B97CD9F006C8FBD /* MyStreaksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyStreaksViewController.swift; sourceTree = "<group>"; };
 		E40D488D2AF3F763002BE721 /* HabitsCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsCollectionViewController.swift; sourceTree = "<group>"; };
 		E40FE60C2B84DC88004551F3 /* CreateNewStreakView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNewStreakView.swift; sourceTree = "<group>"; };
 		E40FE6102B84DEB9004551F3 /* CreateNewStreakViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNewStreakViewController.swift; sourceTree = "<group>"; };
@@ -273,6 +277,7 @@
 		84C305A62B1202890007A1AE /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				E40BBCBD2B97CC99006C8FBD /* MyStreaks */,
 				84B1D8F12B13D16A0068BC12 /* StatsModule */,
 				84B1D8EB2B13C4A70068BC12 /* NewStreak */,
 				E40FE60A2B84DC32004551F3 /* CreateNewStreak */,
@@ -453,10 +458,35 @@
 			path = Protocols;
 			sourceTree = "<group>";
 		};
+		E40BBCBD2B97CC99006C8FBD /* MyStreaks */ = {
+			isa = PBXGroup;
+			children = (
+				E40BBCC02B97CD1D006C8FBD /* View */,
+				E40BBCBE2B97CCFE006C8FBD /* Controller */,
+			);
+			path = MyStreaks;
+			sourceTree = "<group>";
+		};
+		E40BBCBE2B97CCFE006C8FBD /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				E40BBCC32B97CD9F006C8FBD /* MyStreaksViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		E40BBCC02B97CD1D006C8FBD /* View */ = {
+			isa = PBXGroup;
+			children = (
+				E40BBCC12B97CD7A006C8FBD /* MyStreaksView.swift */,
+			);
+			name = View;
+			path = "New Group/View";
+			sourceTree = "<group>";
+		};
 		E40FE60A2B84DC32004551F3 /* CreateNewStreak */ = {
 			isa = PBXGroup;
 			children = (
-				E40FE60E2B84DE59004551F3 /* Model */,
 				E40FE60B2B84DC48004551F3 /* View */,
 				E40FE60F2B84DE7C004551F3 /* Controller */,
 			);
@@ -469,13 +499,6 @@
 				E40FE60C2B84DC88004551F3 /* CreateNewStreakView.swift */,
 			);
 			path = View;
-			sourceTree = "<group>";
-		};
-		E40FE60E2B84DE59004551F3 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		E40FE60F2B84DE7C004551F3 /* Controller */ = {
@@ -632,6 +655,7 @@
 			files = (
 				84C633F02B15388800366164 /* UIimage.swift in Sources */,
 				84C633EE2B1535C300366164 /* Reusable + cell.swift in Sources */,
+				E40BBCC42B97CD9F006C8FBD /* MyStreaksViewController.swift in Sources */,
 				E4C003EE2B63F5210042192A /* HabitsModel.swift in Sources */,
 				E4FF3D5B2AF01EDE009C0C15 /* CustomButton.swift in Sources */,
 				84C305BB2B120A4D0007A1AE /* HabitsDataManager.swift in Sources */,
@@ -642,6 +666,7 @@
 				E40D488E2AF3F763002BE721 /* HabitsCollectionViewController.swift in Sources */,
 				84C305BD2B124FB00007A1AE /* MainView.swift in Sources */,
 				E4FF3D5D2AF05CA0009C0C15 /* ButtonLabel.swift in Sources */,
+				E40BBCC22B97CD7A006C8FBD /* MyStreaksView.swift in Sources */,
 				84B1D8E62B13BAD30068BC12 /* ProfileViewController.swift in Sources */,
 				E40FE6112B84DEB9004551F3 /* CreateNewStreakViewController.swift in Sources */,
 				84C305AB2B1203200007A1AE /* RootNavigaionViewController.swift in Sources */,

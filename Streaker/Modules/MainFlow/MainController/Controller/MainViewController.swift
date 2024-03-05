@@ -43,6 +43,9 @@ class MainViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+        // Update habits and UI to show created and don't show deleted habits
+        habits = loadHabits()
+        updateUI()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -97,12 +100,33 @@ class MainViewController: UIViewController {
         
         }
 
-        private func updateCollectionViews() {
-            for (index, habitsVC) in habitsCollectionViewControllers.enumerated() {
-                habitsVC.cellModels = mainModel.habitsData[index]
-                habitsVC.collectionView.reloadData()
-            }
+    private func updateUI() {
+        // Удаление старых кнопок
+        buttons.forEach { $0.removeFromSuperview() }
+        buttons.removeAll()
+
+        // Удаление старых habitsCollectionViewControllers
+        habitsCollectionViewControllers.forEach {
+            $0.view.removeFromSuperview()
+            $0.removeFromParent()
         }
+        habitsCollectionViewControllers.removeAll()
+
+        // Обновление данных для UI
+        numberOfButtons = habits?.count ?? 0
+        mainModel = MainModel(numberOfButtons: numberOfButtons, cellsPerButton: cellsInAvailableHeight)
+        createHabitsData(forNumberOfButtons: numberOfButtons)
+        setupButtons(totalButtons: numberOfButtons)
+        setupHabitsCollectionViewController()
+        updateCollectionViews()
+    }
+
+    private func updateCollectionViews() {
+        for (index, habitsVC) in habitsCollectionViewControllers.enumerated() {
+            habitsVC.cellModels = mainModel.habitsData[index]
+            habitsVC.collectionView.reloadData()
+        }
+    }
     
 //    private func loadNewDataForButton(at index: Int) -> [HabitCellModel] {
 //        // Получаем текущие модели данных для кнопки

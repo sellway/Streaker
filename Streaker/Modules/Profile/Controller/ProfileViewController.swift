@@ -131,13 +131,15 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate{
         
         switch row {
         case 0:
-            print(0)
+            print("addNewStreak")
             let vc = NewStreakViewController()
             navigationController?.pushViewController(vc, animated: true)
         case 1:
-            print(1)
+            print("myStreaks")
+            let myStreaksVC = MyStreaksViewController()
+            navigationController?.pushViewController(myStreaksVC, animated: true)
         case 2:
-            print(2)
+            print("howItWorks")
         case 3:
             print(3)
             showPauseAlert()
