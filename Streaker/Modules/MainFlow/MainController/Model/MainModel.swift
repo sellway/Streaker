@@ -2,31 +2,32 @@
 
 
 class MainModel {
+    // Data array of HabitCellModels for each habit
     internal private(set) var habitsData: [[HabitCellModel]] = []
+    // Counter array for the number of cells (habits) per button
     var cellCounters: [Int] = []
 
-    // Инициализатор
+    // Initializes model with the given number of buttons and cells per button
     init(numberOfButtons: Int, cellsPerButton: Int) {
         self.habitsData = Array(repeating: Array(repeating: HabitCellModel(state: .emptyCell), count: cellsPerButton), count: numberOfButtons)
         self.cellCounters = Array(repeating: 0, count: numberOfButtons)
     }
 
-    // Функция для обновления состояния клеток при нажатии на кнопку
+    // Updates habit cell data when a button is tapped
     func updateHabitData(forButtonIndex index: Int) {
         guard index < habitsData.count else { return }
         var newModels = habitsData[index]
         cellCounters[index] += 1
-
+        // Replace first empty cell with a completed state or append a new cell model
         if let emptyCellIndex = newModels.firstIndex(where: { $0.state == .emptyCell }) {
             newModels[emptyCellIndex].state = .completedWithNoLine(counter: cellCounters[index])
         } else {
             newModels.append(HabitCellModel(state: .completedWithNoLine(counter: cellCounters[index])))
         }
-
         habitsData[index] = newModels
     }
 
-    // Метод для выравнивания количества клеток во всех рядах
+    // Aligns rows in the collection view to have the same number of cells
     func alignCellRows() {
         let maxCellCount = habitsData.map { $0.count }.max() ?? 0
         for i in 0..<habitsData.count {

@@ -106,7 +106,7 @@ class HabitCollectionViewCell: UICollectionViewCell {
             // Добавляем круг
             let circleView = UIView()
             circleView.translatesAutoresizingMaskIntoConstraints = false
-            circleView.backgroundColor = UIColor(hex: "1FC361") // Задаем цвет круга
+            circleView.backgroundColor = UIColor(hex: "1FC361") // Цвет круга
             circleView.layer.cornerRadius = 16
             circleView.clipsToBounds = true
             borderContainerView.addSubview(circleView)

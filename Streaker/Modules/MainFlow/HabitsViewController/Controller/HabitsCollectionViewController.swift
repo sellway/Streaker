@@ -10,6 +10,7 @@
 import UIKit
 import SnapKit
 
+// HabitsCollectionViewController manages the display and interaction with the collection of habit cells
 class HabitsCollectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, HabitsModelProtocol {
     var cellCounter: Int = 0
     var habitsData: [[HabitCellModel]] = []
@@ -18,13 +19,12 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
     
     // Add this stub to conform to 'HabitsModelProtocol'
     func updateCellView() {
-        // Implementation: Update the view based on the cell data or perform any necessary actions
-        // Example: Reload the collection view data after updating the cell view
+        // Update the view based on the cell data
         collectionView.reloadData()
     }
 
     func moveCellUp(from sourceIndex: Int, to destinationIndex: Int) {
-        // Implementation: Move the cell from the source index to the destination index
+        // Move the cell from the source index to the destination index
         guard sourceIndex < cellModels.count && destinationIndex < cellModels.count else {
             // Ensure that both indices are valid
             return
@@ -38,75 +38,62 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         collectionView.reloadData()
     }
 
-    
+    // Collection view to show habit cells
     var collectionView: UICollectionView!
+        // Models for each cell, triggering updates on change
         var cellModels: [HabitCellModel] = [] {
             didSet {
                 updateHabitsCollectionViews()
             }
         }
     
-    var habitsModel: HabitsModelProtocol = HabitsModel()
+    var habitsModel: HabitsModelProtocol = HabitsModel() // Model containing the habit data
     var buttonColor: UIColor?
     var buttonSize: CGSize = .zero
     
-    // Хранение всех HabitsCollectionViewController, которые должны синхронизировать скролл
+    // Array to hold references for synchronized scrolling
     static var synchronizedCollectionViews: [HabitsCollectionViewController] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupCollectionView()
-        loadCellModels()
-        collectionView.reloadData()
+        setupCollectionView() // Load the cell models for the collection view
+        collectionView.reloadData() // Load the cell models for the collection view
         // Добавляем текущий экземпляр в массив синхронизированных экземпляров
         HabitsCollectionViewController.synchronizedCollectionViews.append(self)
-        setupHabitsCollectionViewController(buttons: buttons)
     }
     
+    // Initializes and configures the collection view
     private func setupCollectionView() {
+        // Define layout properties for the collection view
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.itemSize = CGSize(width: 0, height: 0) // Установите размер элементов здесь
-        layout.minimumLineSpacing = 0
-        layout.minimumInteritemSpacing = 0
+        layout.scrollDirection = .vertical // Set the scroll direction to vertical
+        layout.itemSize = CGSize(width: 0, height: 0)
+        layout.minimumLineSpacing = 0 // Set spacing between lines to 0
+        layout.minimumInteritemSpacing = 0 // Set spacing between items to 0
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                 let safeAreaTop = windowScene.windows.first?.safeAreaInsets.top ?? 0.0
                 // 88 height of customNavBar
                 layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 88 + safeAreaTop, right: 0)
             }
+        // Create the collection view with the defined layout
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(HabitCollectionViewCell.self, forCellWithReuseIdentifier: "HabitCell")
-        collectionView.dataSource = self
-        collectionView.delegate = self
+        collectionView.dataSource = self // Set the data source for the collection view
+        collectionView.delegate = self // Set the delegate for the collection view
         collectionView.backgroundColor = .clear
         collectionView.showsVerticalScrollIndicator = false
         collectionView.isScrollEnabled = true
         
+        // Add the collection view to the view hierarchy and set constraints
         view.addSubview(collectionView)
-        
         collectionView.transform = CGAffineTransform(scaleX: 1, y: -1)
-        
         collectionView.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
             make.left.right.equalToSuperview()
         }
     }
     
-    private func setupHabitsCollectionViewController(buttons: [CustomButton]) {
-            for (index, button) in buttons.enumerated() {
-                let habitsVC = HabitsCollectionViewController()
-                habitsVC.habitsModel = HabitsModel() // Initialize the model if needed
-                habitsVC.habitsModel.cellModels = self.habitsData[index]
-
-                habitsVC.buttonColor = button.backgroundColor
-                habitsVC.buttonSize = button.frame.size
-                habitsVC.collectionView.backgroundColor = .clear
-
-                self.habitsCollectionViewControllers.append(habitsVC)
-            }
-        }
-    
-    // Метод для обновления модели во всех HabitsCollectionViewController
+    // Method to update the model in all HabitsCollectionViewControllers
     private func updateHabitsCollectionViews() {
         for habitsVC in habitsCollectionViewControllers {
             habitsVC.cellModels = cellModels
@@ -114,15 +101,9 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
         }
     }
     
-    // Загрузка моделей данных для ячеек
-    func loadCellModels() {
-        cellModels = habitsModel.cellModels
-    }
-    
-    
     // MARK: - UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return cellModels.count // Возвращаем количество элементов, основываясь на массиве моделей
+        return cellModels.count // Returning the number of elements based on the model array
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -137,17 +118,17 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
     
     // MARK: - UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        // Здесь вы можете настроить размер ячейки в зависимости от модели данных
+        // Here you can adjust the cell size depending on the data model
         let model = cellModels[indexPath.item]
         switch model.state {
         case .emptyCell, .completedWithNoLine, .notCompleted, .progress:
             return CGSize(width: buttonSize.width, height: buttonSize.height + (buttonSize.height * 0.200))
         case .emptySpace:
-            return CGSize(width: buttonSize.width, height: 0) // Размеры для полоски внизу над кнопками
+            return CGSize(width: buttonSize.width, height: 0) // Dimensions for the stripe below the buttons
         }
     }
     
-    // Синхронизация скролла
+    // Scroll synchronization
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         for synchronizedVC in HabitsCollectionViewController.synchronizedCollectionViews {
             if synchronizedVC != self {
