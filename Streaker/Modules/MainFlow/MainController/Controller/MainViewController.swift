@@ -2,17 +2,19 @@ import UIKit
 import SnapKit
 import RealmSwift
 
-class MainViewController: UIViewController {
+class MainViewController: UIViewController, UIGestureRecognizerDelegate {
     // Lazy property that counts the number of HabitModel objects stored in Realm
     lazy var savedRecordsCount: Int = try! Realm().objects(HabitsModel.self).count
     // Collection of habits from Realm
     var habits: Results<HabitsModel>?
     // Custom buttons placed at the bottom of the screen
     var buttons: [CustomButton] = []
-    // Array to hold the collection view controllers that display the habits
-    private var habitsCollectionViewControllers: [HabitsCollectionViewController] = []
     // An array of arrays holding the cell models for each habit
     private var habitsData: [[HabitCellModel]] = []
+    // Array to hold the collection view controllers that display the habits
+    private var pageViewController: CustomPageViewController!
+    private var wrappedHabitsViewControllers: [UIViewController] = []
+    private var habitsCollectionViewControllers: [HabitsCollectionViewController] = []
     // Dynamically calculates the number of buttons based on the count of saved records
     private lazy var numberOfButtons: Int = savedRecordsCount
     // The view that contains custom buttons for adding habits and opening settings
@@ -36,19 +38,20 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         initViewController()
         habits = loadHabits()
-        createBlurBackground(at: .top)
-        createBlurBackground(at: .bottom)
-        setupButtons(totalButtons: numberOfButtons)
-        setupHabitsCollectionViewController()
-        updateBlurBackgroundPositionAndSize()
-        setupCustomNavigationBar()
+        //setupButtons(totalButtons: numberOfButtons)
         cellCounters = Array(repeating: 0, count: numberOfButtons)
         mainModel = MainModel(numberOfButtons: numberOfButtons, cellsPerButton: cellsInAvailableHeight)
+        setupPageViewController()
+        setupViewControllersForPaging()
+        createBlurBackground(at: .top)
+        createBlurBackground(at: .bottom)
+        updateBlurBackgroundPositionAndSize()
+        setupCustomNavigationBar()
         view.backgroundColor = UIColor(hex: "#1C1C1E")
-    }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        print("CollectionView did scroll: \(scrollView.contentOffset)")
+        // Add swipe gesture recognizer
+        let swipeGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handleSwipe(_:)))
+        swipeGestureRecognizer.delegate = self
+        view.addGestureRecognizer(swipeGestureRecognizer)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -62,6 +65,15 @@ class MainViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+    
+    @objc private func handleSwipe(_ gesture: UIPanGestureRecognizer) {
+        print("Swipe gesture detected in MainViewController with translation: \(gesture.translation(in: view))")
+        let translation = gesture.translation(in: view)
+        // Determine if swipe is horizontal and handle it by setting the appropriate view controller
+        if abs(translation.x) > abs(translation.y) {
+            pageViewController.handleGesture(gesture)
+        }
     }
     
     // Loads the persisted habits from Realm database and returns them
@@ -81,34 +93,34 @@ class MainViewController: UIViewController {
     }
     
     // Initializes and configures buttons based on the total number of habits, and adds them to the view
-    private func setupButtons(totalButtons: Int) {
-        // Очищаем существующие данные и кнопки перед их созданием
-        buttons.forEach { $0.removeFromSuperview() }
-        buttons.removeAll()
-        habitsData = Array(repeating: [], count: totalButtons)
-        
-        for index in 0..<totalButtons {
-            // Создаем кнопку
-            let button = CustomButton()
-            if let habit = habits?[index] {
-                button.labelBelowButton.updateText(with: habit.name, isOn: false)
-                button.habitName = habit.name
-            }
-            button.scaleButtonElements(forScreenWidth: view.bounds.width)
-            button.setPositionAtBottomCenter(in: view, index: index, totalButtons: totalButtons)
-            button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
-            buttons.append(button)
-            
-            // Создаем данные для кнопки
-            habitsData[index] = loadInitialDataForButton(at: index)
-        }
-        
-        // Перерисовываем интерфейс, чтобы убедиться, что кнопки отображаются корректно
-        view.layoutIfNeeded()
-        
-        // Обновляем представления коллекции с новыми данными
-        updateCollectionViews()
-    }
+//    private func setupButtons(totalButtons: Int) {
+//        // Очищаем существующие данные и кнопки перед их созданием
+//        buttons.forEach { $0.removeFromSuperview() }
+//        buttons.removeAll()
+//        habitsData = Array(repeating: [], count: totalButtons)
+//
+//        for index in 0..<totalButtons {
+//            // Создаем кнопку
+//            let button = CustomButton()
+//            if let habit = habits?[index] {
+//                button.labelBelowButton.updateText(with: habit.name, isOn: false)
+//                button.habitName = habit.name
+//            }
+//            button.scaleButtonElements(forScreenWidth: view.bounds.width)
+//            button.setPositionAtBottomCenter(in: view, index: index, totalButtons: totalButtons)
+//            button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+//            buttons.append(button)
+//
+//            // Создаем данные для кнопки
+//            habitsData[index] = loadInitialDataForButton(at: index)
+//        }
+//
+//        // Перерисовываем интерфейс, чтобы убедиться, что кнопки отображаются корректно
+//        view.layoutIfNeeded()
+//
+//        // Обновляем представления коллекции с новыми данными
+//        updateCollectionViews()
+//    }
     
     
     // Action handler for when a button is tapped; updates habit data and refreshes the collection views
@@ -139,61 +151,157 @@ class MainViewController: UIViewController {
         // Обновление данных для UI
         numberOfButtons = habits?.count ?? 0
         mainModel = MainModel(numberOfButtons: numberOfButtons, cellsPerButton: cellsInAvailableHeight)
-        setupButtons(totalButtons: numberOfButtons)
-        setupHabitsCollectionViewController()
+        //setupButtons(totalButtons: numberOfButtons)
         updateCollectionViews()
+        setupViewControllersForPaging()
     }
     
     // Refreshes the cells in all collection views to reflect any changes in the data model
     private func updateCollectionViews() {
         for (index, habitsVC) in habitsCollectionViewControllers.enumerated() {
-            habitsVC.cellModels = mainModel.habitsData[index]
-            habitsVC.collectionView.reloadData()
+            if index < mainModel.habitsData.count {
+                habitsVC.cellModels = mainModel.habitsData[index]
+                habitsVC.collectionView.reloadData()
+            } else {
+                print("Warning: The index \(index) is out of range for mainModel.habitsData")
+            }
         }
     }
     
-    // Initializes and configures the collection view controllers for displaying habits
-    private func setupHabitsCollectionViewController() {
-        // Iterate through each button which represents a habit
-        for (index, button) in buttons.enumerated() {
-            // Create a new HabitsCollectionViewController for each habit
+    
+    //     //Initializes and configures the collection view controllers for displaying habits
+    //    private func setupHabitsCollectionViewController() {
+    //        // Iterate through each button which represents a habit
+    //        for (index, button) in buttons.enumerated() {
+    //            // Create a new HabitsCollectionViewController for each habit
+    //            let habitsVC = HabitsCollectionViewController()
+    //            // Initialize the model for the view controller. This is where the habit data would be passed to the view controller
+    //            habitsVC.habitsModel = HabitsModel()
+    //            // Add the new collection view controller as a child to the current view controller
+    //            self.addChild(habitsVC)
+    //            // Add the collection view as a subview to the main view controller's view
+    //            self.view.addSubview(habitsVC.view)
+    //            // Notify the collection view controller that it has moved to the current parent view controller
+    //            habitsVC.didMove(toParent: self)
+    //            // Store the reference to the collection view controller in an array for later use
+    //            habitsCollectionViewControllers.append(habitsVC)
+    //            // Assign the cell models for this particular habit to the collection view controller
+    //            habitsVC.cellModels = habitsData[index]
+    //            // Set the collection view's scrolling behavior
+    //            habitsVC.collectionView.contentInsetAdjustmentBehavior = .never
+    //            // Set the initial content offset for the collection view
+    //            habitsVC.collectionView.contentOffset = CGPoint(x: 0, y: 0)
+    //            // Set the insets for the collection view to adjust its scrollable area
+    //            habitsVC.collectionView.contentInset = UIEdgeInsets(top: actualButtonHeight, left: 0, bottom: 0, right: 0)
+    //            // Set the insets for the scroll indicators of the collection view
+    //            habitsVC.collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    //            // Place the collection view behind other subviews in the main view
+    //            self.view.sendSubviewToBack(habitsVC.view)
+    //            // Set the layer position of the view to the bottom
+    //            //habitsVC.view.layer.zPosition = 0
+    //            // If there is at least one button, pass its size to the collection view controller.
+    //            if let firstButton = buttons.first {
+    //                habitsVC.buttonSize = firstButton.bounds.size
+    //            }
+    //            // Use SnapKit to make layout constraints for the collection view.
+    //                habitsVC.view.snp.makeConstraints { make in
+    //                    make.width.equalTo(button.snp.width).offset(18)
+    //                    make.centerX.equalTo(button.snp.centerX)
+    //                    make.top.bottom.equalToSuperview()
+    //                }
+    //        }
+    //    }
+    
+    private func setupPageViewController() {
+        let options: [UIPageViewController.OptionsKey: Any] = [.interPageSpacing: 20]
+        pageViewController = CustomPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: options)
+        pageViewController.dataSource = self // Set this view controller as the data source
+        
+        // Add the pageViewController as a child
+        addChild(pageViewController)
+        view.addSubview(pageViewController.view)
+        pageViewController.didMove(toParent: self)
+        pageViewController.view.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        // Set the initial view controllers for paging
+        setupViewControllersForPaging()
+        
+        // This line allows the pageViewController's view to pass touches to the views below it
+        pageViewController.view.isUserInteractionEnabled = false
+    }
+    
+    private func setupViewControllersForPaging() {
+        // Очищаем существующие контроллеры и кнопки
+        wrappedHabitsViewControllers.forEach { $0.view.removeFromSuperview() }
+        wrappedHabitsViewControllers.removeAll()
+        habitsCollectionViewControllers.forEach { $0.view.removeFromSuperview() }
+        habitsCollectionViewControllers.removeAll()
+        buttons.forEach { $0.removeFromSuperview() }
+        buttons.removeAll()
+
+        // Загружаем привычки из Realm
+        habits = loadHabits()
+        let totalButtons = habits?.count ?? 0
+
+        // Группируем данные для каждой привычки
+        habitsData = habits?.enumerated().map { index, _ in
+            return loadInitialDataForButton(at: index)
+        } ?? []
+
+        // Получаем количество страниц
+        let numberOfPages = (totalButtons + 3) / 4 // Добавляем 3 для округления в большую сторону
+
+        for pageIndex in 0..<numberOfPages {
+            // Создаем контейнер для текущей страницы
+            let pageContainerViewController = UIViewController()
+
+            // Создаем и добавляем кнопки и HabitsCollectionViewController для страницы
+            var pageButtons: [CustomButton] = []
             let habitsVC = HabitsCollectionViewController()
-            // Initialize the model for the view controller. This is where the habit data would be passed to the view controller
-            habitsVC.habitsModel = HabitsModel()
-            // Add the new collection view controller as a child to the current view controller
-            self.addChild(habitsVC)
-            // Add the collection view as a subview to the main view controller's view
-            self.view.addSubview(habitsVC.view)
-            // Notify the collection view controller that it has moved to the current parent view controller
-            habitsVC.didMove(toParent: self)
-            // Store the reference to the collection view controller in an array for later use
-            habitsCollectionViewControllers.append(habitsVC)
-            // Assign the cell models for this particular habit to the collection view controller
-            habitsVC.cellModels = habitsData[index]
-            // Set the collection view's scrolling behavior
-            habitsVC.collectionView.contentInsetAdjustmentBehavior = .never
-            // Set the initial content offset for the collection view
-            habitsVC.collectionView.contentOffset = CGPoint(x: 0, y: 0)
-            // Set the insets for the collection view to adjust its scrollable area
-            habitsVC.collectionView.contentInset = UIEdgeInsets(top: actualButtonHeight, left: 0, bottom: 0, right: 0)
-            // Set the insets for the scroll indicators of the collection view
-            habitsVC.collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-            // Place the collection view behind other subviews in the main view
-            self.view.sendSubviewToBack(habitsVC.view)
-            // Set the layer position of the view to the bottom
-            habitsVC.view.layer.zPosition = 0
-            // If there is at least one button, pass its size to the collection view controller.
-            if let firstButton = buttons.first {
-                habitsVC.buttonSize = firstButton.bounds.size
+            pageContainerViewController.addChild(habitsVC)
+            habitsVC.view.frame = pageContainerViewController.view.bounds // Определите размеры и позицию в соответствии с вашим дизайном
+            pageContainerViewController.view.addSubview(habitsVC.view)
+            habitsVC.didMove(toParent: pageContainerViewController)
+
+            for buttonIndex in 0..<4 {
+                let habitIndex = pageIndex * 4 + buttonIndex
+                if habitIndex >= totalButtons { break }
+
+                // Создаем и конфигурируем кнопку
+                let button = CustomButton()
+                if let habit = habits?[habitIndex] {
+                    button.labelBelowButton.updateText(with: habit.name, isOn: false)
+                    button.habitName = habit.name
+                }
+                button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+                pageContainerViewController.view.addSubview(button)
+
+                button.scaleButtonElements(forScreenWidth: view.bounds.width)
+                button.setPositionAtBottomCenter(in: view, index: habitIndex, totalButtons: totalButtons)
+                button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+
+                pageButtons.append(button)
             }
-            // Use SnapKit to make layout constraints for the collection view.
-            habitsVC.view.snp.makeConstraints { make in
-                make.width.equalTo(button.snp.width).offset(18)
-                make.centerX.equalTo(button.snp.centerX)
-                make.top.bottom.equalToSuperview()
-            }
+            buttons += pageButtons // Сохраняем кнопки для общего доступа
+
+            // Настройка данных коллекции и constraints
+            let startIndex = pageIndex * 4
+            let endIndex = min(startIndex + 4, habitsData.count)
+            let pageHabitsData = Array(habitsData[startIndex..<endIndex])
+            habitsVC.cellModels = pageHabitsData.flatMap { $0 }
+
+            // Добавляем контейнер страницы в массив
+            wrappedHabitsViewControllers.append(pageContainerViewController)
+        }
+
+        // Устанавливаем первый контейнер страницы как текущий
+        if let firstPage = wrappedHabitsViewControllers.first {
+            pageViewController.setViewControllers([firstPage], direction: .forward, animated: false, completion: nil)
         }
     }
+
     
     // Calculates the number of cells that can fit in the available screen height
     lazy var cellsInAvailableHeight: Int = {
@@ -382,7 +490,7 @@ extension MainViewController {
     }
 }
 
-//MARK: scrollViewDidEndDragging
+// MARK: - scrollViewDidEndDragging
 extension HabitsCollectionViewController {
     // After a user stops scrolling the collection view, this method checks for empty cells and resets the scroll if necessary
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
@@ -408,3 +516,69 @@ extension HabitsCollectionViewController {
         }
     }
 }
+
+// MARK: - UIPageViewControllerDataSource
+
+extension MainViewController: UIPageViewControllerDataSource {
+    
+    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
+        guard let viewControllerIndex = wrappedHabitsViewControllers.firstIndex(of: viewController),
+              viewControllerIndex > 0 else {
+            return nil
+        }
+        let previousIndex = viewControllerIndex - 1
+        return wrappedHabitsViewControllers[previousIndex]
+    }
+    
+    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
+        guard let viewControllerIndex = wrappedHabitsViewControllers.firstIndex(of: viewController),
+              viewControllerIndex < wrappedHabitsViewControllers.count - 1 else {
+            return nil
+        }
+        let nextIndex = viewControllerIndex + 1
+        return wrappedHabitsViewControllers[nextIndex]
+    }
+    
+    func presentationCount(for pageViewController: UIPageViewController) -> Int {
+        return wrappedHabitsViewControllers.count
+    }
+    
+    func presentationIndex(for pageViewController: UIPageViewController) -> Int {
+        guard let firstViewController = pageViewController.viewControllers?.first,
+              let viewControllerIndex = wrappedHabitsViewControllers.firstIndex(of: firstViewController) else {
+            return 0
+        }
+        return viewControllerIndex
+    }
+}
+
+// MARK: - UIScrollViewDelegate
+extension MainViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        print("CollectionView did scroll: \(scrollView.contentOffset)")
+    }
+    
+    // Добавьте другие методы протокола UIScrollViewDelegate, если они вам нужны.
+}
+
+extension Array {
+    func chunked(into size: Int) -> [[Element]] {
+        stride(from: startIndex, to: endIndex, by: size).map {
+            Array(self[$0..<Swift.min($0.advanced(by: size), endIndex)])
+        }
+    }
+}
+
+class CustomPageViewController: UIPageViewController {
+    func handleGesture(_ gesture: UIPanGestureRecognizer) {
+        // Pass the gesture to the page view controller's own gesture recognizer
+        self.gestureRecognizers.forEach { recognizer in
+            recognizer.isEnabled = true
+            if let panRecognizer = recognizer as? UIPanGestureRecognizer {
+                panRecognizer.setTranslation(gesture.translation(in: gesture.view), in: gesture.view)
+                panRecognizer.velocity(in: gesture.view)
+            }
+        }
+    }
+}
+

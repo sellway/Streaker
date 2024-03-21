@@ -63,35 +63,42 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
     }
     
     // Initializes and configures the collection view
-    private func setupCollectionView() {
+    func setupCollectionView() {
         // Define layout properties for the collection view
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical // Set the scroll direction to vertical
-        layout.itemSize = CGSize(width: 0, height: 0)
+        
+        // Calculate the cell width and height based on the screen size to fit 4 cells in a row
+        let cellWidth = (view.bounds.width - 3 * layout.minimumInteritemSpacing) / 4
+        let cellHeight: CGFloat = 74 * UIScreen.main.bounds.width / 375 // Height with the same ratio
+        layout.itemSize = CGSize(width: cellWidth, height: cellHeight) // Set the cell size
         layout.minimumLineSpacing = 0 // Set spacing between lines to 0
         layout.minimumInteritemSpacing = 0 // Set spacing between items to 0
+        
+        // Adjust the sectionInset if needed
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                let safeAreaTop = windowScene.windows.first?.safeAreaInsets.top ?? 0.0
-                // 88 height of customNavBar
-                layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 88 + safeAreaTop, right: 0)
-            }
+            let safeAreaTop = windowScene.windows.first?.safeAreaInsets.top ?? 0.0
+            layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 88 + safeAreaTop, right: 0)
+        }
+        
         // Create the collection view with the defined layout
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(HabitCollectionViewCell.self, forCellWithReuseIdentifier: "HabitCell")
-        collectionView.dataSource = self // Set the data source for the collection view
-        collectionView.delegate = self // Set the delegate for the collection view
+        collectionView.dataSource = self
+        collectionView.delegate = self
         collectionView.backgroundColor = .clear
         collectionView.showsVerticalScrollIndicator = false
         collectionView.isScrollEnabled = true
+        collectionView.transform = CGAffineTransform(scaleX: 1, y: -1)
         
         // Add the collection view to the view hierarchy and set constraints
         view.addSubview(collectionView)
-        collectionView.transform = CGAffineTransform(scaleX: 1, y: -1)
         collectionView.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
             make.left.right.equalToSuperview()
         }
     }
+
     
     // Method to update the model in all HabitsCollectionViewControllers
     private func updateHabitsCollectionViews() {
