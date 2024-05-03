@@ -1,11 +1,6 @@
-//
-//  AppDelegate.swift
-//  Streaker
-//
-//  Created by Viacheslav Andriienko on 30/10/23.
-//
 
 import UIKit
+//import RealmSwift
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -20,14 +15,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let configStorage = ConfigurationStorage()
         
+        // Проверка, было ли последнее изменение сделано сегодня
         if let lastDate = configStorage.lastModifiedDate, Calendar.current.isDateInToday(lastDate) {
+            // Если последняя модификация была сегодня, дополнительных действий не требуется
         } else {
-            // Если последняя модификация была не сегодня, обновляем dayCounter и сохраняем новую дату
+            // Обновляем счётчик дней и устанавливаем текущую дату как последнюю дату модификации
             let currentDayCounter = configStorage.dayCounter ?? 0
             configStorage.dayCounter = currentDayCounter + 1
             configStorage.lastModifiedDate = Date()
         }
+
+        // Очистка всех данных Realm при каждом запуске приложения
+        //deleteAllFromRealm()
         
         return true
     }
+    
+//    func deleteAllFromRealm() {
+//        do {
+//            let realm = try Realm()
+//            try realm.write {
+//                realm.deleteAll()
+//            }
+//            print("All data deleted from Realm.")
+//        } catch let error as NSError {
+//            print("Error deleting data from Realm: \(error.localizedDescription)")
+//        }
+//    }
 }

@@ -1,10 +1,14 @@
-//
-//  DataBaseManager.swift
-//  Streaker
-//
-//  Created by Viacheslav Andriienko on 11/25/23.
-//
+/*
 
+Этот файл DataBaseManager.swift включает в себя следующие классы и функциональности:
+1 - HabitsDataManager: Управляет операциями с данными для объектов HabitsModel в базе данных Realm.
+2 - saveHabitsToRealm: Сохраняет или обновляет привычки в базе данных, используя транзакции Realm.
+3 - loadAllHabitsFromRealm: Загружает все объекты HabitsModel из базы данных Realm в массив.
+4 - ConfigurationStorage: Управляет сохранением и извлечением настроек и конфигураций приложения, используя UserDefaults.
+5 - Предоставляет доступ к настройкам, таким как счетчик дней и последняя дата модификации, через свойства с сохранением и загрузкой значений.
+6 - mainData: Свойство для хранения сложных данных в формате массива словарей.
+
+*/
 import Foundation
 import RealmSwift
 
@@ -18,16 +22,19 @@ class HabitsDataManager {
         do {
             let realm = try Realm()
             try realm.write {
-                let habitObject = HabitsModel()
-                habitObject.name = habitsModel.name
-                habitObject.color = habitsModel.color
-                // Копируйте другие свойства, если есть
-                realm.add(habitObject)
+                if let existingHabit = realm.object(ofType: HabitsModel.self, forPrimaryKey: habitsModel.id) {
+                    existingHabit.counter = habitsModel.counter
+                    print("Updated existing habit: \(existingHabit.name), counter: \(existingHabit.counter)")
+                } else {
+                    realm.add(habitsModel)
+                    print("Added new habit: \(habitsModel.name), counter: \(habitsModel.counter)")
+                }
             }
         } catch {
             print("Error saving habits to Realm: \(error)")
         }
     }
+
     
     func loadAllHabitsFromRealm() -> [HabitsModel] {
         do {

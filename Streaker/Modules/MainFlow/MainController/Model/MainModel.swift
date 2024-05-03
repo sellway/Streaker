@@ -1,5 +1,11 @@
+/*
 
+Этот класс MainModel:
+1 - Инициализирует и управляет данными о привычках и их представлением в виде ячеек.
+2 - Обеспечивает функционал для обновления данных при взаимодействии пользователя с интерфейсом.
+3 - Синхронизирует количество ячеек во всех строках представления, гарантируя одинаковое количество в каждой строке.
 
+*/
 
 class MainModel {
     // Data array of HabitCellModels for each habit
@@ -15,7 +21,7 @@ class MainModel {
 
     // Updates habit cell data when a button is tapped
     func updateHabitData(forButtonIndex index: Int) {
-        guard index < habitsData.count else { return }
+        guard index < habitsData.count, !habitsData[index].isEmpty else { return }
         var newModels = habitsData[index]
         cellCounters[index] += 1
         // Replace first empty cell with a completed state or append a new cell model
@@ -31,10 +37,10 @@ class MainModel {
     func alignCellRows() {
         let maxCellCount = habitsData.map { $0.count }.max() ?? 0
         for i in 0..<habitsData.count {
-            let currentCount = habitsData[i].count
-            if currentCount < maxCellCount {
-                habitsData[i].append(contentsOf: Array(repeating: HabitCellModel(state: .emptyCell), count: maxCellCount - currentCount))
-            }
+                let currentCount = habitsData[i].count
+                if currentCount < maxCellCount {
+                    habitsData[i].append(contentsOf: Array(repeating: HabitCellModel(state: .emptyCell), count: maxCellCount - currentCount))
+                }
         }
     }
 
