@@ -1,9 +1,11 @@
-//
-//  CreateNewStreakViewController.swift
-//  Streaker
-//
-//  Created by Viacheslav Andriienko on 20/2/24.
-//
+/*
+
+Этот класс CreateNewStreakViewController:
+1 - Управляет экраном для создания новой привычки, содержит представление CreateNewStreakView.
+2 - Настраивает элементы интерфейса, включая навигационную панель с кнопками сохранения и отмены.
+3 - Сохраняет новую привычку в базу данных и выводит все сохраненные привычки в консоль.
+
+*/
 
 import UIKit
 

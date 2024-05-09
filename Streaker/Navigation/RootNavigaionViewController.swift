@@ -1,9 +1,10 @@
-//
-//  RootNavigaionViewController.swift
-//  Streaker
-//
-//  Created by Volodymyr Kolomyltsev on 11/25/23.
-//
+/*
+Этот класс `RootNavigationViewController`:
+
+1. Создает корневой `UINavigationController` с `MainViewController` в качестве начального контроллера.
+2. Настраивает внешний вид навигационной панели с помощью `UINavigationBarAppearance`, добавляя прозрачный фон, эффект размытия и белый цвет текста.
+3. Скрывает навигационную панель, устанавливая свойство `isNavigationBarHidden` в `false`.
+*/
 
 import Foundation
 import UIKit

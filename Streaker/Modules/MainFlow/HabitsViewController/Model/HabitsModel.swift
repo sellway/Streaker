@@ -14,12 +14,14 @@ import Foundation
 class HabitCell: Object {
     @Persisted(primaryKey: true) var id: ObjectId
     @Persisted var stateType: String  // 'empty', 'completed', 'notCompleted', 'progress', 'emptySpace'
-    @Persisted var counter: Int?      // используется для completedWithNoLine
-    @Persisted var percentage: Double?  // используется для progress
-    
+    @Persisted var stateNumber: Int   // Номер состояния внутри типа
+    @Persisted var position: Int      // Позиция ячейки
+    @Persisted var percentage: Double?// используется для progress
+
     // Связь с объектом Habit, если необходима
     @Persisted(originProperty: "cells") var habit: LinkingObjects<HabitsModel>
 }
+
 
 protocol HabitsModelProtocol {
     var cellCounter: Int { get }

@@ -43,7 +43,6 @@
 		E45E28E92AF1C6A100104C32 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = E45E28E82AF1C6A100104C32 /* Lottie */; };
 		E45E28EC2AF1C82800104C32 /* confetti.json in Resources */ = {isa = PBXBuildFile; fileRef = E45E28EB2AF1C82800104C32 /* confetti.json */; };
 		E45E28EE2AF1D59800104C32 /* ConfettiAnimationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45E28ED2AF1D59800104C32 /* ConfettiAnimationManager.swift */; };
-		E47015E22BA4BC9B00AECE8A /* ScrollViewSimultaneousGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47015E12BA4BC9B00AECE8A /* ScrollViewSimultaneousGesture.swift */; };
 		E48BFFC52B7221D600B922F2 /* MainModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48BFFC42B7221D600B922F2 /* MainModel.swift */; };
 		E4BDDB572AF7BCF400AF25D4 /* PocketSVG in Frameworks */ = {isa = PBXBuildFile; productRef = E4BDDB562AF7BCF400AF25D4 /* PocketSVG */; };
 		E4BDDB5C2AF7CE5A00AF25D4 /* progressView.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4BDDB582AF7CE5A00AF25D4 /* progressView.svg */; };
@@ -99,7 +98,6 @@
 		E4322B4C2AFB102600312750 /* cross.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cross.svg; sourceTree = "<group>"; };
 		E45E28EB2AF1C82800104C32 /* confetti.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = confetti.json; sourceTree = "<group>"; };
 		E45E28ED2AF1D59800104C32 /* ConfettiAnimationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiAnimationManager.swift; sourceTree = "<group>"; };
-		E47015E12BA4BC9B00AECE8A /* ScrollViewSimultaneousGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewSimultaneousGesture.swift; sourceTree = "<group>"; };
 		E48BFFC42B7221D600B922F2 /* MainModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainModel.swift; sourceTree = "<group>"; };
 		E4BDDB582AF7CE5A00AF25D4 /* progressView.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = progressView.svg; sourceTree = "<group>"; };
 		E4BDDB592AF7CE5A00AF25D4 /* completedWithNoLine.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = completedWithNoLine.svg; sourceTree = "<group>"; };
@@ -346,7 +344,6 @@
 			isa = PBXGroup;
 			children = (
 				E4FF3D4A2AF01BA6009C0C15 /* MainViewController.swift */,
-				E47015E12BA4BC9B00AECE8A /* ScrollViewSimultaneousGesture.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -656,7 +653,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E47015E22BA4BC9B00AECE8A /* ScrollViewSimultaneousGesture.swift in Sources */,
 				84C633F02B15388800366164 /* UIimage.swift in Sources */,
 				84C633EE2B1535C300366164 /* Reusable + cell.swift in Sources */,
 				E40BBCC42B97CD9F006C8FBD /* MyStreaksViewController.swift in Sources */,

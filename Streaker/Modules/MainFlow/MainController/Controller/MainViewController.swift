@@ -1,11 +1,11 @@
 /*
-
-Этот класс MainViewController:
-1 - Инициализирует и настраивает кнопки, коллекционные представления и другие элементы пользовательского интерфейса.
-2 - Загружает данные привычек из базы данных Realm и обновляет интерфейс в соответствии с этими данными.
-3 - Реагирует на действия пользователя, такие как нажатия на кнопки, и обновляет данные и представления.
-4 - Поддерживает синхронизацию прокрутки между различными коллекционными представлениями, управляемыми экземплярами HabitsCollectionViewController.
-*/
+ 
+ Этот класс MainViewController:
+ 1 - Инициализирует и настраивает кнопки, коллекционные представления и другие элементы пользовательского интерфейса.
+ 2 - Загружает данные привычек из базы данных Realm и обновляет интерфейс в соответствии с этими данными.
+ 3 - Реагирует на действия пользователя, такие как нажатия на кнопки, и обновляет данные и представления.
+ 4 - Поддерживает синхронизацию прокрутки между различными коллекционными представлениями, управляемыми экземплярами HabitsCollectionViewController.
+ */
 
 import UIKit
 import SnapKit
@@ -45,6 +45,7 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         initViewController()
         habits = loadHabits()
+        habitsData = HabitsDataManager.shared.loadHabitsData()
         createBlurBackground(at: .top)
         createBlurBackground(at: .bottom)
         setupButtons(totalButtons: numberOfButtons)
@@ -54,11 +55,11 @@ class MainViewController: UIViewController {
         cellCounters = Array(repeating: 0, count: numberOfButtons)
         mainModel = MainModel(numberOfButtons: numberOfButtons, cellsPerButton: cellsInAvailableHeight)
         if let loadedHabits = loadHabits() {
-                habits = loadedHabits
-                habitsData = loadedHabits.map { habit in
-                    return Array(repeating: HabitCellModel(state: .completedWithNoLine(counter: habit.counter)), count: cellsInAvailableHeight)
-                }
+            habits = loadedHabits
+            habitsData = loadedHabits.map { habit in
+                return Array(repeating: HabitCellModel(state: .completedWithNoLine(counter: habit.counter)), count: cellsInAvailableHeight)
             }
+        }
         view.backgroundColor = UIColor(hex: "#1C1C1E")
     }
     
@@ -148,7 +149,16 @@ class MainViewController: UIViewController {
             try realm.write {
                 habitToUpdate.counter += 1
                 print("Increased counter for habit: \(habitToUpdate.name) to \(habitToUpdate.counter)")
+                
+                // Найдите и обновите все связанные ячейки привычки
+                let habitCells = habitToUpdate.cells.sorted(byKeyPath: "position", ascending: true)
+                for (index, cell) in habitCells.enumerated() {
+                    cell.stateNumber = habitToUpdate.counter + index
+                    HabitsDataManager.shared.saveHabitCellState(cell)
+                }
             }
+            
+            // Обновите данные коллекционных представлений
             habitsData[buttonIndex] = loadInitialDataForButton(at: buttonIndex)
         } catch {
             print("Error updating habit counter in Realm: \(error)")
@@ -156,6 +166,7 @@ class MainViewController: UIViewController {
         mainModel.alignCellRows()
         updateCollectionViews()
     }
+
     
     // Updates the user interface by removing old components and setting up new ones based on the current data
     private func updateUI() {
@@ -176,6 +187,8 @@ class MainViewController: UIViewController {
         // Обновление данных для UI
         numberOfButtons = habits?.count ?? 0
         mainModel = MainModel(numberOfButtons: numberOfButtons, cellsPerButton: cellsInAvailableHeight)
+        
+        // Инициализация и настройка кнопок
         setupButtons(totalButtons: numberOfButtons)
         setupHabitsCollectionViewController()
         updateCollectionViews()

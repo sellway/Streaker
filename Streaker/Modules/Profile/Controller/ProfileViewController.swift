@@ -1,9 +1,11 @@
-//
-//  ProfileViewController.swift
-//  Streaker
-//
-//  Created by Viacheslav Andriienko on 11/26/23.
-//
+/*
+
+Этот класс `ProfileViewController`:
+1 - Управляет экраном профиля, инициализирует и настраивает элементы через метод `initViewController`.
+2 - Настраивает таблицу для отображения элементов профиля с использованием модели `ProfileModel`.
+3 - Обрабатывает выбор элементов таблицы, выполняя соответствующие действия, такие как переход на другой экран или показ алерта.
+
+*/
 
 import UIKit
 import MessageUI

@@ -1,9 +1,11 @@
-//
-//  SizeHelper.swift
-//  Streaker
-//
-//  Created by Viacheslav Andriienko on 11/26/23.
-//
+/*
+
+Этот код:
+1 - Добавляет расширения для числовых типов `BinaryFloatingPoint` и `BinaryInteger`.
+2 - Обеспечивает удобные вычисления относительных размеров для ширины (`sizeW`) и высоты (`sizeH`), масштабируемых в соответствии с текущим экраном.
+3 - Реализует логику условной масштабируемости с методами `lessThanOrEqualToSizeW` и `lessThanOrEqualToSizeH`, которые возвращают либо масштабированное значение, либо оригинальное значение.
+
+*/
 
 import Foundation
 import UIKit

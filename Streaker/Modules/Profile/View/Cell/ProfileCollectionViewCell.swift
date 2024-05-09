@@ -1,9 +1,11 @@
-//
-//  ProfileCollectionViewCell.swift
-//  Streaker
-//
-//  Created by Viacheslav Andriienko on 11/26/23.
-//
+/*
+
+Этот класс `ProfileButtonCell`:
+1 - Отображает кнопку в профиле с изображением и заголовком, определёнными в модели `ProfileModel`.
+2 - Настраивает внешний вид и расположение элементов в ячейке.
+3 - Обновляет интерфейс ячейки при изменении модели, отображая соответствующие изображение и заголовок.
+
+*/
 
 import Foundation
 import UIKit
