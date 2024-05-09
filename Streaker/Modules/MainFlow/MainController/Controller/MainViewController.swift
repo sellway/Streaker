@@ -94,9 +94,10 @@ class MainViewController: UIViewController {
             let realm = try Realm()
             let habits = realm.objects(HabitsModel.self)
             print("Loaded \(habits.count) habits")
-            for habit in habits {
-                print("Habit: \(habit.name), counter: \(habit.counter)")
-            }
+            habits.forEach { habit in
+                    let sortedCells = habit.cells.sorted(byKeyPath: "position", ascending: true)
+                    // Далее используйте sortedCells как отсортированный массив ячеек для каждой привычки
+                }
             return habits
         } catch {
             print("Error loading habits from Realm: \(error)")

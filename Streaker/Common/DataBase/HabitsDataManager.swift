@@ -6,37 +6,37 @@ class HabitsDataManager {
     static let shared = HabitsDataManager()
     
     private init() {} // Приватный инициализатор для синглтона
-    
-    // Функция для обновления и получения данных привычек и их ячеек
-    func loadHabitsData() -> [[HabitCellModel]] {
-        do {
-            let realm = try Realm()
-            let habits = realm.objects(HabitsModel.self)
-            
-            return habits.map { habit in
-                // Сортируем клетки привычки по позиции
-                let sortedCells = habit.cells.sorted(byKeyPath: "position", ascending: true)
-                // Преобразуем `HabitCell` в `HabitCellModel`
-                return sortedCells.map { habitCell in
-                    switch habitCell.stateType {
-                    case "completedWithNoLine":
-                        return HabitCellModel(state: .completedWithNoLine(counter: habitCell.stateNumber))
-                    case "notCompleted":
-                        return HabitCellModel(state: .notCompleted)
-                    case "progress":
-                        return HabitCellModel(state: .progress(percentage: habitCell.percentage ?? 0))
-                    case "emptySpace":
-                        return HabitCellModel(state: .emptySpace)
-                    default:
-                        return HabitCellModel(state: .emptyCell)
+        
+        // Функция для обновления и получения данных привычек и их ячеек
+        func loadHabitsData() -> [[HabitCellModel]] {
+            do {
+                let realm = try Realm()
+                let habits = realm.objects(HabitsModel.self)
+                
+                return habits.map { habit in
+                    // Сортируем клетки привычки по позиции
+                    let sortedCells = habit.cells.sorted(byKeyPath: "position", ascending: true)
+                    // Преобразуем `HabitCell` в `HabitCellModel`
+                    return sortedCells.map { habitCell in
+                        switch habitCell.stateType {
+                        case "completedWithNoLine":
+                            return HabitCellModel(state: .completedWithNoLine(counter: habitCell.stateNumber))
+                        case "notCompleted":
+                            return HabitCellModel(state: .notCompleted)
+                        case "progress":
+                            return HabitCellModel(state: .progress(percentage: habitCell.percentage ?? 0))
+                        case "emptySpace":
+                            return HabitCellModel(state: .emptySpace)
+                        default:
+                            return HabitCellModel(state: .emptyCell)
+                        }
                     }
                 }
+            } catch {
+                print("Ошибка загрузки привычек из Realm: \(error)")
+                return []
             }
-        } catch {
-            print("Ошибка загрузки привычек из Realm: \(error)")
-            return []
         }
-    }
     
     // Сохраняет или обновляет привычки в базе данных, используя транзакции Realm
     func saveHabitsToRealm(habitsModel: HabitsModel) {
