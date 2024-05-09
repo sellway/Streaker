@@ -58,16 +58,17 @@ class HabitsDataManager {
     }
     
     // Добавляет новую функцию для сохранения состояния ячейки привычки
-        func saveHabitCellState(_ habitCell: HabitCell) {
-            do {
-                let realm = try Realm()
-                try realm.write {
-                    realm.add(habitCell, update: .modified)
-                }
-            } catch {
-                print("Ошибка сохранения состояния ячейки: \(error)")
+    func saveHabitCellState(_ habitCell: HabitCell) {
+        do {
+            let realm = try Realm()
+            try realm.write {
+                realm.add(habitCell, update: .modified)
+                print("Successfully saved cell with position: \(habitCell.position), stateNumber: \(habitCell.stateNumber)")
             }
+        } catch {
+            print("Error saving habit cell state: \(error)")
         }
+    }
     
     // Загружает все объекты HabitsModel из базы данных в массив
     func loadAllHabitsFromRealm() -> [HabitsModel] {

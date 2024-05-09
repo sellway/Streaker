@@ -13,7 +13,15 @@ import RealmSwift
 
 class MainViewController: UIViewController {
     // Lazy property that counts the number of HabitModel objects stored in Realm
-    lazy var savedRecordsCount: Int = try! Realm().objects(HabitsModel.self).count
+    lazy var savedRecordsCount: Int = {
+        do {
+            let realm = try Realm()
+            return realm.objects(HabitsModel.self).count
+        } catch {
+            print("Error initializing Realm: \(error)")
+            return 0
+        }
+    }()
     // Collection of habits from Realm
     var habits: Results<HabitsModel>?
     // Custom buttons placed at the bottom of the screen
@@ -152,9 +160,14 @@ class MainViewController: UIViewController {
                 
                 // Найдите и обновите все связанные ячейки привычки
                 let habitCells = habitToUpdate.cells.sorted(byKeyPath: "position", ascending: true)
+                print("Number of cells for habit: \(habitToUpdate.name) is \(habitCells.count)")
                 for (index, cell) in habitCells.enumerated() {
                     cell.stateNumber = habitToUpdate.counter + index
-                    HabitsDataManager.shared.saveHabitCellState(cell)
+                    cell.position = index // Обновляем позицию
+                    print("Updating cell: \(cell)")
+                    HabitsDataManager.shared.saveHabitCellState(cell) // Сохраняем обновленные данные
+                    // Печатаем информацию о позиции и номере клетки
+                    print("Saving cell position: \(cell.position), stateNumber: \(cell.stateNumber) for habit: \(habitToUpdate.name)")
                 }
             }
             
@@ -195,7 +208,7 @@ class MainViewController: UIViewController {
     }
     
     // Refreshes the cells in all collection views to reflect any changes in the data model
-    private func updateCollectionViews() {
+    func updateCollectionViews() {
         for (index, habitsVC) in habitsCollectionViewControllers.enumerated() {
             habitsVC.cellModels = mainModel.habitsData[index]
             DispatchQueue.main.async {
