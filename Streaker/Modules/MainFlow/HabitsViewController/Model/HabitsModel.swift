@@ -15,7 +15,7 @@ class HabitCell: Object {
     @Persisted(primaryKey: true) var id: ObjectId
     @Persisted var stateType: String  // 'empty', 'completed', 'notCompleted', 'progress', 'emptySpace'
     @Persisted var stateNumber: Int   // Номер состояния внутри типа
-    @Persisted var position: Int      // Позиция ячейки
+    @Persisted var timestamp: Date = Date()
     @Persisted var percentage: Double?// используется для progress
 
     // Связь с объектом Habit, если необходима

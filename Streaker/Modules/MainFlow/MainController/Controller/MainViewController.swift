@@ -49,6 +49,7 @@ class MainViewController: UIViewController {
     private var bottomBlurEffectView: UIVisualEffectView?
     
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         initViewController()
@@ -62,13 +63,17 @@ class MainViewController: UIViewController {
         setupCustomNavigationBar()
         cellCounters = Array(repeating: 0, count: numberOfButtons)
         mainModel = MainModel(numberOfButtons: numberOfButtons, cellsPerButton: cellsInAvailableHeight)
-        if let loadedHabits = loadHabits() {
-            habits = loadedHabits
-            habitsData = loadedHabits.map { habit in
-                return Array(repeating: HabitCellModel(state: .completedWithNoLine(counter: habit.counter)), count: cellsInAvailableHeight)
-            }
-        }
+//        if let loadedHabits = loadHabits() {
+//            habits = loadedHabits
+//            habitsData = loadedHabits.map { habit in
+//                return Array(repeating: HabitCellModel(state: .completedWithNoLine(counter: habit.counter)), count: cellsInAvailableHeight)
+//            }
+//        }
         view.backgroundColor = UIColor(hex: "#1C1C1E")
+        // Создаем и настраиваем MyStreaksViewController
+        let myStreaksVC = MyStreaksViewController()
+        myStreaksVC.mainViewController = self
+        updateUI() // Обновление интерфейса с загруженными данными
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -78,8 +83,13 @@ class MainViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
-        // Update habits and UI to show created and don't show deleted habits
         habits = loadHabits()
+        // Обновляем данные для каждой кнопки
+        for i in 0..<buttons.count {
+            habitsData[i] = loadInitialDataForButton(at: i)
+        }
+        updateCollectionViews()  // Обновляем представления для отражения новых данных
+        reloadHabitsData() // Перезагружаем данные перед их использованием
         updateUI()
     }
     
@@ -94,10 +104,7 @@ class MainViewController: UIViewController {
             let realm = try Realm()
             let habits = realm.objects(HabitsModel.self)
             print("Loaded \(habits.count) habits")
-            habits.forEach { habit in
-                    let sortedCells = habit.cells.sorted(byKeyPath: "position", ascending: true)
-                    // Далее используйте sortedCells как отсортированный массив ячеек для каждой привычки
-                }
+            
             return habits
         } catch {
             print("Error loading habits from Realm: \(error)")
@@ -105,17 +112,37 @@ class MainViewController: UIViewController {
         }
     }
     
+    func reloadHabitsData() {
+        habits = loadHabits()
+        // Проверяем каждую кнопку и обновляем данные
+        for i in 0..<buttons.count {
+            if i < habits?.count ?? 0 {
+                habitsData[i] = loadInitialDataForButton(at: i)
+            }
+        }
+        updateCollectionViews()  // Обновляем представления для отражения новых данных
+    }
+
+    private func maxCellsCount() -> Int {
+        return habits?.map { $0.counter }.max() ?? 0
+    }
+    
     // Sets up the button data initially loaded for each habit, forming an array of habit cell models
-    private func loadInitialDataForButton(at index: Int) -> [HabitCellModel] {
-        // Здесь используем актуальное значение счетчика из объекта привычки
-        if let habit = habits?[index] {
-            // Если привычка существует, создаем массив моделей ячеек с состоянием completedWithNoLine и заданным счетчиком
-            return Array(repeating: HabitCellModel(state: .completedWithNoLine(counter: habit.counter)), count: cellsInAvailableHeight)
+    func loadInitialDataForButton(at index: Int) -> [HabitCellModel] {
+        guard index < (habits?.count ?? 0), let habit = habits?[index] else {
+            return []
+        }
+        let maxCells = maxCellsCount()
+        if habit.counter > 0 {
+            let completedCells = (1...habit.counter).map { HabitCellModel(state: .completedWithNoLine(counter: $0)) }
+            let emptyCells = Array(repeating: HabitCellModel(state: .emptyCell), count: maxCells - habit.counter)
+            return completedCells + emptyCells
         } else {
-            // Если данные отсутствуют, возвращаем массив пустых ячеек
-            return Array(repeating: HabitCellModel(state: .emptyCell), count: cellsInAvailableHeight)
+            // Если данные отсутствуют или counter равен 0, возвращаем массив пустых ячеек согласно максимальному количеству
+            return Array(repeating: HabitCellModel(state: .emptyCell), count: maxCells)
         }
     }
+
     
     // Initializes and configures buttons based on the total number of habits, and adds them to the view
     private func setupButtons(totalButtons: Int) {
@@ -123,6 +150,10 @@ class MainViewController: UIViewController {
         buttons.forEach { $0.removeFromSuperview() }
         buttons.removeAll()
         habitsData = Array(repeating: [], count: totalButtons)
+        
+//        if habitsData.isEmpty {
+//                habitsData = Array(repeating: [], count: totalButtons)
+//            }
         
         for index in 0..<totalButtons {
             // Создаем кнопку
@@ -152,33 +183,32 @@ class MainViewController: UIViewController {
     @objc private func buttonTapped(_ sender: CustomButton) {
         guard let buttonIndex = buttons.firstIndex(of: sender),
               let habitToUpdate = habits?[buttonIndex] else { return }
-        mainModel.updateHabitData(forButtonIndex: buttonIndex)
+        
         do {
             let realm = try Realm()
             try realm.write {
-                habitToUpdate.counter += 1
-                print("Increased counter for habit: \(habitToUpdate.name) to \(habitToUpdate.counter)")
+                habitToUpdate.counter += 1  // Увеличиваем счетчик привычки
+                realm.add(habitToUpdate, update: .modified)  // Сохраняем изменения в Realm
                 
-                // Найдите и обновите все связанные ячейки привычки
-                let habitCells = habitToUpdate.cells.sorted(byKeyPath: "position", ascending: true)
-                print("Number of cells for habit: \(habitToUpdate.name) is \(habitCells.count)")
-                for (index, cell) in habitCells.enumerated() {
-                    cell.stateNumber = habitToUpdate.counter + index
-                    cell.position = index // Обновляем позицию
-                    print("Updating cell: \(cell)")
-                    HabitsDataManager.shared.saveHabitCellState(cell) // Сохраняем обновленные данные
-                    // Печатаем информацию о позиции и номере клетки
-                    print("Saving cell position: \(cell.position), stateNumber: \(cell.stateNumber) for habit: \(habitToUpdate.name)")
-                }
+                // Обновляем UI
+                updateCellState(for: buttonIndex, withNewCounter: habitToUpdate.counter)
             }
-            
-            // Обновите данные коллекционных представлений
-            habitsData[buttonIndex] = loadInitialDataForButton(at: buttonIndex)
         } catch {
             print("Error updating habit counter in Realm: \(error)")
         }
-        mainModel.alignCellRows()
-        updateCollectionViews()
+    }
+
+    private func updateCellState(for buttonIndex: Int, withNewCounter counter: Int) {
+        // Убедимся, что обновляем только новые данные
+        let existingData = habitsData[buttonIndex]
+        if existingData.count < counter {
+            // Добавляем только недостающие элементы
+            let newData = (existingData.count+1...counter).map {
+                HabitCellModel(state: .completedWithNoLine(counter: $0))
+            }
+            habitsData[buttonIndex].append(contentsOf: newData)
+        }
+        updateCollectionViews()  // Обновляем коллекционное представление для отображения новых данных
     }
 
     
@@ -209,14 +239,48 @@ class MainViewController: UIViewController {
     }
     
     // Refreshes the cells in all collection views to reflect any changes in the data model
+//    func updateCollectionViews() {
+//        for (index, habitsVC) in habitsCollectionViewControllers.enumerated() {
+//            habitsVC.cellModels = habitsData[index]
+//            habitsVC.collectionView.reloadData()
+//        }
+//    }
+//    func updateCollectionViews() {
+//            for (index, habitsVC) in habitsCollectionViewControllers.enumerated() {
+//                habitsVC.cellModels = mainModel.habitsData[index]
+//                DispatchQueue.main.async {
+//                    habitsVC.collectionView.reloadData()
+//                }
+//            }
+//        }
     func updateCollectionViews() {
         for (index, habitsVC) in habitsCollectionViewControllers.enumerated() {
-            habitsVC.cellModels = mainModel.habitsData[index]
+            habitsVC.cellModels = habitsData[index]
             DispatchQueue.main.async {
                 habitsVC.collectionView.reloadData()
             }
         }
     }
+    
+    func deleteHabitFromUI(at indexPath: IndexPath) {
+        guard indexPath.row < buttons.count else {
+            print("Index out of range")
+            return
+        }
+
+        do {
+            let realm = try Realm()
+            try realm.write {
+                if let habit = habits?[indexPath.row], indexPath.row < habits?.count ?? 0 {
+                    realm.delete(habit)
+                    updateUI() // Вызовите обновление UI после изменения данных
+                }
+            }
+        } catch let error as NSError {
+            print("Ошибка удаления привычки: \(error.localizedDescription)")
+        }
+    }
+
     
     // Initializes and configures the collection view controllers for displaying habits
     private func setupHabitsCollectionViewController() {
@@ -272,6 +336,20 @@ class MainViewController: UIViewController {
         let totalHeightOfButtonsAndLabels = buttonHeight + labelHeight + bottomPadding
         let availableHeight = view.safeAreaLayoutGuide.layoutFrame.height - totalHeightOfButtonsAndLabels
         let calculatedCells = Int(floor(availableHeight / cellHeight))
+
+        // Check and save to Realm
+        let realm = try! Realm()
+        if let storedInfo = realm.object(ofType: ScreenCellsInfo.self, forPrimaryKey: 0) {
+            print("Loaded cell count from Realm: \(storedInfo.cellCount)")
+            return storedInfo.cellCount
+        } else {
+            try! realm.write {
+                let newInfo = ScreenCellsInfo()
+                newInfo.cellCount = calculatedCells
+                realm.add(newInfo, update: .modified)
+            }
+            print("Calculated and saved new cell count to Realm: \(calculatedCells)")
+        }
         return calculatedCells
     }()
     

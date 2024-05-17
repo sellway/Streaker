@@ -17,8 +17,23 @@ struct HabitCellModel {
         case emptyCell
         case completedWithNoLine(counter: Int)
         case notCompleted
-        case progress(percentage: Double) // Добавлено новое состояние с процентом
+        case progress(percentage: Double)
         case emptySpace
+
+        static func convertFromRealmStateType(_ type: String, number: Int? = nil, percentage: Double? = nil) -> HabitCellModel.State {
+            switch type {
+            case "completedWithNoLine":
+                return .completedWithNoLine(counter: number ?? 0)
+            case "notCompleted":
+                return .notCompleted
+            case "progress":
+                return .progress(percentage: percentage ?? 0.0)
+            case "emptySpace":
+                return .emptySpace
+            default:
+                return .emptyCell
+            }
+        }
     }
     
     var state: State

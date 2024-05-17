@@ -7,36 +7,23 @@ class HabitsDataManager {
     
     private init() {} // Приватный инициализатор для синглтона
         
-        // Функция для обновления и получения данных привычек и их ячеек
-        func loadHabitsData() -> [[HabitCellModel]] {
-            do {
-                let realm = try Realm()
-                let habits = realm.objects(HabitsModel.self)
-                
-                return habits.map { habit in
-                    // Сортируем клетки привычки по позиции
-                    let sortedCells = habit.cells.sorted(byKeyPath: "position", ascending: true)
-                    // Преобразуем `HabitCell` в `HabitCellModel`
-                    return sortedCells.map { habitCell in
-                        switch habitCell.stateType {
-                        case "completedWithNoLine":
-                            return HabitCellModel(state: .completedWithNoLine(counter: habitCell.stateNumber))
-                        case "notCompleted":
-                            return HabitCellModel(state: .notCompleted)
-                        case "progress":
-                            return HabitCellModel(state: .progress(percentage: habitCell.percentage ?? 0))
-                        case "emptySpace":
-                            return HabitCellModel(state: .emptySpace)
-                        default:
-                            return HabitCellModel(state: .emptyCell)
-                        }
-                    }
+    // Функция для обновления и получения данных привычек и их ячеек
+    func loadHabitsData() -> [[HabitCellModel]] {
+        do {
+            let realm = try Realm()
+            let habits = realm.objects(HabitsModel.self)
+            
+            return habits.map { habit in
+                let sortedCells = habit.cells.sorted(byKeyPath: "timestamp", ascending: true)
+                return sortedCells.map { habitCell in
+                    return HabitCellModel(state: HabitCellModel.State.convertFromRealmStateType(habitCell.stateType, number: habitCell.stateNumber, percentage: habitCell.percentage))
                 }
-            } catch {
-                print("Ошибка загрузки привычек из Realm: \(error)")
-                return []
             }
+        } catch {
+            print("Ошибка загрузки привычек из Realm: \(error)")
+            return []
         }
+    }
     
     // Сохраняет или обновляет привычки в базе данных, используя транзакции Realm
     func saveHabitsToRealm(habitsModel: HabitsModel) {
@@ -63,7 +50,7 @@ class HabitsDataManager {
             let realm = try Realm()
             try realm.write {
                 realm.add(habitCell, update: .modified)
-                print("Successfully saved cell with position: \(habitCell.position), stateNumber: \(habitCell.stateNumber)")
+                print("Successfully saved cell with stateType: \(habitCell.stateType), stateNumber: \(habitCell.stateNumber)")
             }
         } catch {
             print("Error saving habit cell state: \(error)")
@@ -81,8 +68,8 @@ class HabitsDataManager {
         }
     }
     
-    // Обновляет позицию и состояние ячейки в базе данных Realm
-    func updateHabitCellStateAndPosition(id: ObjectId, newPosition: Int, newStateType: String, newStateNumber: Int) {
+    // Обновляет состояние ячейки в базе данных Realm
+    func updateHabitCellStateAndPosition(id: ObjectId, newStateType: String, newStateNumber: Int) {
         do {
             let realm = try Realm()
             // Поиск объекта HabitCell по заданному идентификатору
@@ -90,7 +77,7 @@ class HabitsDataManager {
                 try realm.write {
                     habitCell.stateType = newStateType
                     habitCell.stateNumber = newStateNumber
-                    habitCell.position = newPosition
+                    habitCell.timestamp = Date()  // Обновляем временную метку
                 }
                 print("HabitCell с ID \(id) успешно обновлена.")
             } else {
@@ -128,3 +115,12 @@ class HabitsDataManager {
             self.userDefaults = userDefaults
         }
     }
+
+class ScreenCellsInfo: Object {
+    @objc dynamic var id = 0
+    @objc dynamic var cellCount = 0
+    
+    override static func primaryKey() -> String? {
+        return "id"
+    }
+}
