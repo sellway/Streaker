@@ -56,10 +56,11 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupCollectionView() // Load the cell models for the collection view
-        collectionView.reloadData() // Load the cell models for the collection view
+        setupCollectionView() // Инициализация и настройка коллекции
         // Добавляем текущий экземпляр в массив синхронизированных экземпляров
         HabitsCollectionViewController.synchronizedCollectionViews.append(self)
+        // Перемещаем коллекцию на задний план
+        view.sendSubviewToBack(collectionView)
     }
     
     // Initializes and configures the collection view
@@ -91,6 +92,8 @@ class HabitsCollectionViewController: UIViewController, UICollectionViewDataSour
             make.top.bottom.equalToSuperview()
             make.left.right.equalToSuperview()
         }
+        // Перемещаем коллекцию на задний план, чтобы кнопки были впереди
+        view.sendSubviewToBack(collectionView)
     }
     
     // Method to update the model in all HabitsCollectionViewControllers

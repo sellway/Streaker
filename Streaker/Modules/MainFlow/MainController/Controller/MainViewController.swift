@@ -1,5 +1,14 @@
 /*
  
+ Инструкция для чата GPT:
+ 1 - Пиши только строки кода которые нужно вставить/заменить
+ 2 - Не пиши весь класс целиком
+ 3 - Не пиши функции целиком
+ 4 - Пиши строку после/вместо которой вставить текст в виде комментария //
+ 5 - Отвечай на вопросы коротко
+ 6 - Пиши код в формате было/стало при это пиши только код который поменялся
+ 7 - Код который не поменялся писать не нужно
+ 
  Этот класс MainViewController:
  1 - Инициализирует и настраивает кнопки, коллекционные представления и другие элементы пользовательского интерфейса.
  2 - Загружает данные привычек из базы данных Realm и обновляет интерфейс в соответствии с этими данными.
@@ -22,6 +31,8 @@ class MainViewController: UIViewController {
             return 0
         }
     }()
+    var scrollView: UIScrollView!
+    var contentView: UIView!
     // Collection of habits from Realm
     var habits: Results<HabitsModel>?
     // Custom buttons placed at the bottom of the screen
@@ -34,6 +45,7 @@ class MainViewController: UIViewController {
     private lazy var numberOfButtons: Int = savedRecordsCount
     // The view that contains custom buttons for adding habits and opening settings
     private var mainView = MainView()
+    var containerView: UIView!
     // Object for accessing app configurations stored in UserDefaults
     private let storage = ConfigurationStorage()
     // A custom navigation bar view
@@ -47,37 +59,28 @@ class MainViewController: UIViewController {
     private var alertController: UIAlertController?
     private var topBlurEffectView: UIVisualEffectView?
     private var bottomBlurEffectView: UIVisualEffectView?
-    
-    
+    private var totalContentWidth: CGFloat = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = UIColor(hex: "#1C1C1E")
+        setupScrollView()
+        setupContentView()
+        //createBlurBackground(at: .bottom)
+        setupHabitsCollectionViewController()
+        setupButtons(totalButtons: numberOfButtons)
+        //createBlurBackground(at: .top)
         initViewController()
         habits = loadHabits()
         habitsData = HabitsDataManager.shared.loadHabitsData()
-        createBlurBackground(at: .top)
-        createBlurBackground(at: .bottom)
-        setupButtons(totalButtons: numberOfButtons)
-        setupHabitsCollectionViewController()
-        updateBlurBackgroundPositionAndSize()
+        //updateBlurBackgroundPositionAndSize()
         setupCustomNavigationBar()
         cellCounters = Array(repeating: 0, count: numberOfButtons)
         mainModel = MainModel(numberOfButtons: numberOfButtons, cellsPerButton: cellsInAvailableHeight)
-//        if let loadedHabits = loadHabits() {
-//            habits = loadedHabits
-//            habitsData = loadedHabits.map { habit in
-//                return Array(repeating: HabitCellModel(state: .completedWithNoLine(counter: habit.counter)), count: cellsInAvailableHeight)
-//            }
-//        }
-        view.backgroundColor = UIColor(hex: "#1C1C1E")
         // Создаем и настраиваем MyStreaksViewController
         let myStreaksVC = MyStreaksViewController()
         myStreaksVC.mainViewController = self
-        updateUI() // Обновление интерфейса с загруженными данными
-    }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        print("CollectionView did scroll: \(scrollView.contentOffset)")
+        //updateUI() // Обновление интерфейса с загруженными данными
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -122,7 +125,32 @@ class MainViewController: UIViewController {
         }
         updateCollectionViews()  // Обновляем представления для отражения новых данных
     }
-
+    
+    private func setupScrollView() {
+        scrollView = UIScrollView()
+        scrollView.alwaysBounceHorizontal = true
+        scrollView.alwaysBounceVertical = false
+        scrollView.isScrollEnabled = true
+        scrollView.isDirectionalLockEnabled = false
+        scrollView.showsVerticalScrollIndicator = false
+        view.addSubview(scrollView)
+        scrollView.contentInsetAdjustmentBehavior = .never
+        scrollView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.height.equalToSuperview()
+        }
+    }
+    
+    private func setupContentView() {
+        contentView = UIView()
+        scrollView.addSubview(contentView)
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.height.equalToSuperview()
+            make.width.equalTo(totalContentWidth)
+        }
+    }
+    
     private func maxCellsCount() -> Int {
         return habits?.map { $0.counter }.max() ?? 0
     }
@@ -142,7 +170,7 @@ class MainViewController: UIViewController {
             return Array(repeating: HabitCellModel(state: .emptyCell), count: maxCells)
         }
     }
-
+    
     
     // Initializes and configures buttons based on the total number of habits, and adds them to the view
     private func setupButtons(totalButtons: Int) {
@@ -151,9 +179,9 @@ class MainViewController: UIViewController {
         buttons.removeAll()
         habitsData = Array(repeating: [], count: totalButtons)
         
-//        if habitsData.isEmpty {
-//                habitsData = Array(repeating: [], count: totalButtons)
-//            }
+        //        if habitsData.isEmpty {
+        //                habitsData = Array(repeating: [], count: totalButtons)
+        //            }
         
         for index in 0..<totalButtons {
             // Создаем кнопку
@@ -162,20 +190,41 @@ class MainViewController: UIViewController {
                 button.labelBelowButton.updateText(with: habit.name, isOn: false)
                 button.habitName = habit.name
             }
-            button.scaleButtonElements(forScreenWidth: view.bounds.width)
-            button.setPositionAtBottomCenter(in: view, index: index, totalButtons: totalButtons)
+            //button.scaleButtonElements(forScreenWidth: contentView.bounds.width)
+            button.setPosition(in: contentView, index: index, totalButtons: totalButtons)
+            contentView.bringSubviewToFront(button)
             button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+            button.isUserInteractionEnabled = true
             buttons.append(button)
+            
+            // Устанавливаем z-позицию кнопки
+            button.layer.zPosition = 1
             
             // Создаем данные для кнопки
             habitsData[index] = loadInitialDataForButton(at: index)
         }
         
-        // Перерисовываем интерфейс, чтобы убедиться, что кнопки отображаются корректно
-        view.layoutIfNeeded()
         
-        // Обновляем представления коллекции с новыми данными
-        updateCollectionViews()
+        // Перерисовываем интерфейс, чтобы убедиться, что кнопки отображаются корректно
+            contentView.layoutIfNeeded()
+
+            // Вычисляем buttonSpacing
+        let baseScreenWidth: CGFloat = 375 // Width of iPhone SE screen
+        let screenWidth = UIScreen.main.bounds.width
+        let scaleFactor = screenWidth / baseScreenWidth
+        let buttonSpacing: CGFloat = 16 * scaleFactor
+
+            // Устанавливаем contentSize для scrollView
+            let totalContentWidth = CGFloat(totalButtons) * (CustomButton.buttonSize.width + buttonSpacing) - buttonSpacing
+            scrollView.contentSize = CGSize(width: totalContentWidth, height: scrollView.frame.height)
+        
+        // Обновляем ширину contentView после изменения contentSize
+            contentView.snp.updateConstraints { make in
+                make.width.equalTo(totalContentWidth)
+            }
+
+            // Обновляем представления коллекции с новыми данными
+            updateCollectionViews()
     }
     
     
@@ -197,7 +246,7 @@ class MainViewController: UIViewController {
             print("Error updating habit counter in Realm: \(error)")
         }
     }
-
+    
     private func updateCellState(for buttonIndex: Int, withNewCounter counter: Int) {
         // Убедимся, что обновляем только новые данные
         let existingData = habitsData[buttonIndex]
@@ -210,7 +259,7 @@ class MainViewController: UIViewController {
         }
         updateCollectionViews()  // Обновляем коллекционное представление для отображения новых данных
     }
-
+    
     
     // Updates the user interface by removing old components and setting up new ones based on the current data
     private func updateUI() {
@@ -239,25 +288,27 @@ class MainViewController: UIViewController {
     }
     
     // Refreshes the cells in all collection views to reflect any changes in the data model
-//    func updateCollectionViews() {
-//        for (index, habitsVC) in habitsCollectionViewControllers.enumerated() {
-//            habitsVC.cellModels = habitsData[index]
-//            habitsVC.collectionView.reloadData()
-//        }
-//    }
-//    func updateCollectionViews() {
-//            for (index, habitsVC) in habitsCollectionViewControllers.enumerated() {
-//                habitsVC.cellModels = mainModel.habitsData[index]
-//                DispatchQueue.main.async {
-//                    habitsVC.collectionView.reloadData()
-//                }
-//            }
-//        }
+    //    func updateCollectionViews() {
+    //        for (index, habitsVC) in habitsCollectionViewControllers.enumerated() {
+    //            habitsVC.cellModels = habitsData[index]
+    //            habitsVC.collectionView.reloadData()
+    //        }
+    //    }
+    //    func updateCollectionViews() {
+    //            for (index, habitsVC) in habitsCollectionViewControllers.enumerated() {
+    //                habitsVC.cellModels = mainModel.habitsData[index]
+    //                DispatchQueue.main.async {
+    //                    habitsVC.collectionView.reloadData()
+    //                }
+    //            }
+    //        }
+    
     func updateCollectionViews() {
         for (index, habitsVC) in habitsCollectionViewControllers.enumerated() {
             habitsVC.cellModels = habitsData[index]
             DispatchQueue.main.async {
                 habitsVC.collectionView.reloadData()
+                self.contentView.sendSubviewToBack(habitsVC.view)
             }
         }
     }
@@ -267,7 +318,7 @@ class MainViewController: UIViewController {
             print("Index out of range")
             return
         }
-
+        
         do {
             let realm = try Realm()
             try realm.write {
@@ -280,7 +331,7 @@ class MainViewController: UIViewController {
             print("Ошибка удаления привычки: \(error.localizedDescription)")
         }
     }
-
+    
     
     // Initializes and configures the collection view controllers for displaying habits
     private func setupHabitsCollectionViewController() {
@@ -293,7 +344,7 @@ class MainViewController: UIViewController {
             // Add the new collection view controller as a child to the current view controller
             self.addChild(habitsVC)
             // Add the collection view as a subview to the main view controller's view
-            self.view.addSubview(habitsVC.view)
+            self.contentView.addSubview(habitsVC.view)
             // Notify the collection view controller that it has moved to the current parent view controller
             habitsVC.didMove(toParent: self)
             // Store the reference to the collection view controller in an array for later use
@@ -310,7 +361,7 @@ class MainViewController: UIViewController {
             habitsVC.collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             // Place the collection view behind other subviews in the main view
             self.view.sendSubviewToBack(habitsVC.view)
-            // Set the layer position of the view to the bottom
+            // Устанавливаем z-позицию коллекции
             habitsVC.view.layer.zPosition = 0
             // If there is at least one button, pass its size to the collection view controller.
             if let firstButton = buttons.first {
@@ -336,7 +387,7 @@ class MainViewController: UIViewController {
         let totalHeightOfButtonsAndLabels = buttonHeight + labelHeight + bottomPadding
         let availableHeight = view.safeAreaLayoutGuide.layoutFrame.height - totalHeightOfButtonsAndLabels
         let calculatedCells = Int(floor(availableHeight / cellHeight))
-
+        
         // Check and save to Realm
         let realm = try! Realm()
         if let storedInfo = realm.object(ofType: ScreenCellsInfo.self, forPrimaryKey: 0) {
@@ -396,54 +447,55 @@ class MainViewController: UIViewController {
 //}
 
 // MARK: - Blur Background Handling
-extension MainViewController {
-    
-    enum BlurPosition {
-        case top, bottom
-    }
-    
-    private func createBlurBackground(at position: BlurPosition) {
-        let blurEffect = UIBlurEffect(style: .dark)
-        let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView.translatesAutoresizingMaskIntoConstraints = false
-        
-        if position == .top {
-            // For top blur effect (navigation bar)
-            view.insertSubview(blurEffectView, at: 4)
-            topBlurEffectView = blurEffectView
-        } else {
-            // For bottom blur effect (tab bar)
-            view.insertSubview(blurEffectView, at: 4)
-            bottomBlurEffectView = blurEffectView
-        }
-    }
-    
-    private func updateBlurBackgroundPositionAndSize() {
-        // Update top blur effect view
-        if let topBlurEffectView = topBlurEffectView {
-            topBlurEffectView.snp.remakeConstraints { make in
-                make.leading.trailing.equalToSuperview()
-                make.top.equalToSuperview()
-                // Use the safe area's top anchor, which includes the status bar and navigation bar heights inherently
-                make.bottom.equalTo(customNavBar.snp.bottom).offset(8)
-            }
-        }
-        
-        // Update bottom blur effect view
-        if let referenceButton = buttons.first, let bottomBlurEffectView = bottomBlurEffectView {
-            let buttonFrame = view.convert(referenceButton.frame, from: referenceButton.superview)
-            let bottomPadding = view.bounds.height - buttonFrame.maxY
-            let blurBackgroundHeight = bottomPadding + buttonFrame.height / 2
-            
-            bottomBlurEffectView.snp.remakeConstraints { make in
-                make.leading.trailing.bottom.equalToSuperview()
-                make.height.equalTo(blurBackgroundHeight)
-            }
-        }
-    }
-}
+//extension MainViewController {
+//
+//    enum BlurPosition {
+//        case top, bottom
+//    }
+//
+//    private func createBlurBackground(at position: BlurPosition) {
+//        let blurEffect = UIBlurEffect(style: .dark)
+//        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+//        blurEffectView.translatesAutoresizingMaskIntoConstraints = false
+//
+//        if position == .top {
+//            // For top blur effect (navigation bar)
+//            view.insertSubview(blurEffectView, at: 4)
+//            topBlurEffectView = blurEffectView
+//        } else {
+//            // For bottom blur effect (tab bar)
+//            view.insertSubview(blurEffectView, at: 4)
+//            bottomBlurEffectView = blurEffectView
+//        }
+//    }
+//
+//    private func updateBlurBackgroundPositionAndSize() {
+//        // Update top blur effect view
+//        if let topBlurEffectView = topBlurEffectView {
+//            topBlurEffectView.snp.remakeConstraints { make in
+//                make.leading.trailing.equalToSuperview()
+//                make.top.equalToSuperview()
+//                // Use the safe area's top anchor, which includes the status bar and navigation bar heights inherently
+//                make.bottom.equalTo(customNavBar.snp.bottom).offset(8)
+//            }
+//        }
+//
+//        // Update bottom blur effect view
+//        if let referenceButton = buttons.first, let bottomBlurEffectView = bottomBlurEffectView {
+//            let buttonFrame = view.convert(referenceButton.frame, from: referenceButton.superview)
+//            let bottomPadding = view.bounds.height - buttonFrame.maxY
+//            let blurBackgroundHeight = bottomPadding + buttonFrame.height / 2
+//
+//            bottomBlurEffectView.snp.remakeConstraints { make in
+//                make.leading.trailing.bottom.equalToSuperview()
+//                make.height.equalTo(blurBackgroundHeight)
+//            }
+//        }
+//    }
+//}
 
-//MARK: Init View Controller
+
+// MARK: - Init View Controller
 extension MainViewController {
     
     private func initViewController() {
@@ -526,7 +578,7 @@ extension MainViewController {
     }
 }
 
-//MARK: scrollViewDidEndDragging
+// MARK: - scrollViewDidEndDragging
 extension HabitsCollectionViewController {
     // After a user stops scrolling the collection view, this method checks for empty cells and resets the scroll if necessary
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {

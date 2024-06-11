@@ -117,6 +117,7 @@ class CustomButton: UIButton {
     @objc private func buttonTapped() {
         print("Button tapped")
         isOn.toggle()
+        superview?.bringSubviewToFront(self)
         if isOn {
             superview?.bringSubviewToFront(self)
             //playConfettiAnimation()
@@ -125,27 +126,37 @@ class CustomButton: UIButton {
         onButtonTapped?()
     }
     
-    func setPositionAtBottomCenter(in view: UIView, index: Int, totalButtons: Int) {
+    func setPosition(in view: UIView, index: Int, totalButtons: Int) {
         view.addSubview(self)
         translatesAutoresizingMaskIntoConstraints = false
         
         let baseScreenWidth: CGFloat = 375 // Width of iPhone SE screen
-        let scaleFactor = view.bounds.width / baseScreenWidth
-        
+        let screenWidth = UIScreen.main.bounds.width
+        let scaleFactor = screenWidth / baseScreenWidth
         let buttonWidth: CGFloat = 74 * scaleFactor
         let buttonSpacing: CGFloat = 16 * scaleFactor
-        let totalWidth = CGFloat(totalButtons) * buttonWidth + CGFloat(totalButtons - 1) * buttonSpacing
-        let xOffset = (view.bounds.width - totalWidth) / 2 + CGFloat(index) * (buttonWidth + buttonSpacing)
-        
-        self.snp.makeConstraints { make in
-            make.centerX.equalTo(view.snp.leading).offset(xOffset + buttonWidth / 2)
-            //make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-28)
-            make.bottom.equalToSuperview().offset(-48) // Двигает кнопку на 48 px от Superview
-            make.width.height.equalTo(buttonWidth)
+
+        if totalButtons <= 4 {
+            let totalWidth = CGFloat(totalButtons) * buttonWidth + CGFloat(totalButtons - 1) * buttonSpacing
+                    let xOffset = (view.bounds.width - totalWidth) / 2 + CGFloat(index) * (buttonWidth + buttonSpacing)
+            self.snp.makeConstraints { make in
+                make.centerX.equalTo(view.snp.leading).offset(xOffset + buttonWidth / 2)
+                make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-28)
+                //make.bottom.equalToSuperview().offset(-48) // Двигает кнопку на 48 px от Superview
+                make.width.height.equalTo(buttonWidth)
+            }
+        } else {
+            self.snp.makeConstraints { make in
+                make.left.equalToSuperview().offset(CGFloat(index) * (buttonWidth + buttonSpacing))
+                make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-28)
+                //make.bottom.equalToSuperview().offset(-48) // Двигает кнопку на 48 px от Superview
+                make.width.height.equalTo(buttonWidth)
+            }
         }
-        // Сохраните размер кнопки здесь
         CustomButton.buttonSize = CGSize(width: buttonWidth, height: buttonWidth)
+        view.bringSubviewToFront(self)
     }
+
     
     func scaleButtonElements(forScreenWidth screenWidth: CGFloat) {
         let baseScreenWidth: CGFloat = 375 // Base screen width, e.g., iPhone SE
