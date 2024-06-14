@@ -1,12 +1,12 @@
 /*
-Этот код:
-1 - Создает кастомную кнопку `CustomButton` с функциями изменения цвета, состояния и лейблом под кнопкой.
-2 - Управляет состоянием кнопки через замыкание `onButtonTapped` и изменяет визуальное оформление при переключении состояния `isOn`.
-3 - Использует словарь `colorThemes` для разных цветовых тем кнопок и настраивает градиенты или однотонные цвета.
-4 - Включает поддержку иконки и лейбла, а также масштабирует элементы кнопки в зависимости от ширины экрана.
-5 - Поддерживает анимацию конфетти через библиотеку Lottie (временно отключена), и изменяет дизайн на основе состояния.
-6 - Применяет SnapKit для упрощенного размещения элементов.
-*/
+ Этот код:
+ 1 - Создает кастомную кнопку `CustomButton` с функциями изменения цвета, состояния и лейблом под кнопкой.
+ 2 - Управляет состоянием кнопки через замыкание `onButtonTapped` и изменяет визуальное оформление при переключении состояния `isOn`.
+ 3 - Использует словарь `colorThemes` для разных цветовых тем кнопок и настраивает градиенты или однотонные цвета.
+ 4 - Включает поддержку иконки и лейбла, а также масштабирует элементы кнопки в зависимости от ширины экрана.
+ 5 - Поддерживает анимацию конфетти через библиотеку Lottie (временно отключена), и изменяет дизайн на основе состояния.
+ 6 - Применяет SnapKit для упрощенного размещения элементов.
+ */
 
 
 import UIKit
@@ -135,28 +135,26 @@ class CustomButton: UIButton {
         let scaleFactor = screenWidth / baseScreenWidth
         let buttonWidth: CGFloat = 74 * scaleFactor
         let buttonSpacing: CGFloat = 16 * scaleFactor
-
+        let totalWidth = CGFloat(totalButtons) * buttonWidth + CGFloat(totalButtons - 1) * buttonSpacing
+        let xOffset = (UIScreen.main.bounds.width - totalWidth) / 2 + CGFloat(index) * (buttonWidth + buttonSpacing)
+        
         if totalButtons <= 4 {
-            let totalWidth = CGFloat(totalButtons) * buttonWidth + CGFloat(totalButtons - 1) * buttonSpacing
-                    let xOffset = (view.bounds.width - totalWidth) / 2 + CGFloat(index) * (buttonWidth + buttonSpacing)
             self.snp.makeConstraints { make in
                 make.centerX.equalTo(view.snp.leading).offset(xOffset + buttonWidth / 2)
-                make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-28)
-                //make.bottom.equalToSuperview().offset(-48) // Двигает кнопку на 48 px от Superview
-                make.width.height.equalTo(buttonWidth)
+                            make.bottom.equalToSuperview().offset(-48)
+                            make.width.height.equalTo(buttonWidth)
             }
         } else {
             self.snp.makeConstraints { make in
-                make.left.equalToSuperview().offset(CGFloat(index) * (buttonWidth + buttonSpacing))
+                make.left.equalToSuperview().offset(buttonSpacing + CGFloat(index) * (buttonWidth + buttonSpacing))
                 make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-28)
-                //make.bottom.equalToSuperview().offset(-48) // Двигает кнопку на 48 px от Superview
                 make.width.height.equalTo(buttonWidth)
             }
         }
         CustomButton.buttonSize = CGSize(width: buttonWidth, height: buttonWidth)
         view.bringSubviewToFront(self)
     }
-
+    
     
     func scaleButtonElements(forScreenWidth screenWidth: CGFloat) {
         let baseScreenWidth: CGFloat = 375 // Base screen width, e.g., iPhone SE
@@ -173,18 +171,18 @@ class CustomButton: UIButton {
     }
     
     private func toggleButton() {
-            UIView.transition(with: self, duration: 0.1, options: .transitionCrossDissolve, animations: {
-                self.updateButtonAppearance()
-            }, completion: { _ in
-                if self.isOn {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        self.labelBelowButton.resetToDefault()
-                    }
+        UIView.transition(with: self, duration: 0.1, options: .transitionCrossDissolve, animations: {
+            self.updateButtonAppearance()
+        }, completion: { _ in
+            if self.isOn {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    self.labelBelowButton.resetToDefault()
                 }
-            })
-        }
-
-
+            }
+        })
+    }
+    
+    
     private func updateButtonAppearance() {
         if isOn {
             // If you want a solid color appearance, use the same color for both gradient start and end.

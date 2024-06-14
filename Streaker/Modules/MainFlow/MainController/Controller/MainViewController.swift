@@ -66,21 +66,21 @@ class MainViewController: UIViewController {
         view.backgroundColor = UIColor(hex: "#1C1C1E")
         setupScrollView()
         setupContentView()
-        //createBlurBackground(at: .bottom)
         setupHabitsCollectionViewController()
+        createBlurBackground(at: .bottom)
         setupButtons(totalButtons: numberOfButtons)
-        //createBlurBackground(at: .top)
+        createBlurBackground(at: .top)
         initViewController()
         habits = loadHabits()
         habitsData = HabitsDataManager.shared.loadHabitsData()
-        //updateBlurBackgroundPositionAndSize()
+        updateBlurBackgroundPositionAndSize()
         setupCustomNavigationBar()
         cellCounters = Array(repeating: 0, count: numberOfButtons)
         mainModel = MainModel(numberOfButtons: numberOfButtons, cellsPerButton: cellsInAvailableHeight)
         // Создаем и настраиваем MyStreaksViewController
         let myStreaksVC = MyStreaksViewController()
         myStreaksVC.mainViewController = self
-        //updateUI() // Обновление интерфейса с загруженными данными
+        updateUI() // Обновление интерфейса с загруженными данными
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -145,9 +145,10 @@ class MainViewController: UIViewController {
         contentView = UIView()
         scrollView.addSubview(contentView)
         contentView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-            make.height.equalToSuperview()
-            make.width.equalTo(totalContentWidth)
+            make.centerX.equalToSuperview() // Center horizontally
+            make.edges.equalToSuperview() // Keep the edges equal to the scroll view
+            make.height.equalToSuperview() // Match the height of the scroll view
+            make.width.equalTo(totalContentWidth) // Set the width to the total content width
         }
     }
     
@@ -215,8 +216,13 @@ class MainViewController: UIViewController {
         let buttonSpacing: CGFloat = 16 * scaleFactor
 
             // Устанавливаем contentSize для scrollView
-            let totalContentWidth = CGFloat(totalButtons) * (CustomButton.buttonSize.width + buttonSpacing) - buttonSpacing
+            let totalContentWidth = CGFloat(totalButtons) * (CustomButton.buttonSize.width + buttonSpacing) + buttonSpacing
             scrollView.contentSize = CGSize(width: totalContentWidth, height: scrollView.frame.height)
+        if totalButtons <= 4 {
+            scrollView.isScrollEnabled = false
+        } else {
+            scrollView.isScrollEnabled = true
+        }
         
         // Обновляем ширину contentView после изменения contentSize
             contentView.snp.updateConstraints { make in
@@ -232,6 +238,9 @@ class MainViewController: UIViewController {
     @objc private func buttonTapped(_ sender: CustomButton) {
         guard let buttonIndex = buttons.firstIndex(of: sender),
               let habitToUpdate = habits?[buttonIndex] else { return }
+        
+        
+        print("Button \(buttonIndex + 1) tapped") // Отладочный вывод
         
         do {
             let realm = try Realm()
@@ -257,7 +266,8 @@ class MainViewController: UIViewController {
             }
             habitsData[buttonIndex].append(contentsOf: newData)
         }
-        updateCollectionViews()  // Обновляем коллекционное представление для отображения новых данных
+        updateCollectionViews()  // Обновляем коллекционное представление
+        habitsCollectionViewControllers[buttonIndex].collectionView.reloadData()
     }
     
     
@@ -404,7 +414,12 @@ class MainViewController: UIViewController {
         return calculatedCells
     }()
     
-    // Calculates the height of the actual button area, taking into account various UI components and padding
+    let buttonSpacing: CGFloat = {
+        let baseScreenWidth: CGFloat = 375
+        let scaleFactor = UIScreen.main.bounds.width / baseScreenWidth
+        return 16 * scaleFactor
+    }()
+    
     lazy var actualButtonHeight: CGFloat = {
         let baseScreenWidth: CGFloat = 375
         let scaleFactor = UIScreen.main.bounds.width / baseScreenWidth
@@ -447,52 +462,52 @@ class MainViewController: UIViewController {
 //}
 
 // MARK: - Blur Background Handling
-//extension MainViewController {
-//
-//    enum BlurPosition {
-//        case top, bottom
-//    }
-//
-//    private func createBlurBackground(at position: BlurPosition) {
-//        let blurEffect = UIBlurEffect(style: .dark)
-//        let blurEffectView = UIVisualEffectView(effect: blurEffect)
-//        blurEffectView.translatesAutoresizingMaskIntoConstraints = false
-//
-//        if position == .top {
-//            // For top blur effect (navigation bar)
-//            view.insertSubview(blurEffectView, at: 4)
-//            topBlurEffectView = blurEffectView
-//        } else {
-//            // For bottom blur effect (tab bar)
-//            view.insertSubview(blurEffectView, at: 4)
-//            bottomBlurEffectView = blurEffectView
-//        }
-//    }
-//
-//    private func updateBlurBackgroundPositionAndSize() {
-//        // Update top blur effect view
-//        if let topBlurEffectView = topBlurEffectView {
-//            topBlurEffectView.snp.remakeConstraints { make in
-//                make.leading.trailing.equalToSuperview()
-//                make.top.equalToSuperview()
-//                // Use the safe area's top anchor, which includes the status bar and navigation bar heights inherently
-//                make.bottom.equalTo(customNavBar.snp.bottom).offset(8)
-//            }
-//        }
-//
-//        // Update bottom blur effect view
-//        if let referenceButton = buttons.first, let bottomBlurEffectView = bottomBlurEffectView {
-//            let buttonFrame = view.convert(referenceButton.frame, from: referenceButton.superview)
-//            let bottomPadding = view.bounds.height - buttonFrame.maxY
-//            let blurBackgroundHeight = bottomPadding + buttonFrame.height / 2
-//
-//            bottomBlurEffectView.snp.remakeConstraints { make in
-//                make.leading.trailing.bottom.equalToSuperview()
-//                make.height.equalTo(blurBackgroundHeight)
-//            }
-//        }
-//    }
-//}
+extension MainViewController {
+
+    enum BlurPosition {
+        case top, bottom
+    }
+
+    private func createBlurBackground(at position: BlurPosition) {
+        let blurEffect = UIBlurEffect(style: .dark)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.translatesAutoresizingMaskIntoConstraints = false
+
+        if position == .top {
+            // For top blur effect (navigation bar)
+            view.insertSubview(blurEffectView, at: 4)
+            topBlurEffectView = blurEffectView
+        } else {
+            // For bottom blur effect (tab bar)
+            contentView.insertSubview(blurEffectView, at: 4)
+            bottomBlurEffectView = blurEffectView
+        }
+    }
+
+    private func updateBlurBackgroundPositionAndSize() {
+        // Update top blur effect view
+        if let topBlurEffectView = topBlurEffectView {
+            topBlurEffectView.snp.remakeConstraints { make in
+                make.leading.trailing.equalToSuperview()
+                make.top.equalToSuperview()
+                // Use the safe area's top anchor, which includes the status bar and navigation bar heights inherently
+                make.bottom.equalTo(customNavBar.snp.bottom).offset(8)
+            }
+        }
+
+        // Update bottom blur effect view
+        if let referenceButton = buttons.first, let bottomBlurEffectView = bottomBlurEffectView {
+            let buttonFrame = contentView.convert(referenceButton.frame, from: referenceButton.superview)
+            let bottomPadding = contentView.bounds.height - buttonFrame.maxY
+            let blurBackgroundHeight = bottomPadding + buttonFrame.height / 2
+
+            bottomBlurEffectView.snp.remakeConstraints { make in
+                make.leading.trailing.bottom.equalToSuperview()
+                make.height.equalTo(blurBackgroundHeight)
+            }
+        }
+    }
+}
 
 
 // MARK: - Init View Controller
