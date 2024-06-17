@@ -165,7 +165,7 @@ class MainViewController: UIViewController {
         if habit.counter > 0 {
             let completedCells = (1...habit.counter).map { HabitCellModel(state: .completedWithNoLine(counter: $0)) }
             let emptyCells = Array(repeating: HabitCellModel(state: .emptyCell), count: maxCells - habit.counter)
-            return completedCells + emptyCells
+            return (completedCells.reversed() + emptyCells)
         } else {
             // Если данные отсутствуют или counter равен 0, возвращаем массив пустых ячеек согласно максимальному количеству
             return Array(repeating: HabitCellModel(state: .emptyCell), count: maxCells)
@@ -250,6 +250,7 @@ class MainViewController: UIViewController {
                 
                 // Обновляем UI
                 updateCellState(for: buttonIndex, withNewCounter: habitToUpdate.counter)
+                self.updateUI()
             }
         } catch {
             print("Error updating habit counter in Realm: \(error)")
@@ -264,7 +265,7 @@ class MainViewController: UIViewController {
             let newData = (existingData.count+1...counter).map {
                 HabitCellModel(state: .completedWithNoLine(counter: $0))
             }
-            habitsData[buttonIndex].append(contentsOf: newData)
+            habitsData[buttonIndex].insert(contentsOf: newData, at: 0)
         }
         updateCollectionViews()  // Обновляем коллекционное представление
         habitsCollectionViewControllers[buttonIndex].collectionView.reloadData()
@@ -296,22 +297,6 @@ class MainViewController: UIViewController {
         setupHabitsCollectionViewController()
         updateCollectionViews()
     }
-    
-    // Refreshes the cells in all collection views to reflect any changes in the data model
-    //    func updateCollectionViews() {
-    //        for (index, habitsVC) in habitsCollectionViewControllers.enumerated() {
-    //            habitsVC.cellModels = habitsData[index]
-    //            habitsVC.collectionView.reloadData()
-    //        }
-    //    }
-    //    func updateCollectionViews() {
-    //            for (index, habitsVC) in habitsCollectionViewControllers.enumerated() {
-    //                habitsVC.cellModels = mainModel.habitsData[index]
-    //                DispatchQueue.main.async {
-    //                    habitsVC.collectionView.reloadData()
-    //                }
-    //            }
-    //        }
     
     func updateCollectionViews() {
         for (index, habitsVC) in habitsCollectionViewControllers.enumerated() {
