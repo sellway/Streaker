@@ -6,7 +6,7 @@
  3 - Не пиши функции целиком
  4 - Пиши строку после/вместо которой вставить текст в виде комментария //
  5 - Отвечай на вопросы коротко
- 6 - Пиши код в формате было/стало при это пиши только код который поменялся
+ 6 - Пиши код в формате было/стало при этом пиши только код который поменялся
  7 - Код который не поменялся писать не нужно
  
  Этот класс MainViewController:
@@ -43,13 +43,12 @@ class MainViewController: UIViewController {
     private var habitsData: [[HabitCellModel]] = []
     // Dynamically calculates the number of buttons based on the count of saved records
     private lazy var numberOfButtons: Int = savedRecordsCount
-    // The view that contains custom buttons for adding habits and opening settings
     private var mainView = MainView()
     var containerView: UIView!
     // Object for accessing app configurations stored in UserDefaults
     private let storage = ConfigurationStorage()
     // A custom navigation bar view
-    private let customNavBar = UIView()
+    private let customNavController = CustomNavigationController()
     // An array to keep track of the number of cells for each habit
     private var cellCounters: [Int] = []
     // Model to manage the main logic for the habits
@@ -57,7 +56,6 @@ class MainViewController: UIViewController {
     // The view's safe area insets, useful for layout adjustment and blur effects
     private var safeAreaInsets: UIEdgeInsets = .zero
     private var alertController: UIAlertController?
-    private var topBlurEffectView: UIVisualEffectView?
     private var bottomBlurEffectView: UIVisualEffectView?
     private var totalContentWidth: CGFloat = 0
     
@@ -67,9 +65,8 @@ class MainViewController: UIViewController {
         setupScrollView()
         setupContentView()
         setupHabitsCollectionViewController()
-        createBlurBackground(at: .bottom)
+        createBottomBlur()
         setupButtons(totalButtons: numberOfButtons)
-        createBlurBackground(at: .top)
         initViewController()
         habits = loadHabits()
         habitsData = HabitsDataManager.shared.loadHabitsData()
@@ -417,69 +414,20 @@ class MainViewController: UIViewController {
     }()
 }
 
-// MARK: - Align Columns Height
-//extension MainViewController {
-//
-//    private func maxFilledCellsCount() -> Int {
-//        return habitsData.map { $0.filter { $0.state != .emptyCell }.count }.max() ?? 0
-//    }
-//
-//    // Ensures all columns in the collection view have the same number of cells, padding empty cells where necessary
-//    private func updateColumns() {
-//        let maxFilledCellsCount = habitsData.map { $0.filter { $0.state != .emptyCell }.count }.max() ?? 0 // макс количество заполненных ячеек среди всех кнопок
-//
-//        if maxFilledCellsCount > cellsInAvailableHeight {
-//            for index in 0..<habitsData.count {
-//                let filledCellsCount = habitsData[index].filter { $0.state != .emptyCell }.count
-//                let additionalCellsCount = maxFilledCellsCount - filledCellsCount
-//                if additionalCellsCount > 0 {
-//                    // Очищаем пустые ячейки перед добавлением новых, чтобы избежать накопления
-//                    habitsData[index].removeAll(where: { $0.state == .emptyCell })
-//                    habitsData[index].append(contentsOf: Array(repeating: HabitCellModel(state: .emptyCell), count: additionalCellsCount))
-//                }
-//
-//                let habitsVC = habitsCollectionViewControllers[index]
-//                habitsVC.cellModels = habitsData[index]
-//                habitsVC.collectionView.reloadData()
-//            }
-//        }
-//    }
-//}
-
 // MARK: - Blur Background Handling
 extension MainViewController {
 
-    enum BlurPosition {
-        case top, bottom
-    }
-
-    private func createBlurBackground(at position: BlurPosition) {
+    private func createBottomBlur() {
         let blurEffect = UIBlurEffect(style: .dark)
         let blurEffectView = UIVisualEffectView(effect: blurEffect)
         blurEffectView.translatesAutoresizingMaskIntoConstraints = false
 
-        if position == .top {
-            // For top blur effect (navigation bar)
-            view.insertSubview(blurEffectView, at: 4)
-            topBlurEffectView = blurEffectView
-        } else {
-            // For bottom blur effect (tab bar)
-            contentView.insertSubview(blurEffectView, at: 4)
-            bottomBlurEffectView = blurEffectView
-        }
+        // For bottom blur effect (tab bar)
+        contentView.insertSubview(blurEffectView, at: 4)
+        bottomBlurEffectView = blurEffectView
     }
 
     private func updateBlurBackgroundPositionAndSize() {
-        // Update top blur effect view
-        if let topBlurEffectView = topBlurEffectView {
-            topBlurEffectView.snp.remakeConstraints { make in
-                make.leading.trailing.equalToSuperview()
-                make.top.equalToSuperview()
-                // Use the safe area's top anchor, which includes the status bar and navigation bar heights inherently
-                make.bottom.equalTo(customNavBar.snp.bottom).offset(8)
-            }
-        }
-
         // Update bottom blur effect view
         if let referenceButton = buttons.first, let bottomBlurEffectView = bottomBlurEffectView {
             let buttonFrame = contentView.convert(referenceButton.frame, from: referenceButton.superview)
@@ -497,86 +445,60 @@ extension MainViewController {
 
 // MARK: - Init View Controller
 extension MainViewController {
-    
     private func initViewController() {
         setupCustomNavigationBar()
         initButtons()
         initHeader()
     }
-    
+
     private func setupCustomNavigationBar() {
-        
-        customNavBar.backgroundColor = .clear // Ваш кастомний колір
-        view.addSubview(customNavBar)
-        
-        customNavBar.snp.makeConstraints { make in
-            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+        view.addSubview(customNavController.customNavBar)
+
+        customNavController.customNavBar.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.height.equalTo(80) // Висота стандартного навігаційного бару
+            make.leading.trailing.equalToSuperview()
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = windowScene.windows.first {
+                make.height.equalTo(72 + window.safeAreaInsets.top)
+            }
         }
-        // Додавання кастомних кнопок на вашу кастомну навігаційну панель
-        mainView.addButtonsToSuperview(customNavBar)
+
+        customNavController.configureNavBar(
+            title: "Day \(storage.dayCounter ?? 0)",
+            leftButtonImage: UIImage(named: "leftButton"),
+            rightButtonImage: UIImage(named: "rightButton"),
+            leftAction: #selector(leftButtonTapped),
+            rightAction: #selector(rightButtonTapped),
+            target: self
+        )
     }
-    
+
     func initButtons() {
-        // Налаштування дій для кнопок
-        mainView.addButton.addTarget(self, action: #selector(leftButtonTapped), for: .touchUpInside)
-        mainView.settingsButton.addTarget(self, action: #selector(rightButtonTapped), for: .touchUpInside)
-        
-        let baseScreenWidth: CGFloat = 375 // Width of iPhone SE screen
-        let scaleFactor = view.bounds.width / baseScreenWidth
-        let buttonWidth: CGFloat = 74 * scaleFactor
-        let buttonHeight: CGFloat = 54 * scaleFactor
-        let buttonSpacing: CGFloat = 16 * scaleFactor
-        
-        mainView.addButton.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(buttonSpacing)
-            make.centerY.equalToSuperview()
-            make.width.equalTo(buttonWidth)
-            make.height.equalTo(buttonHeight)
-        }
-        
-        mainView.settingsButton.snp.makeConstraints { make in
-            make.right.equalToSuperview().offset(-buttonSpacing)
-            make.centerY.equalToSuperview()
-            make.width.equalTo(buttonWidth)
-            make.height.equalTo(buttonHeight)
-        }
-        
+        // Настройка действий для кнопок
+        customNavController.customNavBar.leftButton.addTarget(self, action: #selector(leftButtonTapped), for: .touchUpInside)
+        customNavController.customNavBar.rightButton.addTarget(self, action: #selector(rightButtonTapped), for: .touchUpInside)
     }
     
-    // Configures the header title view when not using the standard navigation bar
-    func initHeader() {
-        // Налаштування заголовка, якщо ви не використовуєте стандартний navigationBar
-        let titleLabel = UILabel()
-        titleLabel.text = "Day \(storage.dayCounter ?? 0)"
-        titleLabel.textColor = .white
-        titleLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
-        titleLabel.sizeToFit()
-        
-        let titleView = UIView()
-        titleView.addSubview(titleLabel)
-        titleLabel.center = CGPoint(x: titleView.bounds.midX, y: titleView.bounds.midY)
-        customNavBar.addSubview(titleView)
-        
-        titleView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-        }
-    }
-    
-    // Action handlers for the custom left and right navigation buttons
+    func initHeader() {}
+
     @objc private func leftButtonTapped() {
         let settingsVC = StatsViewController()
         settingsVC.navigationItem.hidesBackButton = false
-        settingsVC.navigationController?.navigationBar.isHidden = true
-        navigationController?.pushViewController(settingsVC, animated: true)
+        let transition = CATransition()
+        transition.duration = 0.35
+        transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        transition.type = .moveIn
+        transition.subtype = .fromLeft
+        navigationController?.view.layer.add(transition, forKey: kCATransition)
+        navigationController?.pushViewController(settingsVC, animated: false)
     }
+
     @objc private func rightButtonTapped() {
-        let settingsVC = ProfileViewController()
-        settingsVC.navigationItem.hidesBackButton = true
-        navigationController?.pushViewController(settingsVC, animated: true)
+        let rightButton = ProfileViewController()
+        rightButton.navigationItem.hidesBackButton = true
+        navigationController?.pushViewController(rightButton, animated: true)
     }
 }
+
 
 // MARK: - scrollViewDidEndDragging
 extension HabitsCollectionViewController {

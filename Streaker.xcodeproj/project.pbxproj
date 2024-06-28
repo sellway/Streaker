@@ -44,6 +44,7 @@
 		E45E28EC2AF1C82800104C32 /* confetti.json in Resources */ = {isa = PBXBuildFile; fileRef = E45E28EB2AF1C82800104C32 /* confetti.json */; };
 		E45E28EE2AF1D59800104C32 /* ConfettiAnimationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45E28ED2AF1D59800104C32 /* ConfettiAnimationManager.swift */; };
 		E48BFFC52B7221D600B922F2 /* MainModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48BFFC42B7221D600B922F2 /* MainModel.swift */; };
+		E49794972C2376C1000C51F9 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49794962C2376C1000C51F9 /* CustomNavigationBar.swift */; };
 		E4BDDB572AF7BCF400AF25D4 /* PocketSVG in Frameworks */ = {isa = PBXBuildFile; productRef = E4BDDB562AF7BCF400AF25D4 /* PocketSVG */; };
 		E4BDDB5C2AF7CE5A00AF25D4 /* progressView.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4BDDB582AF7CE5A00AF25D4 /* progressView.svg */; };
 		E4BDDB5D2AF7CE5A00AF25D4 /* completedWithNoLine.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4BDDB592AF7CE5A00AF25D4 /* completedWithNoLine.svg */; };
@@ -99,6 +100,7 @@
 		E45E28EB2AF1C82800104C32 /* confetti.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = confetti.json; sourceTree = "<group>"; };
 		E45E28ED2AF1D59800104C32 /* ConfettiAnimationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiAnimationManager.swift; sourceTree = "<group>"; };
 		E48BFFC42B7221D600B922F2 /* MainModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainModel.swift; sourceTree = "<group>"; };
+		E49794962C2376C1000C51F9 /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
 		E4BDDB582AF7CE5A00AF25D4 /* progressView.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = progressView.svg; sourceTree = "<group>"; };
 		E4BDDB592AF7CE5A00AF25D4 /* completedWithNoLine.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = completedWithNoLine.svg; sourceTree = "<group>"; };
 		E4BDDB5A2AF7CE5A00AF25D4 /* notCompleted.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = notCompleted.svg; sourceTree = "<group>"; };
@@ -369,6 +371,7 @@
 			children = (
 				E4FF3D5A2AF01EDE009C0C15 /* CustomButton.swift */,
 				E4FF3D5C2AF05CA0009C0C15 /* ButtonLabel.swift */,
+				E49794962C2376C1000C51F9 /* CustomNavigationBar.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -665,6 +668,7 @@
 				E48BFFC52B7221D600B922F2 /* MainModel.swift in Sources */,
 				E40D488E2AF3F763002BE721 /* HabitsCollectionViewController.swift in Sources */,
 				84C305BD2B124FB00007A1AE /* MainView.swift in Sources */,
+				E49794972C2376C1000C51F9 /* CustomNavigationBar.swift in Sources */,
 				E4FF3D5D2AF05CA0009C0C15 /* ButtonLabel.swift in Sources */,
 				E40BBCC22B97CD7A006C8FBD /* MyStreaksView.swift in Sources */,
 				84B1D8E62B13BAD30068BC12 /* ProfileViewController.swift in Sources */,

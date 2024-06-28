@@ -50,10 +50,11 @@ class ProfileView: UIView {
     }
 }
 
-//MARK: setup
+// MARK: - Setup
+// Remove cancelButton configuration from ProfileView
 extension ProfileView {
     private func setup() {
-        addSubview(listsTableView)        
+        addSubview(listsTableView)
         self.backgroundColor = .theme(.streakerGrey)
         makeConstraints()
     }
@@ -64,10 +65,6 @@ extension ProfileView {
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
-        
-        cancelButton.snp.makeConstraints { make in
-            make.size.width.equalTo(74.sizeW)
-            make.size.height.equalTo(54.sizeH)
-        }
     }
 }
+

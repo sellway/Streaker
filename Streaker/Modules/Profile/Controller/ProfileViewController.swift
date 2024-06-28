@@ -109,7 +109,7 @@ class ProfileViewController: UIViewController, MFMailComposeViewControllerDelega
     
 }
 
-//MARK: TableView
+// MARK: - TableView
 
 extension ProfileViewController: UITableViewDataSource, UITableViewDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
