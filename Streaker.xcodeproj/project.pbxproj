@@ -44,6 +44,7 @@
 		E45E28EC2AF1C82800104C32 /* confetti.json in Resources */ = {isa = PBXBuildFile; fileRef = E45E28EB2AF1C82800104C32 /* confetti.json */; };
 		E45E28EE2AF1D59800104C32 /* ConfettiAnimationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45E28ED2AF1D59800104C32 /* ConfettiAnimationManager.swift */; };
 		E48BFFC52B7221D600B922F2 /* MainModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48BFFC42B7221D600B922F2 /* MainModel.swift */; };
+		E490FCB72C342A5B00C4086B /* SwipeBackTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = E490FCB62C342A5B00C4086B /* SwipeBackTransition.swift */; };
 		E49794972C2376C1000C51F9 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49794962C2376C1000C51F9 /* CustomNavigationBar.swift */; };
 		E4BDDB572AF7BCF400AF25D4 /* PocketSVG in Frameworks */ = {isa = PBXBuildFile; productRef = E4BDDB562AF7BCF400AF25D4 /* PocketSVG */; };
 		E4BDDB5C2AF7CE5A00AF25D4 /* progressView.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4BDDB582AF7CE5A00AF25D4 /* progressView.svg */; };
@@ -100,6 +101,7 @@
 		E45E28EB2AF1C82800104C32 /* confetti.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = confetti.json; sourceTree = "<group>"; };
 		E45E28ED2AF1D59800104C32 /* ConfettiAnimationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiAnimationManager.swift; sourceTree = "<group>"; };
 		E48BFFC42B7221D600B922F2 /* MainModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainModel.swift; sourceTree = "<group>"; };
+		E490FCB62C342A5B00C4086B /* SwipeBackTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeBackTransition.swift; sourceTree = "<group>"; };
 		E49794962C2376C1000C51F9 /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
 		E4BDDB582AF7CE5A00AF25D4 /* progressView.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = progressView.svg; sourceTree = "<group>"; };
 		E4BDDB592AF7CE5A00AF25D4 /* completedWithNoLine.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = completedWithNoLine.svg; sourceTree = "<group>"; };
@@ -294,6 +296,7 @@
 			isa = PBXGroup;
 			children = (
 				84C305AA2B1203200007A1AE /* RootNavigaionViewController.swift */,
+				E490FCB62C342A5B00C4086B /* SwipeBackTransition.swift */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -677,6 +680,7 @@
 				E4FF3D4B2AF01BA6009C0C15 /* MainViewController.swift in Sources */,
 				84B1D8DA2B13B9410068BC12 /* SizeHelper.swift in Sources */,
 				842433332B16711B002E1B29 /* NewStreakViewController.swift in Sources */,
+				E490FCB72C342A5B00C4086B /* SwipeBackTransition.swift in Sources */,
 				84B1D8E42B13BA8D0068BC12 /* ProfileView.swift in Sources */,
 				E45E28EE2AF1D59800104C32 /* ConfettiAnimationManager.swift in Sources */,
 				84C305DC2B1256A70007A1AE /* String + ext.swift in Sources */,
