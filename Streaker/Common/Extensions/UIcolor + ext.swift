@@ -15,6 +15,8 @@ import UIKit
 extension UIColor {
     enum ColorType {
         case streakerGrey
+        case backgroundMain
+        case lineGrey
       
     }
     
@@ -24,6 +26,10 @@ extension UIColor {
         switch colorType {
         case .streakerGrey:
             color = UIColor(named: "streakerGrey")
+        case .backgroundMain:
+            color = UIColor(named: "backgroundMain")
+        case .lineGrey:
+            color = UIColor(named: "lineGrey")
         }
         
         guard let color = color else {

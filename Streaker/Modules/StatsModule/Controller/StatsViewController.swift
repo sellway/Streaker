@@ -28,7 +28,7 @@ class StatsViewController: UIViewController, UINavigationControllerDelegate {
     }
 }
 
-// MARK: - Navigation and Back Swiping Setup
+// MARK: - Navigation and Back Swiping
 extension StatsViewController {
     
     func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
@@ -111,7 +111,8 @@ extension StatsViewController {
             rightButtonImage: nil,
             leftAction: #selector(rightButtonTapped),
             rightAction: nil,
-            target: self
+            target: self,
+            hideBottomLine: true
         )
         navigationItem.hidesBackButton = true
     }

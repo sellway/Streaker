@@ -6,6 +6,7 @@ class CustomNavigationBar: UIView {
     let rightButton = UIButton()
     private let titleLabel = UILabel()
     private var topBlurEffectView: UIVisualEffectView?
+    let bottomLine = UIView()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -15,6 +16,10 @@ class CustomNavigationBar: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func getNavigationBarHeight() -> CGFloat {
+            return self.frame.height
+        }
 
     private func setupView() {
         let blurEffect = UIBlurEffect(style: .dark)
@@ -72,6 +77,14 @@ class CustomNavigationBar: UIView {
 
         styleButton(leftButton)
         styleButton(rightButton)
+        
+        // Separator line below navigation
+        bottomLine.backgroundColor = .theme(.lineGrey)
+        addSubview(bottomLine)
+        bottomLine.snp.makeConstraints { make in
+            make.left.right.bottom.equalToSuperview()
+            make.height.equalTo(1)
+        }
 
         makeConstraints()
     }
@@ -121,7 +134,7 @@ class CustomNavigationBar: UIView {
         }
     }
 
-    func configure(title: String, leftButtonImage: UIImage?, rightButtonImage: UIImage?) {
+    func configure(title: String, leftButtonImage: UIImage?, rightButtonImage: UIImage?, hideBottomLine: Bool) {
         titleLabel.text = NSLocalizedString(title, comment: "")
 
         if let leftImage = leftButtonImage {
@@ -141,6 +154,8 @@ class CustomNavigationBar: UIView {
         // Применение стиля после установки изображений
         styleButton(leftButton)
         styleButton(rightButton)
+        
+        bottomLine.isHidden = hideBottomLine
     }
 }
 
@@ -157,6 +172,7 @@ extension UIImage {
 
 class CustomNavigationController: UINavigationController {
     let customNavBar = CustomNavigationBar()
+    var hideBottomLine: Bool = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -172,8 +188,8 @@ class CustomNavigationController: UINavigationController {
         }
     }
 
-    func configureNavBar(title: String, leftButtonImage: UIImage?, rightButtonImage: UIImage?, leftAction: Selector?, rightAction: Selector?, target: Any?) {
-        customNavBar.configure(title: title, leftButtonImage: leftButtonImage, rightButtonImage: rightButtonImage)
+    func configureNavBar(title: String, leftButtonImage: UIImage?, rightButtonImage: UIImage?, leftAction: Selector?, rightAction: Selector?, target: Any?, hideBottomLine: Bool) {
+        customNavBar.configure(title: title, leftButtonImage: leftButtonImage, rightButtonImage: rightButtonImage, hideBottomLine: hideBottomLine)
         
         if let leftAction = leftAction, let target = target {
             customNavBar.leftButton.addTarget(target, action: leftAction, for: .touchUpInside)
@@ -182,5 +198,8 @@ class CustomNavigationController: UINavigationController {
         if let rightAction = rightAction, let target = target {
             customNavBar.rightButton.addTarget(target, action: rightAction, for: .touchUpInside)
         }
+        
+        customNavBar.bottomLine.isHidden = hideBottomLine
+        
     }
 }

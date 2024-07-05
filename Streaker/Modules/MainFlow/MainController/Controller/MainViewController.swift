@@ -95,7 +95,7 @@ class MainViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
     // Loads the persisted habits from Realm database and returns them
@@ -468,7 +468,8 @@ extension MainViewController {
             rightButtonImage: UIImage(named: "rightButton"),
             leftAction: #selector(leftButtonTapped),
             rightAction: #selector(rightButtonTapped),
-            target: self
+            target: self,
+            hideBottomLine: true
         )
     }
 
@@ -484,7 +485,7 @@ extension MainViewController {
         let settingsVC = StatsViewController()
         settingsVC.navigationItem.hidesBackButton = false
         let transition = CATransition()
-        transition.duration = 0.35
+        transition.duration = 0.3
         transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
         transition.type = .moveIn
         transition.subtype = .fromLeft
@@ -493,6 +494,20 @@ extension MainViewController {
     }
 
     @objc private func rightButtonTapped() {
+        
+//        let settingsVC = StatsViewController()
+//        settingsVC.navigationItem.hidesBackButton = false
+//        let transition = CATransition()
+//        transition.duration = 0.3
+//        transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+//        transition.type = .moveIn
+//        transition.subtype = .fromRight
+//        navigationController?.view.layer.add(transition, forKey: kCATransition)
+//        let rightButton = ProfileViewController()
+//        rightButton.navigationItem.hidesBackButton = true
+//        navigationController?.pushViewController(rightButton, animated: false)
+        
+// -----  Native animation when main screen slighly moving to the right
         let rightButton = ProfileViewController()
         rightButton.navigationItem.hidesBackButton = true
         navigationController?.pushViewController(rightButton, animated: true)
