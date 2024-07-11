@@ -1,11 +1,11 @@
 /*
-
-Этот класс CreateNewStreakView:
-1 - Содержит текстовое поле для ввода названия новой привычки и кнопку отмены для возврата назад.
-2 - Добавляет элементы на родительский UIView и устанавливает для них ограничения с помощью SnapKit.
-3 - Настраивает внешний вид текстового поля и кнопки отмены.
-
-*/
+ 
+ Этот класс CreateNewStreakView:
+ 1 - Содержит текстовое поле для ввода названия новой привычки и кнопку отмены для возврата назад.
+ 2 - Добавляет элементы на родительский UIView и устанавливает для них ограничения с помощью SnapKit.
+ 3 - Настраивает внешний вид текстового поля и кнопки отмены.
+ 
+ */
 
 
 import UIKit
@@ -13,16 +13,25 @@ import SnapKit
 
 class CreateNewStreakView: UIView {
     
+    private var navBarHeight: CGFloat = 0
+    
     let streakNameTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Name of the streak in 1-2 words"
+        let placeholderText = "Name of the streak in 1-2 words"
+        let placeholderColor = UIColor.white.withAlphaComponent(0.5)
+        textField.attributedPlaceholder = NSAttributedString(
+            string: placeholderText,
+            attributes: [NSAttributedString.Key.foregroundColor: placeholderColor]
+        )
         textField.font = UIFont.systemFont(ofSize: 17)
         textField.borderStyle = .none
-        textField.backgroundColor = UIColor(red: 42/255, green: 42/255, blue: 46/255, alpha: 1)
+        textField.backgroundColor = .theme(.lineGrey)
         textField.textColor = .white
+        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 24, height: textField.frame.height))
+        textField.leftViewMode = .always
         textField.layer.cornerRadius = 10
         textField.layer.masksToBounds = true
-        textField.textAlignment = .center
+        textField.textAlignment = .left
         return textField
     }()
     
@@ -35,33 +44,29 @@ class CreateNewStreakView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func setNavBarHeight(_ height: CGFloat) {
+        self.navBarHeight = height
+        setNeedsLayout()
+    }
+    
     private func setup() {
         addSubview(streakNameTextField)
+        self.backgroundColor = .theme(.backgroundMain)
         makeConstraints()
     }
     
-    let cancelButton: UIButton = {
-        let obj = UIButton()
-        obj.setImage(UIImage(named: "leftArrow"), for: .normal)
-        obj.backgroundColor = UIColor(red: 42/255, green: 42/255, blue: 46/255, alpha: 1)
-        obj.tintColor = .theme(.streakerGrey)
-        obj.layer.cornerRadius = 12
-        obj.layer.borderColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2).cgColor
-        obj.layer.borderWidth = 0.2
-        return obj
-    }()
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        makeConstraints()
+    }
     
     private func makeConstraints() {
         
-        cancelButton.snp.makeConstraints { make in
-            make.size.width.equalTo(74.sizeW)
-            make.size.height.equalTo(54.sizeH)
-        }
-        
-        streakNameTextField.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide).inset(16)
+        let topInset = navBarHeight
+        streakNameTextField.snp.remakeConstraints { make in
+            make.top.equalToSuperview().offset(topInset + 16)
             make.leading.trailing.equalToSuperview().inset(16)
-            make.height.equalTo(50)
+            make.height.equalTo(50.sizeH)
         }
     }
 }

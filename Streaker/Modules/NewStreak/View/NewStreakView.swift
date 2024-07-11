@@ -13,19 +13,11 @@ import SnapKit
 class NewStreakView: UIView {
     
     var onCreateStreakButtonTapped: (() -> Void)?
-    
-    let headerTitleLabel: UILabel = {
-        let obj = UILabel()
-        obj.text = "New Streak"
-        obj.textColor = .white
-        obj.textAlignment = .left
-        obj.font = UIFont.systemFont(ofSize: 20.sizeW, weight: .bold)
-        return obj
-    }()
+    private var navBarHeight: CGFloat = 0
     
     let topButton: UIView = {
        let obj = UIView()
-        obj.backgroundColor = UIColor(red: 38/255, green: 38/255, blue: 40/255, alpha: 1)
+        obj.backgroundColor = .theme(.lineGrey)
         obj.layer.cornerRadius = 26
         obj.clipsToBounds = true
         return obj
@@ -52,22 +44,11 @@ class NewStreakView: UIView {
         return obj
     }()
     
-    let cancelButton: UIButton = {
-        let obj = UIButton()
-        obj.setImage(UIImage(named: "leftArrow"), for: .normal)
-        obj.backgroundColor = UIColor(red: 42/255, green: 42/255, blue: 46/255, alpha: 1)
-        obj.tintColor = .theme(.streakerGrey)
-        obj.layer.cornerRadius = 12
-        obj.layer.borderColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2).cgColor
-        obj.layer.borderWidth = 0.2
-        return obj
-    }()
-    
     let listsTableView: UITableView = {
         let obj = UITableView()
         obj.showsVerticalScrollIndicator = false
         obj.showsHorizontalScrollIndicator = false
-        obj.backgroundColor = UIColor(red: 38/255, green: 38/255, blue: 40/255, alpha: 1)
+        obj.backgroundColor = .theme(.lineGrey)
         obj.layer.cornerRadius = 26
         return obj
     }()
@@ -95,8 +76,13 @@ class NewStreakView: UIView {
     }
 }
 
-//MARK: setup
+// MARK: - List Setup
 extension NewStreakView {
+    
+    func setNavBarHeight(_ height: CGFloat) {
+        self.navBarHeight = height
+        setNeedsLayout()
+    }
     
     private func setup() {
             addSubview(listsTableView)
@@ -105,19 +91,25 @@ extension NewStreakView {
             topButton.addSubview(clearButton)
             clearButton.addSubview(btnIcon)
             clearButton.addSubview(titleLabel)
-            self.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 30/255, alpha: 1)
+        self.backgroundColor = .theme(.backgroundMain)
             // Do add custom streak button on top clickable
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(topButtonTapped))
             clearButton.addGestureRecognizer(tapGesture)
             clearButton.isUserInteractionEnabled = true
-            
+            makeConstraints()
+        }
+    
+    override func layoutSubviews() {
+            super.layoutSubviews()
             makeConstraints()
         }
     
     private func makeConstraints() {
         
-        topButton.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide).inset(16)
+        let topInset = navBarHeight
+        
+        topButton.snp.remakeConstraints { make in
+            make.top.equalToSuperview().offset(topInset + 16)
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(64.sizeH)
         }
@@ -131,11 +123,6 @@ extension NewStreakView {
             make.top.equalTo(selectTitle.snp.bottom).offset(16)
             make.leading.trailing.equalToSuperview().inset(16)
             make.bottom.equalToSuperview()
-        }
-        
-        cancelButton.snp.makeConstraints { make in
-            make.size.width.equalTo(74.sizeW)
-            make.size.height.equalTo(54.sizeH)
         }
         
         clearButton.snp.makeConstraints { make in

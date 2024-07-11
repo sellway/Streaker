@@ -14,8 +14,6 @@ class ProfileView: UIView {
     
     private var navBarHeight: CGFloat = 0
     
-    
-    
     let listsTableView: UITableView = {
         let obj = UITableView()
         obj.showsVerticalScrollIndicator = false

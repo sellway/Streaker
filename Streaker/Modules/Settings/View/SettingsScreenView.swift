@@ -9,43 +9,26 @@ import UIKit
 import SnapKit
 
 class SettingsScreenView: UIView {
-    let headerTitleLabel: UILabel = {
-        let obj = UILabel()
-        obj.text = "hints_header".localized()
-        obj.textColor = .white
-        obj.textAlignment = .center
-        obj.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        return obj
-    }()
     
-    private lazy var testTitle: UILabel = {
-        let obj = UILabel()
-        obj.text = "Test SettingsViewController"
-        obj.textColor = .white
-        return obj
-    }()
+    private var navBarHeight: CGFloat = 0
     
-    init() {
-        super.init(frame: .zero)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setup()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
-
-extension SettingsScreenView {
-    private func setup() {
-        addSubview(testTitle)
-        self.backgroundColor = .theme(.streakerGrey)
-        
-        setupConstraints()
+    
+    func setNavBarHeight(_ height: CGFloat) {
+        self.navBarHeight = height
+        setNeedsLayout()
     }
     
-    private func setupConstraints() {
-        testTitle.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-        }
+    private func setup() {
+        //addSubview(tableView)
+        self.backgroundColor = .theme(.backgroundMain)
     }
+    
 }

@@ -485,7 +485,7 @@ extension MainViewController {
         let settingsVC = StatsViewController()
         settingsVC.navigationItem.hidesBackButton = false
         let transition = CATransition()
-        transition.duration = 0.3
+        transition.duration = 0.35
         transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
         transition.type = .moveIn
         transition.subtype = .fromLeft
@@ -495,22 +495,22 @@ extension MainViewController {
 
     @objc private func rightButtonTapped() {
         
-//        let settingsVC = StatsViewController()
-//        settingsVC.navigationItem.hidesBackButton = false
-//        let transition = CATransition()
-//        transition.duration = 0.3
-//        transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-//        transition.type = .moveIn
-//        transition.subtype = .fromRight
-//        navigationController?.view.layer.add(transition, forKey: kCATransition)
-//        let rightButton = ProfileViewController()
-//        rightButton.navigationItem.hidesBackButton = true
-//        navigationController?.pushViewController(rightButton, animated: false)
-        
-// -----  Native animation when main screen slighly moving to the right
+        let settingsVC = StatsViewController()
+        settingsVC.navigationItem.hidesBackButton = false
+        let transition = CATransition()
+        transition.duration = 0.35
+        transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        transition.type = .moveIn
+        transition.subtype = .fromRight
+        navigationController?.view.layer.add(transition, forKey: kCATransition)
         let rightButton = ProfileViewController()
         rightButton.navigationItem.hidesBackButton = true
-        navigationController?.pushViewController(rightButton, animated: true)
+        navigationController?.pushViewController(rightButton, animated: false)
+        
+// -----  Native animation when main screen slighly moving to the right
+//        let rightButton = ProfileViewController()
+//        rightButton.navigationItem.hidesBackButton = true
+//        navigationController?.pushViewController(rightButton, animated: true)
     }
 }
 

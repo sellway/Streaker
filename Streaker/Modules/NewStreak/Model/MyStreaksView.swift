@@ -8,8 +8,12 @@
 */
 
 import UIKit
+import SnapKit
 
 class MyStreaksView: UIView {
+    
+    private var navBarHeight: CGFloat = 0
+    
     let tableView: UITableView = {
         let tableView = UITableView()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -18,22 +22,31 @@ class MyStreaksView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupViews()
+        setup()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func setNavBarHeight(_ height: CGFloat) {
+        self.navBarHeight = height
+        setNeedsLayout()
+    }
 
-    private func setupViews() {
+    private func setup() {
         addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: self.topAnchor),
-            tableView.leftAnchor.constraint(equalTo: self.leftAnchor),
-            tableView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            tableView.rightAnchor.constraint(equalTo: self.rightAnchor)
-        ])
+        self.backgroundColor = .theme(.streakerGrey)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        let topInset = navBarHeight
+        tableView.snp.remakeConstraints { make in
+            make.top.equalToSuperview().offset(topInset)
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
     }
 }
-
