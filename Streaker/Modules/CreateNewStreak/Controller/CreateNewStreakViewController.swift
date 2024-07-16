@@ -27,6 +27,7 @@ class CreateNewStreakViewController: UIViewController, UINavigationControllerDel
         super.viewDidLoad()
         initViewController()
         mainView.setNavBarHeight(navBarHeight)
+        setupButtonActions()
         navigationController?.delegate = self
         isInvertedSwipe = true
     }
@@ -178,3 +179,27 @@ extension CreateNewStreakViewController {
         saveStreak()
     }
 }
+
+// MARK: - Icon and Color Selection
+extension CreateNewStreakViewController {
+    @objc private func openColorPopup() {
+        let popupVC = PopupColorSetup()
+        popupVC.modalPresentationStyle = .overFullScreen
+        popupVC.modalTransitionStyle = .crossDissolve
+        present(popupVC, animated: true, completion: nil)
+    }
+    
+    @objc private func openIconPopup() {
+        // Реализуйте аналогичный метод для открытия попапа выбора иконок
+    }
+    
+    private func setupButtonActions() {
+        let colorTapGesture = UITapGestureRecognizer(target: self, action: #selector(openColorPopup))
+        mainView.colorContainer.addGestureRecognizer(colorTapGesture)
+        
+        let iconTapGesture = UITapGestureRecognizer(target: self, action: #selector(openIconPopup))
+        mainView.iconContainer.addGestureRecognizer(iconTapGesture)
+    }
+}
+
+

@@ -1,13 +1,3 @@
-/*
- 
- Этот класс CreateNewStreakView:
- 1 - Содержит текстовое поле для ввода названия новой привычки и кнопку отмены для возврата назад.
- 2 - Добавляет элементы на родительский UIView и устанавливает для них ограничения с помощью SnapKit.
- 3 - Настраивает внешний вид текстового поля и кнопки отмены.
- 
- */
-
-
 import UIKit
 import SnapKit
 
@@ -35,6 +25,54 @@ class CreateNewStreakView: UIView {
         return textField
     }()
     
+    let iconContainer: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.layer.cornerRadius = 10
+        view.layer.masksToBounds = true
+        return view
+    }()
+    
+    let iconImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.backgroundColor = .yellow
+        imageView.layer.cornerRadius = 16
+        imageView.layer.masksToBounds = true
+        return imageView
+    }()
+    
+    let iconLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Icon"
+        label.textColor = .white
+        label.font = UIFont.systemFont(ofSize: 17)
+        return label
+    }()
+    
+    let colorContainer: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.layer.cornerRadius = 10
+        view.layer.masksToBounds = true
+        return view
+    }()
+    
+    let colorImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.backgroundColor = .yellow
+        imageView.layer.cornerRadius = 16
+        imageView.layer.masksToBounds = true
+        return imageView
+    }()
+    
+    let colorLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Color"
+        label.textColor = .white
+        label.font = UIFont.systemFont(ofSize: 17)
+        return label
+    }()
+    
     init() {
         super.init(frame: .zero)
         setup()
@@ -52,6 +90,7 @@ class CreateNewStreakView: UIView {
     private func setup() {
         addSubview(streakNameTextField)
         self.backgroundColor = .theme(.backgroundMain)
+        setupIconAndColorContainers()
         makeConstraints()
     }
     
@@ -61,12 +100,62 @@ class CreateNewStreakView: UIView {
     }
     
     private func makeConstraints() {
-        
         let topInset = navBarHeight
         streakNameTextField.snp.remakeConstraints { make in
             make.top.equalToSuperview().offset(topInset + 16)
             make.leading.trailing.equalToSuperview().inset(16)
-            make.height.equalTo(50.sizeH)
+            make.height.equalTo(50)
+        }
+    }
+}
+
+// MARK: - Icon and Color Setup
+extension CreateNewStreakView {
+    private func setupIconAndColorContainers() {
+        addSubview(iconContainer)
+        addSubview(colorContainer)
+        
+        iconContainer.addSubview(iconImageView)
+        iconContainer.addSubview(iconLabel)
+        
+        colorContainer.addSubview(colorImageView)
+        colorContainer.addSubview(colorLabel)
+        
+        iconContainer.snp.remakeConstraints { make in
+            make.top.equalTo(streakNameTextField.snp.bottom).offset(16)
+            make.leading.equalToSuperview().inset(16)
+            make.trailing.equalTo(colorContainer.snp.leading).offset(-8)
+            make.height.equalTo(64)
+            make.width.equalTo(colorContainer)
+        }
+        
+        colorContainer.snp.remakeConstraints { make in
+            make.top.equalTo(streakNameTextField.snp.bottom).offset(16)
+            make.trailing.equalToSuperview().inset(16)
+            make.height.equalTo(64)
+            make.width.equalTo(iconContainer)
+        }
+        
+        iconImageView.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(16)
+            make.centerY.equalToSuperview()
+            make.height.width.equalTo(64)
+        }
+        
+        iconLabel.snp.makeConstraints { make in
+            make.leading.equalTo(iconImageView.snp.trailing).offset(16)
+            make.centerY.equalToSuperview()
+        }
+        
+        colorImageView.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(16)
+            make.centerY.equalToSuperview()
+            make.height.width.equalTo(64)
+        }
+        
+        colorLabel.snp.makeConstraints { make in
+            make.leading.equalTo(colorImageView.snp.trailing).offset(16)
+            make.centerY.equalToSuperview()
         }
     }
 }
