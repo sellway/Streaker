@@ -91,12 +91,11 @@ class CustomNavigationBar: UIView {
 
 
     private func styleButton(_ button: UIButton) {
-        
-        // Установка тени
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOpacity = 0.4
-        button.layer.shadowOffset = CGSize(width: 0, height: 3)
-        button.layer.shadowRadius = 4
+        // Установка скругления и границы
+        button.layer.cornerRadius = 18
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor(red: 0.22, green: 0.22, blue: 0.23, alpha: 1).cgColor
+        button.layer.masksToBounds = true
 
         // Установка фона
         button.backgroundColor = UIColor(red: 42/255, green: 42/255, blue: 46/255, alpha: 1)
@@ -110,12 +109,15 @@ class CustomNavigationBar: UIView {
         ]
         gradientLayer.locations = [0.0, 1.0]
         gradientLayer.frame = button.bounds
+        gradientLayer.cornerRadius = 18
         button.layer.insertSublayer(gradientLayer, at: 0)
 
-        // Установка скругления и границы
-        button.layer.cornerRadius = 18
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor(red: 0.22, green: 0.22, blue: 0.23, alpha: 1).cgColor
+        // Установка тени
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOpacity = 0.4
+        button.layer.shadowOffset = CGSize(width: 0, height: 3)
+        button.layer.shadowRadius = 4
+        button.layer.masksToBounds = false  // Не обрезаем тень
     }
 
     private func makeConstraints() {

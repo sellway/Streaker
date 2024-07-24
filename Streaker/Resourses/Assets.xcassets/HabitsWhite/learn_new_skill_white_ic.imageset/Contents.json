@@ -1,0 +1,15 @@
+{
+  "images" : [
+    {
+      "filename" : "learn_new_skill_white_ic.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
+  }
+}

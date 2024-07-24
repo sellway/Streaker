@@ -120,7 +120,7 @@ extension SettingsViewController {
         
         customNavController.configureNavBar(
             title: "Settings",
-            leftButtonImage: UIImage(named: "leftArrow"),
+            leftButtonImage: UIImage(named: "yellowBack"),
             rightButtonImage: nil,
             leftAction: #selector(rightButtonTapped),
             rightAction: nil,

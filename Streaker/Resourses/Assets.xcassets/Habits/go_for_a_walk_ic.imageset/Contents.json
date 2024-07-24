@@ -1,0 +1,15 @@
+{
+  "images" : [
+    {
+      "filename" : "go_for_a_walk_ic.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
+  }
+}

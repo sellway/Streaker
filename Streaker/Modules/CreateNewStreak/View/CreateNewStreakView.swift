@@ -35,7 +35,7 @@ class CreateNewStreakView: UIView {
     
     let iconImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = .yellow
+        imageView.backgroundColor = UIColor(named: "yellowRegular")
         imageView.layer.cornerRadius = 16
         imageView.layer.masksToBounds = true
         return imageView
@@ -59,7 +59,7 @@ class CreateNewStreakView: UIView {
     
     let colorImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = .yellow
+        imageView.backgroundColor = UIColor(named: "yellowRegular")
         imageView.layer.cornerRadius = 16
         imageView.layer.masksToBounds = true
         return imageView
@@ -123,23 +123,34 @@ extension CreateNewStreakView {
         
         iconContainer.snp.remakeConstraints { make in
             make.top.equalTo(streakNameTextField.snp.bottom).offset(16)
-            make.leading.equalToSuperview().inset(16)
-            make.trailing.equalTo(colorContainer.snp.leading).offset(-8)
+            make.leading.equalTo(streakNameTextField)
             make.height.equalTo(64)
-            make.width.equalTo(colorContainer)
+            make.width.equalTo(streakNameTextField).multipliedBy(0.5)
         }
         
         colorContainer.snp.remakeConstraints { make in
             make.top.equalTo(streakNameTextField.snp.bottom).offset(16)
-            make.trailing.equalToSuperview().inset(16)
+            make.trailing.equalTo(streakNameTextField)
+            make.leading.equalTo(iconContainer.snp.trailing).offset(8)
             make.height.equalTo(64)
-            make.width.equalTo(iconContainer)
+            make.width.equalTo(streakNameTextField).multipliedBy(0.5).offset(-4)
         }
         
         iconImageView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(16)
             make.centerY.equalToSuperview()
-            make.height.width.equalTo(64)
+            make.leading.equalToSuperview()
+            make.height.width.equalTo(64) // Оставляем размер фона 64x64
+        }
+
+        // Добавляем UIImageView для иконки внутри iconImageView
+        let innerIconView = UIImageView()
+        innerIconView.contentMode = .scaleAspectFit
+        innerIconView.layer.cornerRadius = 8
+        innerIconView.layer.masksToBounds = true
+        iconImageView.addSubview(innerIconView)
+        innerIconView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.height.width.equalTo(40)
         }
         
         iconLabel.snp.makeConstraints { make in
@@ -148,7 +159,7 @@ extension CreateNewStreakView {
         }
         
         colorImageView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(16)
+            make.leading.equalToSuperview()
             make.centerY.equalToSuperview()
             make.height.width.equalTo(64)
         }
@@ -157,5 +168,43 @@ extension CreateNewStreakView {
             make.leading.equalTo(colorImageView.snp.trailing).offset(16)
             make.centerY.equalToSuperview()
         }
+        
+        // Добавляем белый круг по умолчанию
+        let circleView = UIView()
+        circleView.backgroundColor = UIColor.white.withAlphaComponent(0.3)
+        circleView.layer.cornerRadius = 16
+        circleView.layer.masksToBounds = true
+        colorImageView.addSubview(circleView)
+
+        // Устанавливаем констрейнты для круга
+        circleView.snp.makeConstraints { make in
+            make.size.equalTo(32)
+            make.center.equalToSuperview()
+        }
     }
+
+
+
+    
+    func updateButtonColors(with color: UIColor) {
+        iconImageView.backgroundColor = color
+        colorImageView.backgroundColor = color
+
+        // Удаляем старый круг, если он существует
+        colorImageView.subviews.forEach { $0.removeFromSuperview() }
+
+        // Добавляем белый круг
+        let circleView = UIView()
+        circleView.backgroundColor = UIColor.white.withAlphaComponent(0.3)
+        circleView.layer.cornerRadius = 16
+        circleView.layer.masksToBounds = true
+        colorImageView.addSubview(circleView)
+
+        // Устанавливаем констрейнты для круга
+        circleView.snp.makeConstraints { make in
+            make.size.equalTo(32)
+            make.center.equalToSuperview()
+        }
+    }
+    
 }

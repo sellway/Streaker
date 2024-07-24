@@ -15,6 +15,8 @@ class CreateNewStreakViewController: UIViewController, UINavigationControllerDel
     private var interactionController: UIPercentDrivenInteractiveTransition?
     private var panGesture: UIPanGestureRecognizer!
     var isInvertedSwipe: Bool = false
+    var selectedColor: UIColor = .yellowRegular
+    var selectedIcon: String = "plus_ic"
     
     var navBarHeight: CGFloat {
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = windowScene.windows.first {
@@ -30,6 +32,8 @@ class CreateNewStreakViewController: UIViewController, UINavigationControllerDel
         setupButtonActions()
         navigationController?.delegate = self
         isInvertedSwipe = true
+        updateIconUI(with: selectedIcon)
+        updateUI(with: selectedColor)
     }
     
     override func loadView() {
@@ -151,17 +155,37 @@ extension CreateNewStreakViewController {
             }
         }
         
-        customNavController.configureNavBar(
-            title: "New",
-            leftButtonImage: UIImage(named: "leftArrow"),
-            rightButtonImage: UIImage(named: "yellowCheckmark"),
-            leftAction: #selector(leftButtonTapped),
-            rightAction: #selector(rightButtonTapped),
-            target: self,
-            hideBottomLine: false
-        )
+        // Initial setup based on default selected color
+        updateUI(with: selectedColor)
+        
         navigationItem.hidesBackButton = true
     }
+    
+    private func colorName(for color: UIColor) -> String {
+        switch color {
+        case UIColor.redRegular:
+            return "red"
+        case UIColor.orangeRegular:
+            return "orange"
+        case UIColor.yellowRegular:
+            return "yellow"
+        case UIColor.blueRegular:
+            return "blue"
+        case UIColor.lilacRegular:
+            return "lilac"
+        case UIColor.greenRegular:
+            return "green"
+        case UIColor.purpleRegular:
+            return "purple"
+        case UIColor.pinkRegular:
+            return "pink"
+        case UIColor.violetRegular:
+            return "violet"
+        default:
+            return "yellow" // Default case
+        }
+    }
+
     
     func initButtons() {
         // Настройка действий для кнопок
@@ -184,22 +208,81 @@ extension CreateNewStreakViewController {
 extension CreateNewStreakViewController {
     @objc private func openColorPopup() {
         let popupVC = PopupColorSetup()
+        popupVC.selectedColor = selectedColor  // Установите выбранный цвет
         popupVC.modalPresentationStyle = .overFullScreen
         popupVC.modalTransitionStyle = .crossDissolve
+        popupVC.onColorSelected = { [weak self] selectedColor in
+            self?.updateUI(with: selectedColor)
+            self?.selectedColor = selectedColor  // Обновите выбранный цвет
+        }
         present(popupVC, animated: true, completion: nil)
     }
     
+    private func updateIconUI(with iconName: String) {
+        let whiteIconName = iconName.whiteIconName()
+        if let iconImage = UIImage(named: whiteIconName) {
+            if let innerIconView = mainView.iconImageView.subviews.first as? UIImageView {
+                innerIconView.image = iconImage
+            } else {
+                let innerIconView = UIImageView(image: iconImage)
+                innerIconView.contentMode = .scaleAspectFit
+                innerIconView.layer.cornerRadius = 8
+                innerIconView.layer.masksToBounds = true
+                mainView.iconImageView.addSubview(innerIconView)
+                innerIconView.snp.makeConstraints { make in
+                    make.center.equalToSuperview()
+                    make.height.width.equalTo(40)
+                }
+            }
+        } else {
+            print("Failed to load image for icon named: \(whiteIconName)")
+        }
+    }
+    
     @objc private func openIconPopup() {
-        // Реализуйте аналогичный метод для открытия попапа выбора иконок
+        let popupVC = PopupIconSetup()
+        popupVC.selectedIcon = selectedIcon // Set the currently selected icon
+        popupVC.modalPresentationStyle = .overFullScreen
+        popupVC.modalTransitionStyle = .crossDissolve
+        popupVC.onIconSelected = { [weak self] selectedIcon in
+            self?.updateIconUI(with: selectedIcon)
+            self?.selectedIcon = selectedIcon // Update the selected icon
+        }
+        present(popupVC, animated: true, completion: nil)
     }
     
     private func setupButtonActions() {
-        let colorTapGesture = UITapGestureRecognizer(target: self, action: #selector(openColorPopup))
-        mainView.colorContainer.addGestureRecognizer(colorTapGesture)
+            let colorTapGesture = UITapGestureRecognizer(target: self, action: #selector(openColorPopup))
+            mainView.colorContainer.addGestureRecognizer(colorTapGesture)
+
+            let iconTapGesture = UITapGestureRecognizer(target: self, action: #selector(openIconPopup))
+            mainView.iconContainer.addGestureRecognizer(iconTapGesture)
+        }
+    
+    func updateUI(with color: UIColor) {
+        mainView.updateButtonColors(with: color)
         
-        let iconTapGesture = UITapGestureRecognizer(target: self, action: #selector(openIconPopup))
-        mainView.iconContainer.addGestureRecognizer(iconTapGesture)
+        // Update navigation bar icons based on selected color
+        let colorName = colorName(for: color)
+        let leftIconName = "\(colorName)Back"
+        let rightIconName = "\(colorName)Checkmark"
+        
+        customNavController.configureNavBar(
+            title: "New",
+            leftButtonImage: UIImage(named: leftIconName),
+            rightButtonImage: UIImage(named: rightIconName),
+            leftAction: #selector(leftButtonTapped),
+            rightAction: #selector(rightButtonTapped),
+            target: self,
+            hideBottomLine: false
+        )
     }
+
 }
 
+extension String {
+    func whiteIconName() -> String {
+        return self.replacingOccurrences(of: "_ic", with: "_white_ic")
+    }
+}
 

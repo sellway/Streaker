@@ -154,7 +154,7 @@ extension NewStreakViewController {
         
         customNavController.configureNavBar(
             title: "New Streak",
-            leftButtonImage: UIImage(named: "leftArrow"),
+            leftButtonImage: UIImage(named: "yellowBack"),
             rightButtonImage: nil,
             leftAction: #selector(rightButtonTapped),
             rightAction: nil,

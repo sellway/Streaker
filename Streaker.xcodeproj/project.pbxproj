@@ -40,6 +40,7 @@
 		E4322B492AFAFFA000312750 /* emptyCell.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4322B482AFAFFA000312750 /* emptyCell.svg */; };
 		E4322B4D2AFB102600312750 /* cross.svg in Resources */ = {isa = PBXBuildFile; fileRef = E4322B4C2AFB102600312750 /* cross.svg */; };
 		E433E6A52C4157B600D4C8E2 /* PopupColorSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = E433E6A42C4157B600D4C8E2 /* PopupColorSetup.swift */; };
+		E439C9A82C4AAC5F0094A7A3 /* PopupIconSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = E439C9A72C4AAC5F0094A7A3 /* PopupIconSetup.swift */; };
 		E45E28E42AF17D6300104C32 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = E45E28E32AF17D6300104C32 /* SnapKit */; };
 		E45E28E92AF1C6A100104C32 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = E45E28E82AF1C6A100104C32 /* Lottie */; };
 		E45E28EC2AF1C82800104C32 /* confetti.json in Resources */ = {isa = PBXBuildFile; fileRef = E45E28EB2AF1C82800104C32 /* confetti.json */; };
@@ -100,6 +101,7 @@
 		E4322B482AFAFFA000312750 /* emptyCell.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = emptyCell.svg; sourceTree = "<group>"; };
 		E4322B4C2AFB102600312750 /* cross.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cross.svg; sourceTree = "<group>"; };
 		E433E6A42C4157B600D4C8E2 /* PopupColorSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupColorSetup.swift; sourceTree = "<group>"; };
+		E439C9A72C4AAC5F0094A7A3 /* PopupIconSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupIconSetup.swift; sourceTree = "<group>"; };
 		E45E28EB2AF1C82800104C32 /* confetti.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = confetti.json; sourceTree = "<group>"; };
 		E45E28ED2AF1D59800104C32 /* ConfettiAnimationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiAnimationManager.swift; sourceTree = "<group>"; };
 		E48BFFC42B7221D600B922F2 /* MainModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainModel.swift; sourceTree = "<group>"; };
@@ -529,6 +531,7 @@
 		E433E6A02C4156EC00D4C8E2 /* Setup */ = {
 			isa = PBXGroup;
 			children = (
+				E439C9A62C4AAC400094A7A3 /* Icon */,
 				E433E6A12C41571800D4C8E2 /* Color */,
 			);
 			path = Setup;
@@ -540,6 +543,14 @@
 				E433E6A42C4157B600D4C8E2 /* PopupColorSetup.swift */,
 			);
 			path = Color;
+			sourceTree = "<group>";
+		};
+		E439C9A62C4AAC400094A7A3 /* Icon */ = {
+			isa = PBXGroup;
+			children = (
+				E439C9A72C4AAC5F0094A7A3 /* PopupIconSetup.swift */,
+			);
+			path = Icon;
 			sourceTree = "<group>";
 		};
 		E45E28EA2AF1C80F00104C32 /* Assets */ = {
@@ -694,6 +705,7 @@
 				E4FF3D5D2AF05CA0009C0C15 /* ButtonLabel.swift in Sources */,
 				E40BBCC22B97CD7A006C8FBD /* MyStreaksView.swift in Sources */,
 				84B1D8E62B13BAD30068BC12 /* ProfileViewController.swift in Sources */,
+				E439C9A82C4AAC5F0094A7A3 /* PopupIconSetup.swift in Sources */,
 				E40FE6112B84DEB9004551F3 /* CreateNewStreakViewController.swift in Sources */,
 				84C305AB2B1203200007A1AE /* RootNavigaionViewController.swift in Sources */,
 				E4FF3D4B2AF01BA6009C0C15 /* MainViewController.swift in Sources */,
