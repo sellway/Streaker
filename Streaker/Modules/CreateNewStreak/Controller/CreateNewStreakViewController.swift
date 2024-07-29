@@ -46,7 +46,6 @@ class CreateNewStreakViewController: UIViewController, UINavigationControllerDel
     }
     
     @objc private func saveStreak() {
-        
         guard let streakName = mainView.streakNameTextField.text, !streakName.isEmpty else {
             print("Streak name is empty.")
             return
@@ -55,12 +54,13 @@ class CreateNewStreakViewController: UIViewController, UINavigationControllerDel
         // Create an instance of HabitsModel
         let newHabit = HabitsModel()
         newHabit.name = streakName
-        newHabit.color = "Green" // Example, replace with actual logic to choose a color
+        newHabit.color = colorName(for: selectedColor) // Сохранить выбранный цвет
+        newHabit.icon = selectedIcon // Сохранить выбранную иконку
 
         // Save the new habit to Realm using HabitsDataManager
         HabitsDataManager.shared.saveHabitsToRealm(habitsModel: newHabit)
 
-        print("Saving streak with name: \(streakName)")
+        print("Saving streak with name: \(streakName), color: \(newHabit.color), and icon: \(selectedIcon)")
 
         // Optionally, pop or dismiss the view controller
         navigationController?.popViewController(animated: true)
@@ -68,7 +68,7 @@ class CreateNewStreakViewController: UIViewController, UINavigationControllerDel
         // Вывод всех сохранённых привычек
         let allSavedHabits = HabitsDataManager.shared.loadAllHabitsFromRealm()
         for habit in allSavedHabits {
-            print("Saved Habit: \(habit.name), Color: \(habit.color)")
+            print("Saved Habit: \(habit.name), Color: \(habit.color), Icon: \(habit.icon)")
         }
     }
 }
@@ -185,7 +185,6 @@ extension CreateNewStreakViewController {
             return "yellow" // Default case
         }
     }
-
     
     func initButtons() {
         // Настройка действий для кнопок

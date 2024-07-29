@@ -1,8 +1,8 @@
 /*
  Этот код:
- 1 - Создает кастомную кнопку `CustomButton` с функциями изменения цвета, состояния и лейблом под кнопкой.
- 2 - Управляет состоянием кнопки через замыкание `onButtonTapped` и изменяет визуальное оформление при переключении состояния `isOn`.
- 3 - Использует словарь `colorThemes` для разных цветовых тем кнопок и настраивает градиенты или однотонные цвета.
+ 1 - Создает кастомную кнопку CustomButton с функциями изменения цвета, состояния и лейблом под кнопкой.
+ 2 - Управляет состоянием кнопки через замыкание onButtonTapped и изменяет визуальное оформление при переключении состояния isOn.
+ 3 - Использует словарь colorThemes для разных цветовых тем кнопок и настраивает градиенты или однотонные цвета.
  4 - Включает поддержку иконки и лейбла, а также масштабирует элементы кнопки в зависимости от ширины экрана.
  5 - Поддерживает анимацию конфетти через библиотеку Lottie (временно отключена), и изменяет дизайн на основе состояния.
  6 - Применяет SnapKit для упрощенного размещения элементов.
@@ -16,6 +16,8 @@ import Lottie
 class CustomButton: UIButton {
     
     var habitName: String = ""
+    var habitIcon: String = ""
+    var habitColor: UIColor = .clear
     
     struct ButtonColors {
         let buttonDefault: (gradientStart: UIColor, gradientEnd: UIColor)
@@ -36,7 +38,7 @@ class CustomButton: UIButton {
     
     private let buttonLayer = CAGradientLayer()
     private let overlayView = UIView()
-    private let iconView = UIImageView()
+    public let iconView = UIImageView()
     let labelBelowButton = ButtonLabel() // Using the ButtonLabel class
     private var confettiAnimationView: LottieAnimationView?
     
@@ -94,7 +96,6 @@ class CustomButton: UIButton {
     }
     
     private func setupIconView() {
-        iconView.image = UIImage(named: "meditation")
         iconView.isUserInteractionEnabled = false
         addSubview(iconView)
         iconView.snp.makeConstraints { make in
@@ -160,7 +161,7 @@ class CustomButton: UIButton {
         let baseScreenWidth: CGFloat = 375 // Base screen width, e.g., iPhone SE
         let scaleFactor = screenWidth / baseScreenWidth
         
-        let iconSize: CGFloat = 32 * scaleFactor // Scaled icon size
+        let iconSize: CGFloat = 44 * scaleFactor // Scaled icon size
         let fontSize: CGFloat = 10 * scaleFactor // Scaled font size
         
         iconView.snp.updateConstraints { make in

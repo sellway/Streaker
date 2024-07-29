@@ -187,8 +187,9 @@ class MainViewController: UIViewController {
             if let habit = habits?[index] {
                 button.labelBelowButton.updateText(with: habit.name, isOn: false)
                 button.habitName = habit.name
+                button.iconView.image = UIImage(named: habit.icon.whiteIconName())
+                button.backgroundColor = UIColor(hex: habit.color)
             }
-            //button.scaleButtonElements(forScreenWidth: contentView.bounds.width)
             button.setPosition(in: contentView, index: index, totalButtons: totalButtons)
             contentView.bringSubviewToFront(button)
             button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)

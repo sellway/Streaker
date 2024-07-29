@@ -35,6 +35,7 @@ class HabitsModel: Object, HabitsModelProtocol {
     @Persisted(primaryKey: true) var id: ObjectId
     @Persisted var name: String = ""
     @Persisted var color: String = ""
+    @Persisted var icon: String = ""
     @Persisted var counter: Int = 0
     @Persisted var cells: List<HabitCell>  // Список клеток
     
